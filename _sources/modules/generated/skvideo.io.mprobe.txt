@@ -1,0 +1,12 @@
+:mod:`skvideo.io`.mprobe
+=====================================
+
+.. currentmodule:: skvideo.io
+
+.. autofunction:: mprobe
+
+.. include:: skvideo.io.mprobe.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
