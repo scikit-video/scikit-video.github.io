@@ -115,11 +115,16 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fname</strong> : string</p>
 <blockquote>
-<div><p>Video file name, e.g. <code class="docutils literal"><span class="pre">bickbuckbunny.mp4</span></code> or URL.</p>
+<div><p>Video file name, e.g. <code class="docutils literal"><span class="pre">bickbuckbunny.mp4</span></code>.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vid_gen: generator returns image frames Other parameters</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vid_gen</strong> : generator</p>
+<blockquote>
+<div><p>returns ndarrays, shape (M, N, C) where 
+M is frame height, N is frame width, and 
+C is number of channels per pixel</p>
+</div></blockquote>
 <p><strong>&#8212;&#8212;&#8212;&#8212;&#8212;-</strong> :</p>
 <p><strong>plugin_args</strong> : keywords</p>
 <blockquote class="last">

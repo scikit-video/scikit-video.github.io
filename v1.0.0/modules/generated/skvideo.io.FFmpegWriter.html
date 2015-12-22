@@ -108,25 +108,67 @@
 <dl class="class">
 <dt id="skvideo.io.FFmpegWriter">
 <em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>datashape</em>, <em>pix_fmt='rgb24'</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p class="rubric">Methods</p>
+<dd><p>Writes frames using FFmpeg</p>
+<p>Using FFmpeg as a backend, this class
+provides sane initializations for the default case.</p>
+<p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">close</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="#skvideo.io.FFmpegWriter.close" title="skvideo.io.FFmpegWriter.close"><code class="xref py py-obj docutils literal"><span class="pre">close</span></code></a>()</td>
+<td>Closes the video and terminates FFmpeg process</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">writeFrame</span></code>(im)</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="#skvideo.io.FFmpegWriter.writeFrame" title="skvideo.io.FFmpegWriter.writeFrame"><code class="xref py py-obj docutils literal"><span class="pre">writeFrame</span></code></a>(im)</td>
+<td>Sends ndarray frames to FFmpeg</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="skvideo.io.FFmpegWriter.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>datashape</em>, <em>pix_fmt='rgb24'</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initializes FFmpeg in writing mode with the given parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
+<blockquote>
+<div><p>Video file path</p>
+</div></blockquote>
+<p><strong>datashape</strong> : ndarray</p>
+<blockquote>
+<div><p>Tuple of configuration (T, M, N, C), where T
+is the number of frames, M is the height, N is
+width, and C is depth. C is currently hardcoded to 3.</p>
+</div></blockquote>
+<p><strong>pix_fmt</strong> : string</p>
+<blockquote>
+<div><p>Can be one of &#8216;gray&#8217;, &#8216;gray8a&#8217;, &#8216;rgb24&#8217; or &#8216;rgba&#8217;. 
+which corresponds to 1, 2, 3, and 4 bytes per pixel, respectively.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>none</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="skvideo.io.FFmpegWriter.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the video and terminates FFmpeg process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skvideo.io.FFmpegWriter.writeFrame">
+<code class="descname">writeFrame</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.writeFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends ndarray frames to FFmpeg</p>
+</dd></dl>
 
 </dd></dl>
 

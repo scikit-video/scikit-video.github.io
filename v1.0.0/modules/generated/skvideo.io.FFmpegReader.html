@@ -119,20 +119,60 @@ handle the default case well.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">getShape</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="#skvideo.io.FFmpegReader.getShape" title="skvideo.io.FFmpegReader.getShape"><code class="xref py py-obj docutils literal"><span class="pre">getShape</span></code></a>()</td>
+<td>Returns a tuple (T, M, N, C)</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">nextFrame</span></code>()</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="#skvideo.io.FFmpegReader.nextFrame" title="skvideo.io.FFmpegReader.nextFrame"><code class="xref py py-obj docutils literal"><span class="pre">nextFrame</span></code></a>()</td>
+<td>Yields frames using a generator</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="skvideo.io.FFmpegReader.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict={}</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens the file, creates the pipe.</p>
-<p>Launches a subprocess of FFmpeg after 
-probing the file for details with <span class="xref std std-ref">MProbe</span>.</p>
+<dd><p>Initializes FFmpeg in reading mode with the given parameters</p>
+<p>During initialization, additional parameters about the video file
+are parsed using <a class="reference internal" href="skvideo.io.mprobe.html#skvideo.io.mprobe" title="skvideo.io.mprobe"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.mprobe</span></code></a>. Then FFmpeg is launched
+as a subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
+<blockquote>
+<div><p>Video file path</p>
+</div></blockquote>
+<p><strong>inputdict</strong> : dict</p>
+<blockquote>
+<div><p>Input dictionary parameters. How to interpret the filename.</p>
+</div></blockquote>
+<p><strong>outputdict</strong> : dict</p>
+<blockquote>
+<div><p>Output dictionary parameters. How to provide and interpret 
+the data during the read.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>none</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="skvideo.io.FFmpegReader.getShape">
+<code class="descname">getShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.getShape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple (T, M, N, C)</p>
+<p>Returns the video shape in number of frames, height, width, and channels per pixel.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skvideo.io.FFmpegReader.nextFrame">
+<code class="descname">nextFrame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.nextFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields frames using a generator</p>
+<p>Returns T ndarrays of size (M, N, C), where T is number of frames, 
+M is height, N is width, and C is number of channels per pixel.</p>
 </dd></dl>
 
 </dd></dl>

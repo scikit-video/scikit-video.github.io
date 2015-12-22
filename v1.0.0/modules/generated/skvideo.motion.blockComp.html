@@ -107,7 +107,7 @@
 <h1><a class="reference internal" href="../motion.html#module-skvideo.motion" title="skvideo.motion"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.motion</span></code></a>.blockComp<a class="headerlink" href="#skvideo-motion-blockcomp" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.motion.blockComp">
-<code class="descclassname">skvideo.motion.</code><code class="descname">blockComp</code><span class="sig-paren">(</span><em>refImg</em>, <em>motionVect</em>, <em>mbSize</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.motion.blockComp" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.motion.</code><code class="descname">blockComp</code><span class="sig-paren">(</span><em>frameData</em>, <em>motionVect</em>, <em>mbSize=8</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.motion.blockComp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block-based motion compensation</p>
 <p>Using the given motion vectors, this function
 returns the motion-compensated image.</p>
@@ -115,21 +115,24 @@ returns the motion-compensated image.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>refImg</strong> : ndarray</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frameData</strong> : ndarray</p>
 <blockquote>
-<div><p>A MxN or MxNx3 ndarray representing an image frame</p>
+<div><p>an input frame, shape (M, N) or (M, N, C)</p>
 </div></blockquote>
 <p><strong>motionVect</strong> : ndarray</p>
 <blockquote>
-<div><p>An ndarray representing block motion vectors</p>
+<div><p>ndarray representing block motion vectors. Expects ndarray, shape (M/mbSize, N/mbSize).</p>
 </div></blockquote>
 <p><strong>mbSize</strong> : int</p>
 <blockquote>
-<div><p>Size of macroblock</p>
+<div><p>Size of macroblock in pixels.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>compImg</strong> : ndarray, shape same as refImg</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>compImg</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>ndarray holding the motion compensated image frame, shape (M, N) or (M, N, C) depending on the shape of frameData</p>
+</div></blockquote>
 </td>
 </tr>
 </tbody>
