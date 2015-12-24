@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.io.FFmpegWriter &mdash; scikit-video 1.0.0 documentation</title>
+    <title>skvideo.io.ffprobe &mdash; scikit-video 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -32,8 +32,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="scikit-video 1.0.0 documentation" href="../../index.html" />
     <link rel="up" title="I/O" href="../io.html" />
-    <link rel="next" title="skvideo.io.FFmpegReader" href="skvideo.io.FFmpegReader.html" />
-    <link rel="prev" title="skvideo.io.ffprobe" href="skvideo.io.ffprobe.html" />
+    <link rel="next" title="Motion" href="../motion.html" />
+    <link rel="prev" title="skvideo.io.mprobe" href="skvideo.io.mprobe.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -75,7 +75,7 @@
 
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
-<code class="docutils literal"><span class="pre">skvideo.io</span></code>.FFmpegWriter
+<code class="docutils literal"><span class="pre">skvideo.io</span></code>.ffprobe
 
 </div>
 
@@ -103,73 +103,33 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="skvideo-io-ffmpegwriter">
-<h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.FFmpegWriter<a class="headerlink" href="#skvideo-io-ffmpegwriter" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="skvideo.io.FFmpegWriter">
-<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>datashape</em>, <em>pix_fmt='rgb24'</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes frames using FFmpeg</p>
-<p>Using FFmpeg as a backend, this class
-provides sane initializations for the default case.</p>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#skvideo.io.FFmpegWriter.close" title="skvideo.io.FFmpegWriter.close"><code class="xref py py-obj docutils literal"><span class="pre">close</span></code></a>()</td>
-<td>Closes the video and terminates FFmpeg process</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#skvideo.io.FFmpegWriter.writeFrame" title="skvideo.io.FFmpegWriter.writeFrame"><code class="xref py py-obj docutils literal"><span class="pre">writeFrame</span></code></a>(im)</td>
-<td>Sends ndarray frames to FFmpeg</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="skvideo.io.FFmpegWriter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>datashape</em>, <em>pix_fmt='rgb24'</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes FFmpeg in writing mode with the given parameters</p>
+  <div class="section" id="skvideo-io-ffprobe">
+<h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.ffprobe<a class="headerlink" href="#skvideo-io-ffprobe" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="skvideo.io.ffprobe">
+<code class="descclassname">skvideo.io.</code><code class="descname">ffprobe</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.ffprobe" title="Permalink to this definition">¶</a></dt>
+<dd><p>get metadata by using ffprobe</p>
+<p>Checks the output of ffprobe on the desired video
+file. MetaData is then parsed into a dictionary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
 <blockquote>
-<div><p>Video file path</p>
-</div></blockquote>
-<p><strong>datashape</strong> : ndarray</p>
-<blockquote>
-<div><p>Tuple of configuration (T, M, N, C), where T
-is the number of frames, M is the height, N is
-width, and C is depth. C is currently hardcoded to 3.</p>
-</div></blockquote>
-<p><strong>pix_fmt</strong> : string</p>
-<blockquote>
-<div><p>Can be one of &#8216;gray&#8217;, &#8216;gray8a&#8217;, &#8216;rgb24&#8217; or &#8216;rgba&#8217;. 
-which corresponds to 1, 2, 3, and 4 bytes per pixel, respectively.</p>
+<div><p>Path to the video file</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>none</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>metaDict</strong> : dict</p>
+<blockquote class="last">
+<div><p>Dictionary containing all header-based information 
+about the passed-in source video.</p>
+</div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="skvideo.io.FFmpegWriter.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Closes the video and terminates FFmpeg process</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="skvideo.io.FFmpegWriter.writeFrame">
-<code class="descname">writeFrame</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.writeFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends ndarray frames to FFmpeg</p>
-</dd></dl>
-
 </dd></dl>
 
 <div class="clearer"></div></div>

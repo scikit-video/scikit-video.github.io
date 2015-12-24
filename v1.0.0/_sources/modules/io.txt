@@ -33,4 +33,5 @@ Functions
    io.vreader
    io.vwrite
    io.mprobe
+   io.ffprobe
 
