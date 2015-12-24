@@ -112,7 +112,7 @@
 <p>Checks the output of mediainfo on the desired video
 file. Data is then parsed into a dictionary and
 checked for video data. If no such video data exists,
-this function with throw an exception.</p>
+an empty dictionary is returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -125,8 +125,8 @@ this function with throw an exception.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mediaDict</strong> : dict</p>
 <blockquote class="last">
-<div><p>Dictionary containing information about the
-passed-in source video.</p>
+<div><p>Dictionary containing all header-based information 
+about the passed-in source video.</p>
 </div></blockquote>
 </td>
 </tr>

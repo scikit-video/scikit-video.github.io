@@ -132,8 +132,14 @@ handle the default case well.</p>
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict={}</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes FFmpeg in reading mode with the given parameters</p>
 <p>During initialization, additional parameters about the video file
-are parsed using <a class="reference internal" href="skvideo.io.mprobe.html#skvideo.io.mprobe" title="skvideo.io.mprobe"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.mprobe</span></code></a>. Then FFmpeg is launched
-as a subprocess.</p>
+are parsed using <code class="xref py py-func docutils literal"><span class="pre">skvideo.io.ffprobe</span></code>. Then FFmpeg is launched
+as a subprocess. Parameters passed into inputdict are parsed and
+used to set as internal variables about the video. If the parameter,
+such as &#8220;Height&#8221; is not found in the inputdict, it is found through
+scanning the file&#8217;s header information. If not in the header, ffprobe
+is used to decode the file to determine the information. In the case
+that the information is not supplied and connot be inferred from the
+input file, a ValueError exception is thrown.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -144,12 +150,12 @@ as a subprocess.</p>
 </div></blockquote>
 <p><strong>inputdict</strong> : dict</p>
 <blockquote>
-<div><p>Input dictionary parameters. How to interpret the filename.</p>
+<div><p>Input dictionary parameters, i.e. how to interpret the input file.</p>
 </div></blockquote>
 <p><strong>outputdict</strong> : dict</p>
 <blockquote>
-<div><p>Output dictionary parameters. How to provide and interpret 
-the data during the read.</p>
+<div><p>Output dictionary parameters, i.e. how to encode the data 
+when sending back to the python process.</p>
 </div></blockquote>
 </td>
 </tr>
