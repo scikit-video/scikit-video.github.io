@@ -107,7 +107,7 @@
 <h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.vreader<a class="headerlink" href="#skvideo-io-vreader" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.io.vreader">
-<code class="descclassname">skvideo.io.</code><code class="descname">vreader</code><span class="sig-paren">(</span><em>fname</em>, <em>**plugin_args</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.vreader" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.io.</code><code class="descname">vreader</code><span class="sig-paren">(</span><em>fname</em>, <em>height=0</em>, <em>width=0</em>, <em>num_frames=0</em>, <em>inputdict={}</em>, <em>outputdict={}</em>, <em>backend='ffmpeg'</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.vreader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a video through the use of a generator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -115,7 +115,33 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fname</strong> : string</p>
 <blockquote>
-<div><p>Video file name, e.g. <code class="docutils literal"><span class="pre">bickbuckbunny.mp4</span></code>.</p>
+<div><p>Video file name, e.g. <code class="docutils literal"><span class="pre">bickbuckbunny.mp4</span></code></p>
+</div></blockquote>
+<p><strong>height</strong> : int</p>
+<blockquote>
+<div><p>Set the source video height used for decoding. Useful for raw inputs when video header does not exist.</p>
+</div></blockquote>
+<p><strong>width</strong> : int</p>
+<blockquote>
+<div><p>Set the source video width used for decoding. Useful for raw inputs when video header does not exist.</p>
+</div></blockquote>
+<p><strong>num_frames</strong> : int</p>
+<blockquote>
+<div><p>Only read the first the first <cite>num_frames</cite> number of frames from video. Setting <cite>num_frames</cite> to 
+small numbers can significantly speed up video loading times.</p>
+</div></blockquote>
+<p><strong>inputdict</strong> : dict</p>
+<blockquote>
+<div><p>Input dictionary parameters, i.e. how to interpret the input file.</p>
+</div></blockquote>
+<p><strong>outputdict</strong> : dict</p>
+<blockquote>
+<div><p>Output dictionary parameters, i.e. how to encode the data 
+when sending back to the python process.</p>
+</div></blockquote>
+<p><strong>backend</strong> : string</p>
+<blockquote>
+<div><p>Program to use for handling video data. Only &#8216;ffmpeg&#8217; is supported at this time.</p>
 </div></blockquote>
 </td>
 </tr>

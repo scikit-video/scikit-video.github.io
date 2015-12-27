@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>I/O &mdash; scikit-video 1.0.0 documentation</title>
+    <title>Utility functions &mdash; scikit-video 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -32,8 +32,8 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="scikit-video 1.0.0 documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="../classes.html" />
-    <link rel="next" title="skvideo.io.FFmpegWriter" href="generated/skvideo.io.FFmpegWriter.html" />
-    <link rel="prev" title="API Reference" href="../classes.html" />
+    <link rel="next" title="skvideo.utils.vshape" href="generated/skvideo.utils.vshape.html" />
+    <link rel="prev" title="skvideo.datasets.fullreferencepair" href="generated/skvideo.datasets.fullreferencepair.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -75,7 +75,7 @@
 
 <div class='container'>
 <a href='../classes.html'>API Reference</a> >>
-I/O
+Utility functions
 
 </div>
 
@@ -103,28 +103,11 @@ I/O
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="i-o">
-<h1>I/O<a class="headerlink" href="#i-o" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-skvideo.io">
-<span id="skvideo-io-i-o"></span><span id="io-ref"></span><h2><a class="reference internal" href="#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>: I/O<a class="headerlink" href="#module-skvideo.io" title="Permalink to this headline">¶</a></h2>
-<p>Utilities to read/write image/video data.</p>
-<div class="section" id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter" title="skvideo.io.FFmpegWriter"><code class="xref py py-obj docutils literal"><span class="pre">io.FFmpegWriter</span></code></a>(filename,&nbsp;datashape[,&nbsp;...])</td>
-<td>Writes frames using FFmpeg</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader" title="skvideo.io.FFmpegReader"><code class="xref py py-obj docutils literal"><span class="pre">io.FFmpegReader</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
-<td>Reads frames using FFmpeg</td>
-</tr>
-</tbody>
-</table>
-</div>
+  <div class="section" id="utility-functions">
+<h1>Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="skvideo-utils-utility-functions">
+<span id="utility-ref"></span><h2><a class="reference internal" href="#module-skvideo.utils" title="skvideo.utils"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.utils</span></code></a>: Utility functions<a class="headerlink" href="#skvideo-utils-utility-functions" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-skvideo.utils"></span><p>Various utility functions for manipulating video data</p>
 <div class="section" id="functions">
 <h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
@@ -133,20 +116,11 @@ I/O
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><code class="xref py py-obj docutils literal"><span class="pre">io.vread</span></code></a>(fname[,&nbsp;height,&nbsp;width,&nbsp;num_frames,&nbsp;...])</td>
-<td>Load a video from file entirely into memory.</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.utils.vshape.html#skvideo.utils.vshape" title="skvideo.utils.vshape"><code class="xref py py-obj docutils literal"><span class="pre">utils.vshape</span></code></a>(videodata)</td>
+<td>Standardizes the input data shape.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><code class="xref py py-obj docutils literal"><span class="pre">io.vreader</span></code></a>(fname[,&nbsp;height,&nbsp;width,&nbsp;...])</td>
-<td>Load a video through the use of a generator.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.vwrite.html#skvideo.io.vwrite" title="skvideo.io.vwrite"><code class="xref py py-obj docutils literal"><span class="pre">io.vwrite</span></code></a>(fname,&nbsp;data,&nbsp;**plugin_args)</td>
-<td>Save a video to file entirely from memory.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.mprobe.html#skvideo.io.mprobe" title="skvideo.io.mprobe"><code class="xref py py-obj docutils literal"><span class="pre">io.mprobe</span></code></a>(filename)</td>
-<td>get metadata by using mediainfo</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-obj docutils literal"><span class="pre">io.ffprobe</span></code></a>(filename)</td>
-<td>get metadata by using ffprobe</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.utils.rgb2gray.html#skvideo.utils.rgb2gray" title="skvideo.utils.rgb2gray"><code class="xref py py-obj docutils literal"><span class="pre">utils.rgb2gray</span></code></a>(videodata)</td>
+<td>Computes the grayscale video.</td>
 </tr>
 </tbody>
 </table>

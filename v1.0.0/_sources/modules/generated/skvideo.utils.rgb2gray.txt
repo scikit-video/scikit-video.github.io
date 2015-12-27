@@ -1,0 +1,12 @@
+:mod:`skvideo.utils`.rgb2gray
+==========================================
+
+.. currentmodule:: skvideo.utils
+
+.. autofunction:: rgb2gray
+
+.. include:: skvideo.utils.rgb2gray.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.io.vread &mdash; scikit-video 1.0.0 documentation</title>
+    <title>skvideo.utils.rgb2gray &mdash; scikit-video 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -31,9 +31,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="scikit-video 1.0.0 documentation" href="../../index.html" />
-    <link rel="up" title="I/O" href="../io.html" />
-    <link rel="next" title="skvideo.io.vreader" href="skvideo.io.vreader.html" />
-    <link rel="prev" title="skvideo.io.FFmpegReader" href="skvideo.io.FFmpegReader.html" />
+    <link rel="up" title="Utility functions" href="../utils.html" />
+    <link rel="prev" title="skvideo.utils.vshape" href="skvideo.utils.vshape.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -75,7 +74,7 @@
 
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
-<code class="docutils literal"><span class="pre">skvideo.io</span></code>.vread
+<code class="docutils literal"><span class="pre">skvideo.utils</span></code>.rgb2gray
 
 </div>
 
@@ -103,53 +102,30 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="skvideo-io-vread">
-<h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.vread<a class="headerlink" href="#skvideo-io-vread" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="skvideo-utils-rgb2gray">
+<h1><a class="reference internal" href="../utils.html#module-skvideo.utils" title="skvideo.utils"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.utils</span></code></a>.rgb2gray<a class="headerlink" href="#skvideo-utils-rgb2gray" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="skvideo.io.vread">
-<code class="descclassname">skvideo.io.</code><code class="descname">vread</code><span class="sig-paren">(</span><em>fname</em>, <em>height=0</em>, <em>width=0</em>, <em>num_frames=0</em>, <em>inputdict={}</em>, <em>outputdict={}</em>, <em>backend='ffmpeg'</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.vread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a video from file entirely into memory.</p>
+<dt id="skvideo.utils.rgb2gray">
+<code class="descclassname">skvideo.utils.</code><code class="descname">rgb2gray</code><span class="sig-paren">(</span><em>videodata</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.utils.rgb2gray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the grayscale video.</p>
+<p>Computes the grayscale video from the input video returning the 
+standardized shape (T, M, N, C), where T is number of frames, 
+M is height, N is width, and C is number of channels (here always 1).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fname</strong> : string</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>videodata</strong> : ndarray</p>
 <blockquote>
-<div><p>Video file name, e.g. <code class="docutils literal"><span class="pre">bickbuckbunny.mp4</span></code></p>
-</div></blockquote>
-<p><strong>height</strong> : int</p>
-<blockquote>
-<div><p>Set the source video height used for decoding. Useful for raw inputs when video header does not exist.</p>
-</div></blockquote>
-<p><strong>width</strong> : int</p>
-<blockquote>
-<div><p>Set the source video width used for decoding. Useful for raw inputs when video header does not exist.</p>
-</div></blockquote>
-<p><strong>num_frames</strong> : int</p>
-<blockquote>
-<div><p>Only read the first the first <cite>num_frames</cite> number of frames from video. Setting <cite>num_frames</cite> to 
-small numbers can significantly speed up video loading times.</p>
-</div></blockquote>
-<p><strong>inputdict</strong> : dict</p>
-<blockquote>
-<div><p>Input dictionary parameters, i.e. how to interpret the input file.</p>
-</div></blockquote>
-<p><strong>outputdict</strong> : dict</p>
-<blockquote>
-<div><p>Output dictionary parameters, i.e. how to encode the data 
-when sending back to the python process.</p>
-</div></blockquote>
-<p><strong>backend</strong> : string</p>
-<blockquote>
-<div><p>Program to use for handling video data. Only &#8216;ffmpeg&#8217; is supported at this time.</p>
+<div><p>Input data of shape (T, M, N, C), (T, M, N), (M, N, C), or (M, N), where
+T is number of frames, M is height, N is width, and C is number of 
+channels.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vid_array</strong> : ndarray</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>videodataout</strong> : ndarray</p>
 <blockquote class="last">
-<div><p>ndarray of dimension (T, M, N, 3), where T
-is the number of frames, M is the height, N is
-width, and C is depth.</p>
+<div><p>Standardized grayscaled version of videodata, shape (T, M, N, 1)</p>
 </div></blockquote>
 </td>
 </tr>
