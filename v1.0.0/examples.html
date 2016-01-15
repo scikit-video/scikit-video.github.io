@@ -45,11 +45,6 @@
     <div class="container">
       <div class="navbar-header">
         <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
         <a class="navbar-brand" href="index.html"><img class="navbar-brand-img" src="_static/scikit-video.svg">
         </a>
       </div>
@@ -114,14 +109,14 @@ Examples
       
   <div class="section" id="examples">
 <span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="loading-videos-efficiently">
-<h2>Loading videos efficiently<a class="headerlink" href="#loading-videos-efficiently" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="video-loading">
+<h2>Video loading<a class="headerlink" href="#video-loading" title="Permalink to this headline">¶</a></h2>
 <p>A typical use case for video research includes loading only the luma channel of a video. Often, researchers will convert a source from its arbitrary format to a YUV file, then only load the Y channel. To do this directly, bypassing the YUV step, one could just run</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
 
-<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray8&quot;</span><span class="p">})</span>
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">})</span>
 </pre></div>
 </td></tr></table></div>
 <p>Also, for testing a piece of code quickly, the whole video isn&#8217;t usually required. So only load a couple frames</p>
@@ -129,7 +124,15 @@ Examples
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
 
-<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray8&quot;</span><span class="p">},</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">},</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>If you would like to read a raw format like yuv, you must specify the width, height, and pixel type. By default, scikit-video assumes that your pix_fmt is yuvj444p. This assumption is to provide consistent saving and loading of video content while maintaining signal fidelity.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.yuv&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1280</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">720</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;yuv420p&quot;</span><span class="p">},</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">})</span>
 </pre></div>
 </td></tr></table></div>
 <div class="toctree-wrapper compound">
