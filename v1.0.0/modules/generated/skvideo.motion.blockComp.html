@@ -107,21 +107,21 @@
 <h1><a class="reference internal" href="../motion.html#module-skvideo.motion" title="skvideo.motion"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.motion</span></code></a>.blockComp<a class="headerlink" href="#skvideo-motion-blockcomp" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.motion.blockComp">
-<code class="descclassname">skvideo.motion.</code><code class="descname">blockComp</code><span class="sig-paren">(</span><em>frameData</em>, <em>motionVect</em>, <em>mbSize=8</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.motion.blockComp" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.motion.</code><code class="descname">blockComp</code><span class="sig-paren">(</span><em>videodata</em>, <em>motionVect</em>, <em>mbSize=8</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.motion.blockComp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block-based motion compensation</p>
 <p>Using the given motion vectors, this function
-returns the motion-compensated image.</p>
+returns the motion-compensated video data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frameData</strong> : ndarray</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>videodata</strong> : ndarray</p>
 <blockquote>
-<div><p>an input frame, shape (M, N) or (M, N, C)</p>
+<div><p>an input frame sequence, shape (T, M, N, C), (T, M, N), (M, N, C) or (M, N)</p>
 </div></blockquote>
 <p><strong>motionVect</strong> : ndarray</p>
 <blockquote>
-<div><p>ndarray representing block motion vectors. Expects ndarray, shape (M/mbSize, N/mbSize).</p>
+<div><p>ndarray representing block motion vectors. Expects ndarray, shape (T-1, M/mbSize, N/mbSize) or (M/mbSize, N/mbSize).</p>
 </div></blockquote>
 <p><strong>mbSize</strong> : int</p>
 <blockquote>
@@ -131,7 +131,7 @@ returns the motion-compensated image.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>compImg</strong> : ndarray</p>
 <blockquote class="last">
-<div><p>ndarray holding the motion compensated image frame, shape (M, N) or (M, N, C) depending on the shape of frameData</p>
+<div><p>ndarray holding the motion compensated image frame, shape (T, M, N, C)</p>
 </div></blockquote>
 </td>
 </tr>
@@ -154,7 +154,7 @@ returns the motion-compensated image.</p>
     </p>
     <p>
         &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
     </p>
   </div>
 </footer>

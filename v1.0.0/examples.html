@@ -114,8 +114,26 @@ Examples
       
   <div class="section" id="examples">
 <span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<p>Examples coming soon.</p>
+<div class="section" id="loading-videos-efficiently">
+<h2>Loading videos efficiently<a class="headerlink" href="#loading-videos-efficiently" title="Permalink to this headline">¶</a></h2>
+<p>A typical use case for video research includes loading only the luma channel of a video. Often, researchers will convert a source from its arbitrary format to a YUV file, then only load the Y channel. To do this directly, bypassing the YUV step, one could just run</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray8&quot;</span><span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+<p>Also, for testing a piece of code quickly, the whole video isn&#8217;t usually required. So only load a couple frames</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;testvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray8&quot;</span><span class="p">},</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 <div class="toctree-wrapper compound">
+</div>
 </div>
 </div>
 
@@ -132,7 +150,7 @@ Examples
     </p>
     <p>
         &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
     </p>
   </div>
 </footer>

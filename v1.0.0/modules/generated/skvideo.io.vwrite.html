@@ -107,7 +107,7 @@
 <h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.vwrite<a class="headerlink" href="#skvideo-io-vwrite" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.io.vwrite">
-<code class="descclassname">skvideo.io.</code><code class="descname">vwrite</code><span class="sig-paren">(</span><em>fname</em>, <em>data</em>, <em>**plugin_args</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.vwrite" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.io.</code><code class="descname">vwrite</code><span class="sig-paren">(</span><em>fname</em>, <em>videodata</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>backend='ffmpeg'</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.vwrite" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a video to file entirely from memory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -117,11 +117,29 @@
 <blockquote>
 <div><p>Video file name.</p>
 </div></blockquote>
-<p><strong>data</strong> : ndarray</p>
+<p><strong>videodata</strong> : ndarray</p>
 <blockquote>
-<div><p>ndarray of dimension (T, M, N, C), where T
-is the number of frames, M is the height, N is
-width, and C is depth.</p>
+<div><p>ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N), 
+where T is the number of frames, M is the height, N is width, 
+and C is number of channels.</p>
+</div></blockquote>
+<p><strong>inputdict</strong> : dict</p>
+<blockquote>
+<div><p>Input dictionary parameters, i.e. how to interpret the piped datastream
+coming from python to the subprocess.</p>
+</div></blockquote>
+<p><strong>outputdict</strong> : dict</p>
+<blockquote>
+<div><p>Output dictionary parameters, i.e. how to encode the data to
+disk.</p>
+</div></blockquote>
+<p><strong>backend</strong> : string</p>
+<blockquote>
+<div><p>Program to use for handling video data. Only &#8216;ffmpeg&#8217; and &#8216;libav&#8217; are supported at this time.</p>
+</div></blockquote>
+<p><strong>verbosity</strong> : int</p>
+<blockquote>
+<div><p>Setting to 0 (default) disables all debugging output. Setting to 1 enables all debugging output. Useful to see if the backend is behaving properly.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -147,7 +165,7 @@ width, and C is depth.</p>
     </p>
     <p>
         &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
     </p>
   </div>
 </footer>

@@ -33,7 +33,7 @@
     <link rel="top" title="scikit-video 1.0.0 documentation" href="../../index.html" />
     <link rel="up" title="Motion" href="../motion.html" />
     <link rel="next" title="skvideo.motion.blockComp" href="skvideo.motion.blockComp.html" />
-    <link rel="prev" title="skvideo.motion.blockComp" href="skvideo.motion.blockComp.html" />
+    <link rel="prev" title="Motion" href="../motion.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -107,7 +107,7 @@
 <h1><a class="reference internal" href="../motion.html#module-skvideo.motion" title="skvideo.motion"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.motion</span></code></a>.blockMotion<a class="headerlink" href="#skvideo-motion-blockmotion" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.motion.blockMotion">
-<code class="descclassname">skvideo.motion.</code><code class="descname">blockMotion</code><span class="sig-paren">(</span><em>frameSequence</em>, <em>method='DS'</em>, <em>mbSize=8</em>, <em>p=2</em>, <em>**plugin_args</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.motion.blockMotion" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.motion.</code><code class="descname">blockMotion</code><span class="sig-paren">(</span><em>videodata</em>, <em>method='DS'</em>, <em>mbSize=8</em>, <em>p=2</em>, <em>**plugin_args</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.motion.blockMotion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block-based motion estimation</p>
 <p>Given a sequence of frames, this function
 returns motion vectors between frames.</p>
@@ -115,7 +115,7 @@ returns motion vectors between frames.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frameSequence</strong> : ndarray, shape (numFrames, height, width, channel)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>videodata</strong> : ndarray, shape (numFrames, height, width, channel)</p>
 <blockquote>
 <div><p>A sequence of frames</p>
 </div></blockquote>
@@ -141,7 +141,7 @@ returns motion vectors between frames.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>motionData</strong> : ndarray, shape (numFrames - 1, height/mbSize, width/mbSize, 2)</p>
 <blockquote class="last">
-<div><p>The motion vectors computed from frameSequence. The first element of the last axis contains the y motion component, and second element contains the x motion component.</p>
+<div><p>The motion vectors computed from videodata. The first element of the last axis contains the y motion component, and second element contains the x motion component.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -195,7 +195,7 @@ returns motion vectors between frames.</p>
     </p>
     <p>
         &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
     </p>
   </div>
 </footer>

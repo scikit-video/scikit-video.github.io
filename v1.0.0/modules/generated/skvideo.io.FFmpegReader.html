@@ -107,7 +107,7 @@
 <h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.FFmpegReader<a class="headerlink" href="#skvideo-io-ffmpegreader" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="skvideo.io.FFmpegReader">
-<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegReader</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict={}</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegReader</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads frames using FFmpeg</p>
 <p>Using FFmpeg as a backend, this class
 provides sane initializations meant to
@@ -129,7 +129,7 @@ handle the default case well.</p>
 </table>
 <dl class="method">
 <dt id="skvideo.io.FFmpegReader.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict={}</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes FFmpeg in reading mode with the given parameters</p>
 <p>During initialization, additional parameters about the video file
 are parsed using <a class="reference internal" href="skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.ffprobe</span></code></a>. Then FFmpeg is launched
@@ -198,7 +198,7 @@ M is height, N is width, and C is number of channels per pixel.</p>
     </p>
     <p>
         &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
     </p>
   </div>
 </footer>

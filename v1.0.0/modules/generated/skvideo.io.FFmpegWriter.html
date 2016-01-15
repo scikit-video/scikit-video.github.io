@@ -33,7 +33,7 @@
     <link rel="top" title="scikit-video 1.0.0 documentation" href="../../index.html" />
     <link rel="up" title="I/O" href="../io.html" />
     <link rel="next" title="skvideo.io.FFmpegReader" href="skvideo.io.FFmpegReader.html" />
-    <link rel="prev" title="skvideo.io.ffprobe" href="skvideo.io.ffprobe.html" />
+    <link rel="prev" title="I/O" href="../io.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -107,7 +107,7 @@
 <h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.FFmpegWriter<a class="headerlink" href="#skvideo-io-ffmpegwriter" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="skvideo.io.FFmpegWriter">
-<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>datashape</em>, <em>pix_fmt='rgb24'</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes frames using FFmpeg</p>
 <p>Using FFmpeg as a backend, this class
 provides sane initializations for the default case.</p>
@@ -128,8 +128,10 @@ provides sane initializations for the default case.</p>
 </table>
 <dl class="method">
 <dt id="skvideo.io.FFmpegWriter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>datashape</em>, <em>pix_fmt='rgb24'</em>, <em>outputdict={}</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes FFmpeg in writing mode with the given parameters</p>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares parameters for FFmpeg</p>
+<p>Does not instantiate the an FFmpeg subprocess, but simply
+prepares the required parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -138,16 +140,14 @@ provides sane initializations for the default case.</p>
 <blockquote>
 <div><p>Video file path</p>
 </div></blockquote>
-<p><strong>datashape</strong> : ndarray</p>
+<p><strong>inputdict</strong> : dict</p>
 <blockquote>
-<div><p>Tuple of configuration (T, M, N, C), where T
-is the number of frames, M is the height, N is
-width, and C is depth. C is currently hardcoded to 3.</p>
+<div><p>Input dictionary parameters, i.e. how to interpret the data coming from python.</p>
 </div></blockquote>
-<p><strong>pix_fmt</strong> : string</p>
+<p><strong>outputdict</strong> : dict</p>
 <blockquote>
-<div><p>Can be one of &#8216;gray&#8217;, &#8216;gray8a&#8217;, &#8216;rgb24&#8217; or &#8216;rgba&#8217;. 
-which corresponds to 1, 2, 3, and 4 bytes per pixel, respectively.</p>
+<div><p>Output dictionary parameters, i.e. how to encode the data 
+when writing to file.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -187,7 +187,7 @@ which corresponds to 1, 2, 3, and 4 bytes per pixel, respectively.</p>
     </p>
     <p>
         &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
     </p>
   </div>
 </footer>
