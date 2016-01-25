@@ -1,0 +1,17 @@
+..
+  :mod:`skvideo.io`.LibAVReader
+  ====================================
+
+.. currentmodule:: skvideo.io
+
+.. autoclass:: LibAVReader
+
+   
+   .. automethod:: __init__
+   
+
+.. include:: skvideo.io.LibAVReader.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

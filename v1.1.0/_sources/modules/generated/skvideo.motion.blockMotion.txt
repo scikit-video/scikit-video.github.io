@@ -1,0 +1,13 @@
+..
+    :mod:`skvideo.motion`.blockMotion
+    ==============================================
+
+.. currentmodule:: skvideo.motion
+
+.. autofunction:: blockMotion
+
+.. include:: skvideo.motion.blockMotion.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

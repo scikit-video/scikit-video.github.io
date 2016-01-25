@@ -1,0 +1,13 @@
+..
+    :mod:`skvideo.io`.vreader
+    ======================================
+
+.. currentmodule:: skvideo.io
+
+.. autofunction:: vreader
+
+.. include:: skvideo.io.vreader.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

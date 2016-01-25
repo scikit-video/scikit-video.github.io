@@ -1,0 +1,13 @@
+..
+    :mod:`skvideo`.setLibAVPath
+    ========================================
+
+.. currentmodule:: skvideo
+
+.. autofunction:: setLibAVPath
+
+.. include:: skvideo.setLibAVPath.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

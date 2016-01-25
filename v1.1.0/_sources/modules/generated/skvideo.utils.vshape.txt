@@ -1,0 +1,13 @@
+..
+    :mod:`skvideo.utils`.vshape
+    ========================================
+
+.. currentmodule:: skvideo.utils
+
+.. autofunction:: vshape
+
+.. include:: skvideo.utils.vshape.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

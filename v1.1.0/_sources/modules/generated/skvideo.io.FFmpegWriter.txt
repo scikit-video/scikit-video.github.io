@@ -1,0 +1,17 @@
+..
+  :mod:`skvideo.io`.FFmpegWriter
+  =====================================
+
+.. currentmodule:: skvideo.io
+
+.. autoclass:: FFmpegWriter
+
+   
+   .. automethod:: __init__
+   
+
+.. include:: skvideo.io.FFmpegWriter.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
