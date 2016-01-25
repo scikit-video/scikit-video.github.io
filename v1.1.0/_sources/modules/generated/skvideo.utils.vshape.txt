@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.utils`.vshape
-    ========================================
+:mod:`skvideo.utils`.vshape
+========================================
 
 .. currentmodule:: skvideo.utils
 

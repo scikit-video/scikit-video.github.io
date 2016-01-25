@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.datasets`.bigbuckbunny
-    =================================================
+:mod:`skvideo.datasets`.bigbuckbunny
+=================================================
 
 .. currentmodule:: skvideo.datasets
 

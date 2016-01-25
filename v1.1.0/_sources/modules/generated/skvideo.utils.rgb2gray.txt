@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.utils`.rgb2gray
-    ==========================================
+:mod:`skvideo.utils`.rgb2gray
+==========================================
 
 .. currentmodule:: skvideo.utils
 

@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.io`.vwrite
-    =====================================
+:mod:`skvideo.io`.vwrite
+=====================================
 
 .. currentmodule:: skvideo.io
 

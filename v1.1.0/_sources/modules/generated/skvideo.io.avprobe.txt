@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.io`.avprobe
-    ======================================
+:mod:`skvideo.io`.avprobe
+======================================
 
 .. currentmodule:: skvideo.io
 

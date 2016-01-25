@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo`.setLibAVPath
-    ========================================
+:mod:`skvideo`.setLibAVPath
+========================================
 
 .. currentmodule:: skvideo
 

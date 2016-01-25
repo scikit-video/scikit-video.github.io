@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo`.getLibAVVersion
-    ===========================================
+:mod:`skvideo`.getLibAVVersion
+===========================================
 
 .. currentmodule:: skvideo
 

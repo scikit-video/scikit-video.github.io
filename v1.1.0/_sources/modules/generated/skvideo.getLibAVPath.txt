@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo`.getLibAVPath
-    ========================================
+:mod:`skvideo`.getLibAVPath
+========================================
 
 .. currentmodule:: skvideo
 

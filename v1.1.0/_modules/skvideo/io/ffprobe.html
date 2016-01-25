@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>skvideo.io.ffprobe &mdash; scikit-video 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="top" title="scikit-video 1.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="skvideo" href="../../skvideo.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.0</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.io.ffprobe
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.io.ffprobe</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="kn">as</span> <span class="nn">sp</span>
+
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_HAS_FFMPEG</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_FFMPEG_PATH</span>
+
+<div class="viewcode-block" id="ffprobe"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.ffprobe.html#skvideo.io.ffprobe">[docs]</a><span class="k">def</span> <span class="nf">ffprobe</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get metadata by using ffprobe</span>
+
+<span class="sd">    Checks the output of ffprobe on the desired video</span>
+<span class="sd">    file. MetaData is then parsed into a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : string</span>
+<span class="sd">        Path to the video file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    metaDict : dict</span>
+<span class="sd">       Dictionary containing all header-based information </span>
+<span class="sd">       about the passed-in source video.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if FFMPEG exists in the path</span>
+    <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ffprobe&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;-show_streams&quot;</span><span class="p">,</span> <span class="s2">&quot;-print_format&quot;</span><span class="p">,</span> <span class="s2">&quot;xml&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">]</span>
+
+        <span class="c1"># simply get std output</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="n">check_output</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">xmltodictparser</span><span class="p">(</span><span class="n">xml</span><span class="p">)[</span><span class="s2">&quot;ffprobe&quot;</span><span class="p">]</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;streams&quot;</span><span class="p">]</span>
+
+        <span class="c1">#import json</span>
+        <span class="c1">#print json.dumps(d, indent = 4)</span>
+        <span class="c1">#exit(0)</span>
+
+        <span class="c1"># check type</span>
+        <span class="n">streamsbytype</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="c1"># go through streams</span>
+            <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">]:</span>
+                <span class="n">streamsbytype</span><span class="p">[</span><span class="n">stream</span><span class="p">[</span><span class="s2">&quot;@codec_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">stream</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">streamsbytype</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">][</span><span class="s2">&quot;@codec_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">streamsbytype</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

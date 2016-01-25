@@ -33,8 +33,8 @@
     <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.0 documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="../classes.html" />
-    <link rel="next" title="&lt;no title&gt;" href="generated/skvideo.io.FFmpegWriter.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="generated/skvideo.setLibAVPath.html" />
+    <link rel="next" title="skvideo.io.FFmpegWriter" href="generated/skvideo.io.FFmpegWriter.html" />
+    <link rel="prev" title="skvideo.setLibAVPath" href="generated/skvideo.setLibAVPath.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -113,16 +113,16 @@ I/O
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter" title="skvideo.io.FFmpegWriter"><code class="xref py py-obj docutils literal"><span class="pre">io.FFmpegWriter</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter" title="skvideo.io.FFmpegWriter"><code class="xref py py-obj docutils literal"><span class="pre">FFmpegWriter</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
 <td>Writes frames using FFmpeg</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader" title="skvideo.io.FFmpegReader"><code class="xref py py-obj docutils literal"><span class="pre">io.FFmpegReader</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader" title="skvideo.io.FFmpegReader"><code class="xref py py-obj docutils literal"><span class="pre">FFmpegReader</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
 <td>Reads frames using FFmpeg</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.LibAVWriter.html#skvideo.io.LibAVWriter" title="skvideo.io.LibAVWriter"><code class="xref py py-obj docutils literal"><span class="pre">io.LibAVWriter</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.LibAVWriter.html#skvideo.io.LibAVWriter" title="skvideo.io.LibAVWriter"><code class="xref py py-obj docutils literal"><span class="pre">LibAVWriter</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
 <td>Writes frames using libav</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.LibAVReader.html#skvideo.io.LibAVReader" title="skvideo.io.LibAVReader"><code class="xref py py-obj docutils literal"><span class="pre">io.LibAVReader</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.LibAVReader.html#skvideo.io.LibAVReader" title="skvideo.io.LibAVReader"><code class="xref py py-obj docutils literal"><span class="pre">LibAVReader</span></code></a>(filename[,&nbsp;inputdict,&nbsp;...])</td>
 <td>Reads frames using Libav</td>
 </tr>
 </tbody>
@@ -136,22 +136,22 @@ I/O
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><code class="xref py py-obj docutils literal"><span class="pre">io.vread</span></code></a>(fname[,&nbsp;height,&nbsp;width,&nbsp;num_frames,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><code class="xref py py-obj docutils literal"><span class="pre">vread</span></code></a>(fname[,&nbsp;height,&nbsp;width,&nbsp;num_frames,&nbsp;...])</td>
 <td>Load a video from file entirely into memory.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><code class="xref py py-obj docutils literal"><span class="pre">io.vreader</span></code></a>(fname[,&nbsp;height,&nbsp;width,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><code class="xref py py-obj docutils literal"><span class="pre">vreader</span></code></a>(fname[,&nbsp;height,&nbsp;width,&nbsp;num_frames,&nbsp;...])</td>
 <td>Load a video through the use of a generator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.vwrite.html#skvideo.io.vwrite" title="skvideo.io.vwrite"><code class="xref py py-obj docutils literal"><span class="pre">io.vwrite</span></code></a>(fname,&nbsp;videodata[,&nbsp;inputdict,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.vwrite.html#skvideo.io.vwrite" title="skvideo.io.vwrite"><code class="xref py py-obj docutils literal"><span class="pre">vwrite</span></code></a>(fname,&nbsp;videodata[,&nbsp;inputdict,&nbsp;...])</td>
 <td>Save a video to file entirely from memory.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.mprobe.html#skvideo.io.mprobe" title="skvideo.io.mprobe"><code class="xref py py-obj docutils literal"><span class="pre">io.mprobe</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.mprobe.html#skvideo.io.mprobe" title="skvideo.io.mprobe"><code class="xref py py-obj docutils literal"><span class="pre">mprobe</span></code></a>(filename)</td>
 <td>get metadata by using mediainfo</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-obj docutils literal"><span class="pre">io.ffprobe</span></code></a>(filename)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-obj docutils literal"><span class="pre">ffprobe</span></code></a>(filename)</td>
 <td>get metadata by using ffprobe</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.avprobe.html#skvideo.io.avprobe" title="skvideo.io.avprobe"><code class="xref py py-obj docutils literal"><span class="pre">io.avprobe</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.io.avprobe.html#skvideo.io.avprobe" title="skvideo.io.avprobe"><code class="xref py py-obj docutils literal"><span class="pre">avprobe</span></code></a>(filename)</td>
 <td>get metadata by using avprobe</td>
 </tr>
 </tbody>

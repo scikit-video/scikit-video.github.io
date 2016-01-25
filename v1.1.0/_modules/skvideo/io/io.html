@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>skvideo.io.io &mdash; scikit-video 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="top" title="scikit-video 1.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="skvideo" href="../../skvideo.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.0</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.io.io
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.io.io</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.ffmpeg</span> <span class="kn">import</span> <span class="n">FFmpegReader</span>
+<span class="kn">from</span> <span class="nn">.ffmpeg</span> <span class="kn">import</span> <span class="n">FFmpegWriter</span>
+<span class="kn">from</span> <span class="nn">.avconv</span> <span class="kn">import</span> <span class="n">LibAVReader</span>
+<span class="kn">from</span> <span class="nn">.avconv</span> <span class="kn">import</span> <span class="n">LibAVWriter</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_HAS_FFMPEG</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_HAS_AVCONV</span>
+
+<div class="viewcode-block" id="vwrite"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.vwrite.html#skvideo.io.vwrite">[docs]</a><span class="k">def</span> <span class="nf">vwrite</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">videodata</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save a video to file entirely from memory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : string</span>
+<span class="sd">        Video file name.</span>
+
+<span class="sd">    videodata : ndarray</span>
+<span class="sd">        ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels.</span>
+
+<span class="sd">    inputdict : dict</span>
+<span class="sd">        Input dictionary parameters, i.e. how to interpret the piped datastream</span>
+<span class="sd">        coming from python to the subprocess.</span>
+
+<span class="sd">    outputdict : dict</span>
+<span class="sd">        Output dictionary parameters, i.e. how to encode the data to</span>
+<span class="sd">        disk.</span>
+
+<span class="sd">    backend : string</span>
+<span class="sd">        Program to use for handling video data.</span>
+<span class="sd">        Only &#39;ffmpeg&#39; and &#39;libav&#39; are supported at this time.</span>
+
+<span class="sd">    verbosity : int</span>
+<span class="sd">        Setting to 0 (default) disables all debugging output.</span>
+<span class="sd">        Setting to 1 enables all debugging output.</span>
+<span class="sd">        Useful to see if the backend is behaving properly.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    none</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
+        <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">outputdict</span><span class="p">:</span>
+        <span class="n">outputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">videodata</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+
+    <span class="c1"># check that the appropriate videodata size was passed</span>
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">videodata</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;ffmpeg&quot;</span><span class="p">:</span>
+        <span class="c1"># check if FFMPEG exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
+
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">FFmpegWriter</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writeFrame</span><span class="p">(</span><span class="n">videodata</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;libav&quot;</span><span class="p">:</span>
+        <span class="c1"># check if FFMPEG exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_AVCONV</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of libav.&quot;</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">LibAVWriter</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writeFrame</span><span class="p">(</span><span class="n">videodata</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+
+
+<div class="viewcode-block" id="vread"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.vread.html#skvideo.io.vread">[docs]</a><span class="k">def</span> <span class="nf">vread</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_grey</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a video from file entirely into memory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : string</span>
+<span class="sd">        Video file name, e.g. ``bickbuckbunny.mp4``</span>
+
+<span class="sd">    height : int</span>
+<span class="sd">        Set the source video height used for decoding.</span>
+<span class="sd">        Useful for raw inputs when video header does not exist.</span>
+
+<span class="sd">    width : int</span>
+<span class="sd">        Set the source video width used for decoding.</span>
+<span class="sd">        Useful for raw inputs when video header does not exist.</span>
+
+<span class="sd">    num_frames : int</span>
+<span class="sd">        Only read the first `num_frames` number of frames from video.</span>
+<span class="sd">        Setting `num_frames` to small numbers can significantly</span>
+<span class="sd">        speed up video loading times.</span>
+
+<span class="sd">    as_grey : bool</span>
+<span class="sd">        If true, only load the luminance channel of the input video.</span>
+
+<span class="sd">    inputdict : dict</span>
+<span class="sd">        Input dictionary parameters, i.e. how to interpret the input file.</span>
+
+<span class="sd">    outputdict : dict</span>
+<span class="sd">        Output dictionary parameters, i.e. how to encode the data</span>
+<span class="sd">        when sending back to the python process.</span>
+
+<span class="sd">    backend : string</span>
+<span class="sd">        Program to use for handling video data.</span>
+<span class="sd">        Only &#39;ffmpeg&#39; and &#39;libav&#39; are supported at this time.</span>
+
+<span class="sd">    verbosity : int</span>
+<span class="sd">        Setting to 0 (default) disables all debugging output.</span>
+<span class="sd">        Setting to 1 enables all debugging output.</span>
+<span class="sd">        Useful to see if the backend is behaving properly.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vid_array : ndarray</span>
+<span class="sd">        ndarray of dimension (T, M, N, 3), where T</span>
+<span class="sd">        is the number of frames, M is the height, N is</span>
+<span class="sd">        width, and C is depth.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
+        <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">outputdict</span><span class="p">:</span>
+        <span class="n">outputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;ffmpeg&quot;</span><span class="p">:</span>
+        <span class="c1"># check if FFMPEG exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">height</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">width</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_frames</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-vframes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_frames</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">as_grey</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span>
+
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">FFmpegReader</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span>
+        <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+
+        <span class="n">videodata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">()):</span>
+            <span class="n">videodata</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">frame</span>
+
+        <span class="k">if</span> <span class="n">as_grey</span><span class="p">:</span> 
+            <span class="n">videodata</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">videodata</span>
+    <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;libav&quot;</span><span class="p">:</span>
+        <span class="c1"># check if FFMPEG exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_AVCONV</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of libav.&quot;</span>
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">height</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">width</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_frames</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-vframes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_frames</span><span class="p">)</span>
+
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">LibAVReader</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span>
+        <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+
+        <span class="n">videodata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">()):</span>
+            <span class="n">videodata</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="k">return</span> <span class="n">videodata</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+
+
+<div class="viewcode-block" id="vreader"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.vreader.html#skvideo.io.vreader">[docs]</a><span class="k">def</span> <span class="nf">vreader</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_grey</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a video through the use of a generator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : string</span>
+<span class="sd">        Video file name, e.g. ``bickbuckbunny.mp4``</span>
+
+<span class="sd">    height : int</span>
+<span class="sd">        Set the source video height used for decoding.</span>
+<span class="sd">        Useful for raw inputs when video header does not exist.</span>
+
+<span class="sd">    width : int</span>
+<span class="sd">        Set the source video width used for decoding.</span>
+<span class="sd">        Useful for raw inputs when video header does not exist.</span>
+
+<span class="sd">    num_frames : int</span>
+<span class="sd">        Only read the first `num_frames` number of frames from video.</span>
+<span class="sd">        Setting `num_frames` to small numbers can significantly speed up video loading times.</span>
+
+<span class="sd">    as_grey : bool</span>
+<span class="sd">        If true, only load the luminance channel of the input video.</span>
+
+<span class="sd">    inputdict : dict</span>
+<span class="sd">        Input dictionary parameters, i.e. how to interpret the input file.</span>
+
+<span class="sd">    outputdict : dict</span>
+<span class="sd">        Output dictionary parameters, i.e. how to encode the data</span>
+<span class="sd">        between backend and python.</span>
+
+<span class="sd">    backend : string</span>
+<span class="sd">        Program to use for handling video data.</span>
+<span class="sd">        Only &#39;ffmpeg&#39; and &#39;libav&#39; are supported at this time.</span>
+
+<span class="sd">    verbosity : int</span>
+<span class="sd">        Setting to 0 (default) disables all debugging output.</span>
+<span class="sd">        Setting to 1 enables all debugging output.</span>
+<span class="sd">        Useful to see if the backend is behaving properly.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vid_gen : generator</span>
+<span class="sd">        returns ndarrays, shape (M, N, C) where</span>
+<span class="sd">        M is frame height, N is frame width, and</span>
+<span class="sd">        C is number of channels per pixel</span>
+
+<span class="sd">    ----------------</span>
+<span class="sd">    plugin_args : keywords</span>
+<span class="sd">        Passed to the given plugin.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
+        <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">outputdict</span><span class="p">:</span>
+        <span class="n">outputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;ffmpeg&quot;</span><span class="p">:</span>
+        <span class="c1"># check if FFMPEG exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of ffmpeg.&quot;</span>
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">height</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">width</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_frames</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-vframes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_frames</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">as_grey</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span>
+
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">FFmpegReader</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">as_grey</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">vshape</span><span class="p">(</span><span class="n">frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">frame</span>
+
+    <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;libav&quot;</span><span class="p">:</span>
+        <span class="c1"># check if FFMPEG exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_AVCONV</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of libav.&quot;</span>
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">height</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">width</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_frames</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-vframes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_frames</span><span class="p">)</span>
+
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">LibAVReader</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">frame</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

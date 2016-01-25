@@ -1,6 +1,5 @@
-..
-  :mod:`skvideo.io`.FFmpegReader
-  =====================================
+:mod:`skvideo.io`.FFmpegReader
+=====================================
 
 .. currentmodule:: skvideo.io
 

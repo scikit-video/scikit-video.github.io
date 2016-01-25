@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.motion`.blockComp
-    ============================================
+:mod:`skvideo.motion`.blockComp
+============================================
 
 .. currentmodule:: skvideo.motion
 

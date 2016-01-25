@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo`.getFFmpegVersion
-    ============================================
+:mod:`skvideo`.getFFmpegVersion
+============================================
 
 .. currentmodule:: skvideo
 

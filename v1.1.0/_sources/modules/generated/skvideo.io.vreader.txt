@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.io`.vreader
-    ======================================
+:mod:`skvideo.io`.vreader
+======================================
 
 .. currentmodule:: skvideo.io
 

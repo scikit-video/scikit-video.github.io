@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo`.setFFmpegPath
-    =========================================
+:mod:`skvideo`.setFFmpegPath
+=========================================
 
 .. currentmodule:: skvideo
 

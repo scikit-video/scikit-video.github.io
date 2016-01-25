@@ -1,6 +1,5 @@
-..
-    :mod:`skvideo.datasets`.fullreferencepair
-    ======================================================
+:mod:`skvideo.datasets`.fullreferencepair
+======================================================
 
 .. currentmodule:: skvideo.datasets
 

@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Home &mdash; scikit-video 1.1.0 documentation</title>
+    <title>skvideo.io.FFmpegReader &mdash; scikit-video 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -33,8 +33,8 @@
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.0 documentation" href="../../index.html" />
     <link rel="up" title="I/O" href="../io.html" />
-    <link rel="next" title="&lt;no title&gt;" href="skvideo.io.LibAVWriter.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="skvideo.io.FFmpegWriter.html" />
+    <link rel="next" title="skvideo.io.LibAVWriter" href="skvideo.io.LibAVWriter.html" />
+    <link rel="prev" title="skvideo.io.FFmpegWriter" href="skvideo.io.FFmpegWriter.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -72,7 +72,7 @@
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
 
-Home
+<code class="docutils literal"><span class="pre">skvideo.io</span></code>.FFmpegReader
 
 </div>
 
@@ -100,9 +100,11 @@ Home
       </div>
     <div class="col-md-9 content">
       
-  <dl class="class">
+  <div class="section" id="skvideo-io-ffmpegreader">
+<h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.FFmpegReader<a class="headerlink" href="#skvideo-io-ffmpegreader" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
 <dt id="skvideo.io.FFmpegReader">
-<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegReader</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegReader</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads frames using FFmpeg</p>
 <p>Using FFmpeg as a backend, this class
 provides sane initializations meant to
@@ -124,7 +126,7 @@ handle the default case well.</p>
 </table>
 <dl class="method">
 <dt id="skvideo.io.FFmpegReader.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegReader.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegReader.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes FFmpeg in reading mode with the given parameters</p>
 <p>During initialization, additional parameters about the video file
 are parsed using <a class="reference internal" href="skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.ffprobe</span></code></a>. Then FFmpeg is launched
@@ -163,14 +165,14 @@ when sending back to the python process.</p>
 
 <dl class="method">
 <dt id="skvideo.io.FFmpegReader.getShape">
-<code class="descname">getShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.getShape" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegReader.getShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegReader.getShape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple (T, M, N, C)</p>
 <p>Returns the video shape in number of frames, height, width, and channels per pixel.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skvideo.io.FFmpegReader.nextFrame">
-<code class="descname">nextFrame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegReader.nextFrame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nextFrame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegReader.nextFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegReader.nextFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields frames using a generator</p>
 <p>Returns T ndarrays of size (M, N, C), where T is number of frames, 
 M is height, N is width, and C is number of channels per pixel.</p>
@@ -178,7 +180,8 @@ M is height, N is width, and C is number of channels per pixel.</p>
 
 </dd></dl>
 
-<div class="clearer"></div>
+<div class="clearer"></div></div>
+
 
     </div>
       

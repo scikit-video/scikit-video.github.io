@@ -1,6 +1,5 @@
-..
-  :mod:`skvideo.io`.LibAVWriter
-  ====================================
+:mod:`skvideo.io`.LibAVWriter
+====================================
 
 .. currentmodule:: skvideo.io
 

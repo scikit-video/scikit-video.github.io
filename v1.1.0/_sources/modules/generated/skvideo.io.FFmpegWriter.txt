@@ -1,6 +1,5 @@
-..
-  :mod:`skvideo.io`.FFmpegWriter
-  =====================================
+:mod:`skvideo.io`.FFmpegWriter
+=====================================
 
 .. currentmodule:: skvideo.io
 
