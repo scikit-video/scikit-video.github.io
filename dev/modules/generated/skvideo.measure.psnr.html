@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>sphinxcontrib.youtube &mdash; scikit-video 1.1.1 documentation</title>
+    <title>skvideo.measure.psnr &mdash; scikit-video 1.1.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -32,6 +32,9 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.1 documentation" href="../../index.html" />
+    <link rel="up" title="Measure" href="../measure.html" />
+    <link rel="next" title="Test Data" href="../datasets.html" />
+    <link rel="prev" title="skvideo.measure.mse" href="skvideo.measure.mse.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -67,8 +70,9 @@
   </div>
 
 <div class='container'>
+<a href='../../classes.html'>API Reference</a> >>
 
-sphinxcontrib.youtube
+<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.psnr
 
 </div>
 
@@ -96,31 +100,48 @@ sphinxcontrib.youtube
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="sphinxcontrib-youtube">
-<h1>sphinxcontrib.youtube<a class="headerlink" href="#sphinxcontrib-youtube" title="Permalink to this headline">¶</a></h1>
-<p>This module defines a directive, <cite>youtube</cite>.  It takes a single, required
-argument, a YouTube video ID:</p>
-<div class="highlight-python"><div class="highlight"><pre>..  youtube:: oHg5SJYRHA0
-</pre></div>
-</div>
-<p>The referenced video will be embedded into HTML output.  By default, the
-embedded video will be sized for 720p content.  To control this, the
-parameters &#8220;aspect&#8221;, &#8220;width&#8221;, and &#8220;height&#8221; may optionally be provided:</p>
-<div class="highlight-python"><div class="highlight"><pre>..  youtube:: oHg5SJYRHA0
-    :width: 640
-    :height: 480
+  <div class="section" id="skvideo-measure-psnr">
+<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.psnr<a class="headerlink" href="#skvideo-measure-psnr" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="skvideo.measure.psnr">
+<tt class="descclassname">skvideo.measure.</tt><tt class="descname">psnr</tt><big>(</big><em>referenceVideoData</em>, <em>distortedVideoData</em>, <em>bitdepth=8</em><big>)</big><a class="headerlink" href="#skvideo.measure.psnr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Peak Signal to Noise Ratio (PSNR).</p>
+<p>Both video inputs are compared frame-by-frame to obtain T
+PSNR measurements.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>referenceVideoData</strong> : ndarray</p>
+<blockquote>
+<div><p>Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),
+where T is the number of frames, M is the height, N is width,
+and C is number of channels.</p>
+</div></blockquote>
+<p><strong>distortedVideoData</strong> : ndarray</p>
+<blockquote>
+<div><p>Distorted video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),
+where T is the number of frames, M is the height, N is width,
+and C is number of channels.</p>
+</div></blockquote>
+<p><strong>bitdepth</strong> : int</p>
+<blockquote>
+<div><p>The number of bits each pixel effectively has</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>psnr_array</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>The psnr results, ndarray of dimension (T,), where T
+is the number of frames</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-..  youtube:: oHg5SJYRHA0
-    :aspect: 4:3
-
-..  youtube:: oHg5SJYRHA0
-    :width: 100%
-
-..  youtube:: oHg5SJYRHA0
-    :height: 200px
-</pre></div>
-</div>
-</div>
+<div class="clearer"></div></div>
 
 
     </div>

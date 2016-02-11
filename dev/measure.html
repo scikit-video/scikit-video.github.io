@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>API Reference &mdash; scikit-video 1.1.1 documentation</title>
+    <title>Measurement functions &mdash; scikit-video 1.1.1 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -32,8 +32,8 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.1 documentation" href="index.html" />
-    <link rel="next" title="Core" href="modules/core.html" />
-    <link rel="prev" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="next" title="Utility functions" href="utilities.html" />
+    <link rel="prev" title="Motion" href="motion.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -70,7 +70,7 @@
 
 <div class='container'>
 
-API Reference
+Measurement functions
 
 </div>
 
@@ -98,35 +98,15 @@ API Reference
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="api-reference">
-<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="measurement-functions">
+<span id="measure"></span><h1>Measurement functions<a class="headerlink" href="#measurement-functions" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="modules/measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a> provides quality assessment tools and other measurement operations.</p>
+<div class="section" id="full-reference-quality-assessment">
+<h2>Full-Reference Quality Assessment<a class="headerlink" href="#full-reference-quality-assessment" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.ssim.html#skvideo.measure.ssim" title="skvideo.measure.ssim"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.ssim</span></tt></a> to measure the perceptually quality difference between two videos, considering only individual frames.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.mse.html#skvideo.measure.mse" title="skvideo.measure.mse"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.mse</span></tt></a> or <a class="reference internal" href="modules/generated/skvideo.measure.psnr.html#skvideo.measure.psnr" title="skvideo.measure.psnr"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.psnr</span></tt></a> to measure simple point-wise similarity between two videos.</p>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules/core.html">Core</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/core.html#module-skvideo"><tt class="docutils literal"><span class="pre">skvideo</span></tt>: Core functionality</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/io.html">I/O</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/io.html#module-skvideo.io"><tt class="docutils literal"><span class="pre">skvideo.io</span></tt>: Video input and output utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/motion.html">Motion</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/motion.html#module-skvideo.motion"><tt class="docutils literal"><span class="pre">skvideo.motion</span></tt>: Motion estimation routines and utilties</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/measure.html">Measure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/measure.html#module-skvideo.measure"><tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>: Measurement routines</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/datasets.html">Test Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/datasets.html#module-skvideo.datasets"><tt class="docutils literal"><span class="pre">skvideo.datasets</span></tt>: Data and data generation routines</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/utils.html">Utility functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#module-skvideo.utils"><tt class="docutils literal"><span class="pre">skvideo.utils</span></tt>: Utility functions</a></li>
-</ul>
-</li>
-</ul>
+</div>
 </div>
 </div>
 

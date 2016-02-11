@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Utility functions &mdash; scikit-video 1.1.1 documentation</title>
+    <title>Measure &mdash; scikit-video 1.1.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -33,8 +33,8 @@
     <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.1 documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="../classes.html" />
-    <link rel="next" title="skvideo.utils.vshape" href="generated/skvideo.utils.vshape.html" />
-    <link rel="prev" title="skvideo.datasets.fullreferencepair" href="generated/skvideo.datasets.fullreferencepair.html" />
+    <link rel="next" title="skvideo.measure.ssim" href="generated/skvideo.measure.ssim.html" />
+    <link rel="prev" title="skvideo.motion.blockComp" href="generated/skvideo.motion.blockComp.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -72,7 +72,7 @@
 <div class='container'>
 <a href='../classes.html'>API Reference</a> >>
 
-Utility functions
+Measure
 
 </div>
 
@@ -100,11 +100,11 @@ Utility functions
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="utility-functions">
-<h1>Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-skvideo.utils">
-<span id="skvideo-utils-utility-functions"></span><span id="utility-ref"></span><h2><a class="reference internal" href="#module-skvideo.utils" title="skvideo.utils"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.utils</span></tt></a>: Utility functions<a class="headerlink" href="#module-skvideo.utils" title="Permalink to this headline">¶</a></h2>
-<p>Various utility functions for manipulating video data</p>
+  <div class="section" id="measure">
+<h1>Measure<a class="headerlink" href="#measure" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-skvideo.measure">
+<span id="skvideo-measure-measurement-routines"></span><span id="measure-ref"></span><h2><a class="reference internal" href="#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>: Measurement routines<a class="headerlink" href="#module-skvideo.measure" title="Permalink to this headline">¶</a></h2>
+<p>Measurement and quality assessment tools.</p>
 <div class="section" id="functions">
 <h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
@@ -113,11 +113,14 @@ Utility functions
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.utils.vshape.html#skvideo.utils.vshape" title="skvideo.utils.vshape"><tt class="xref py py-obj docutils literal"><span class="pre">vshape</span></tt></a>(videodata)</td>
-<td>Standardizes the input data shape.</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.ssim.html#skvideo.measure.ssim" title="skvideo.measure.ssim"><tt class="xref py py-obj docutils literal"><span class="pre">ssim</span></tt></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes Structural Similarity (SSIM) Index.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.utils.rgb2gray.html#skvideo.utils.rgb2gray" title="skvideo.utils.rgb2gray"><tt class="xref py py-obj docutils literal"><span class="pre">rgb2gray</span></tt></a>(videodata)</td>
-<td>Computes the grayscale video.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.mse.html#skvideo.measure.mse" title="skvideo.measure.mse"><tt class="xref py py-obj docutils literal"><span class="pre">mse</span></tt></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes mean-squared error (MSE).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.psnr.html#skvideo.measure.psnr" title="skvideo.measure.psnr"><tt class="xref py py-obj docutils literal"><span class="pre">psnr</span></tt></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes Peak Signal to Noise Ratio (PSNR).</td>
 </tr>
 </tbody>
 </table>

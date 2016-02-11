@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Benchmarking scikit-video &mdash; scikit-video 1.1.0 documentation</title>
+    <title>Benchmarking scikit-video &mdash; scikit-video 1.1.1 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -31,7 +31,7 @@
     <script type="text/javascript" src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.0 documentation" href="index.html" />
+    <link rel="top" title="scikit-video 1.1.1 documentation" href="index.html" />
     <link rel="next" title="Frequently Asked Questions" href="faq.html" />
     <link rel="prev" title="Examples" href="examples.html" />
 <meta charset='utf-8'>
@@ -63,7 +63,7 @@
           
         </div>
       <div class="navbar-header2">
-	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.0</b></span></div>
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.1</b></span></div>
       </div>
     </div>
   </div>
@@ -90,8 +90,9 @@ Benchmarking scikit-video
 ><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="io.html">Reading and Writing Videos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datasets.html">Test Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measure.html">Measurement functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utilities.html">Utility functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Test Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Benchmarking scikit-video</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
@@ -112,12 +113,14 @@ Benchmarking scikit-video
   <div class="section" id="benchmarking-scikit-video">
 <span id="benchmarks"></span><h1>Benchmarking scikit-video<a class="headerlink" href="#benchmarking-scikit-video" title="Permalink to this headline">¶</a></h1>
 <p>To be useful in any project, we would like to approach real-time performance. Some algorithms implemented may not be able to achieve this (exhaustive search algorithms, for example), but we still set our goals high!</p>
-<p>All tests computed for scikit-video v1.0.0</p>
-<p>Mean performance on loading 3 test videos:</p>
+<p>All tests computed for scikit-video v1.1.1</p>
+<div class="section" id="reading-speed">
+<h2>Reading speed<a class="headerlink" href="#reading-speed" title="Permalink to this headline">¶</a></h2>
+<p>Minimum time from 10 trials, loading the 3 test videos in <a class="reference internal" href="modules/datasets.html#module-skvideo.datasets" title="skvideo.datasets"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.datasets</span></tt></a>:</p>
 <table border="1" class="table-striped docutils">
 <colgroup>
-<col width="53%" />
-<col width="47%" />
+<col width="65%" />
+<col width="35%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Method</th>
@@ -125,19 +128,21 @@ Benchmarking scikit-video
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>skvideo.io.vread</td>
-<td>1.346741 seconds</td>
+<tr class="row-even"><td>skvideo.io.vread (FFmpeg)</td>
+<td>0.718217 seconds</td>
 </tr>
-<tr class="row-odd"><td>skvideo.io.vreader</td>
-<td>1.311501 seconds</td>
+<tr class="row-odd"><td>skvideo.io.vread (LibAV)</td>
+<td>0.815005 seconds</td>
+</tr>
+<tr class="row-even"><td>skvideo.io.vreader (FFmpeg)</td>
+<td>0.671952 seconds</td>
+</tr>
+<tr class="row-odd"><td>skvideo.io.vreader (LibAV)</td>
+<td>0.774765 seconds</td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="reading-files">
-<h2>Reading files<a class="headerlink" href="#reading-files" title="Permalink to this headline">¶</a></h2>
-<p>The average performance over ten iterations of <a class="reference internal" href="modules/generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.io.vread</span></tt></a> and <a class="reference internal" href="modules/generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.io.vreader</span></tt></a>.</p>
-<hr class="docutils" />
-<p>The generator is slightly faster on my laptop, but could be faster depending on the disk and memory speeds.</p>
+<p>The fastest backend appears to be FFmpeg for both <a class="reference internal" href="modules/generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.io.vread</span></tt></a> and <a class="reference internal" href="modules/generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.io.vreader</span></tt></a>. Naturally, since <a class="reference internal" href="modules/generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.io.vreader</span></tt></a> uses a yield-based generator to supply frames, it is faster to use than <a class="reference internal" href="modules/generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.io.vread</span></tt></a> which allocates space then copies data frame-by-frame.</p>
 </div>
 <div class="section" id="block-motion-estimation">
 <h2>Block Motion estimation<a class="headerlink" href="#block-motion-estimation" title="Permalink to this headline">¶</a></h2>
