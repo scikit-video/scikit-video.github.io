@@ -1,0 +1,12 @@
+:mod:`skvideo.io`.ffprobe
+======================================
+
+.. currentmodule:: skvideo.io
+
+.. autofunction:: ffprobe
+
+.. include:: skvideo.io.ffprobe.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
