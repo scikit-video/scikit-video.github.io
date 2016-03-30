@@ -1,0 +1,12 @@
+:mod:`skvideo`.setFFmpegPath
+=========================================
+
+.. currentmodule:: skvideo
+
+.. autofunction:: setFFmpegPath
+
+.. include:: skvideo.setFFmpegPath.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

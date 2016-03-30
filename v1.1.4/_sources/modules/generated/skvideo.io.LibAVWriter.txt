@@ -1,0 +1,16 @@
+:mod:`skvideo.io`.LibAVWriter
+====================================
+
+.. currentmodule:: skvideo.io
+
+.. autoclass:: LibAVWriter
+
+   
+   .. automethod:: __init__
+   
+
+.. include:: skvideo.io.LibAVWriter.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
