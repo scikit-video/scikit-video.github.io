@@ -152,6 +152,10 @@ Motion
 </div>
 <p>Here is a motion compensated frame from bigbuckbunny</p>
 <img alt="_images/blockComp.png" src="_images/blockComp.png" />
+</div>
+<div class="section" id="global-motion-estimation">
+<h2>Global motion estimation<a class="headerlink" href="#global-motion-estimation" title="Permalink to this headline">¶</a></h2>
+<p>Typically, estimating the global motion (sometimes referred to as ego-motion) is not as simple as averaging the block motion vectors. Many techniques have been devised to estimate global motion robust against moving foreground objects and noise. The function <a class="reference internal" href="modules/generated/skvideo.motion.globalEdgeMotion.html#skvideo.motion.globalEdgeMotion" title="skvideo.motion.globalEdgeMotion"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.motion.globalEdgeMotion</span></tt></a> uses edge-based techniques for estimating global motion, with the option to compute error using either the Hausdorff or Hamming distances.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>

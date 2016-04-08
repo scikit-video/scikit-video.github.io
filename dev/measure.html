@@ -100,11 +100,15 @@ Measurement functions
       
   <div class="section" id="measurement-functions">
 <span id="measure"></span><h1>Measurement functions<a class="headerlink" href="#measurement-functions" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference internal" href="modules/measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a> provides quality assessment tools and other measurement operations.</p>
+<p><a class="reference internal" href="modules/measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a> provides quality assessment tools, scene detection, and other measurement operations.</p>
 <div class="section" id="full-reference-quality-assessment">
 <h2>Full-Reference Quality Assessment<a class="headerlink" href="#full-reference-quality-assessment" title="Permalink to this headline">¶</a></h2>
 <p>Use <a class="reference internal" href="modules/generated/skvideo.measure.ssim.html#skvideo.measure.ssim" title="skvideo.measure.ssim"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.ssim</span></tt></a> to measure the perceptually quality difference between two videos, considering only individual frames.</p>
 <p>Use <a class="reference internal" href="modules/generated/skvideo.measure.mse.html#skvideo.measure.mse" title="skvideo.measure.mse"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.mse</span></tt></a> or <a class="reference internal" href="modules/generated/skvideo.measure.psnr.html#skvideo.measure.psnr" title="skvideo.measure.psnr"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.psnr</span></tt></a> to measure simple point-wise similarity between two videos.</p>
+</div>
+<div class="section" id="scene-detection">
+<h2>Scene detection<a class="headerlink" href="#scene-detection" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.scenedet.html#skvideo.measure.scenedet" title="skvideo.measure.scenedet"><tt class="xref py py-func docutils literal"><span class="pre">skvideo.measure.scenedet</span></tt></a> to find frames that start scene boundaries. At this moment, two very distinct scene detection techniques are implemented. The first, &#8220;luminance&#8221;, thresholds based on histogram luminance values to find scene tranisitions. The second, &#8220;edge&#8221;, uses canny edge detection to measure how edges evolve between motion-compensated frames.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>

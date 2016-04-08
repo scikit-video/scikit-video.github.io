@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Image Reading and Writing &mdash; scikit-video 1.1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
+    <link rel="top" title="scikit-video 1.1.5 documentation" href="../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../index.html"><img class="navbar-brand-img" src="../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.5</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+
+Image Reading and Writing
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../index.html">Home</a></li></ul>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="image-reading-and-writing">
+<span id="ioexampleimages"></span><h1>Image Reading and Writing<a class="headerlink" href="#image-reading-and-writing" title="Permalink to this headline">¶</a></h1>
+<p>The trivial video is a video of 1 frame. This is how images are interpreted by scikit-video. Let&#8217;s walk through the following example for interpreting images:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+
+<span class="c"># a frame from the bigbuckbunny sequence</span>
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;vid_luma_frame1.png&quot;</span><span class="p">)</span>
+<span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of frames: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">T</span><span class="p">,))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of rows: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">M</span><span class="p">,))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of cols: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of channels: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,))</span>
+</pre></div>
+</td></tr></table></div>
+<p>Running this code yields this output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Number</span> <span class="n">of</span> <span class="n">frames</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">rows</span><span class="p">:</span> <span class="mi">720</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">cols</span><span class="p">:</span> <span class="mi">1280</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">channels</span><span class="p">:</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>As you can see, the 1280x720 sized image has loaded without problems, and is treated as a rgb video with 1 frame.</p>
+<p>If you&#8217;d like to upscale this image during loading, you can run the following:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+
+<span class="c"># upscale frame from the bigbuckbunny sequence by a factor of 2</span>
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="s">&quot;vid_luma_frame1.png&quot;</span><span class="p">,</span>
+                       <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span>
+                           <span class="s">&quot;-sws_flags&quot;</span><span class="p">:</span> <span class="s">&quot;bilinear&quot;</span><span class="p">,</span>
+                           <span class="s">&quot;-s&quot;</span><span class="p">:</span> <span class="s">&quot;2560x1440&quot;</span>
+                       <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of frames: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">T</span><span class="p">,))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of rows: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">M</span><span class="p">,))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of cols: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of channels: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,))</span>
+</pre></div>
+</td></tr></table></div>
+<p>Running this code yields this output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Number</span> <span class="n">of</span> <span class="n">frames</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">rows</span><span class="p">:</span> <span class="mi">1440</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">cols</span><span class="p">:</span> <span class="mi">2560</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">channels</span><span class="p">:</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>Notice that the upscaling type is set to &#8220;bilinear&#8221; by simply writing it out in plain English. You can also upscale using other parameters that ffmpeg/avconv support.</p>
+<p>Note that although ffmpeg/avconv supports relative scaling, scikit-video doesn&#8217;t support that yet. Future support can be added by parsing the video filter &#8220;-vf&#8221; commands, so that scikit-video is aware of the buffer size expected from the ffmpeg/avconv subprocess.</p>
+<p>Of course, images can be written just as easily as they can be read.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c"># create random data, sized 1280x720</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">))</span><span class="o">*</span><span class="mi">255</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Random image, shape (</span><span class="si">%d</span><span class="s">, </span><span class="si">%d</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s">&quot;output.png&quot;</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Again, the output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Random</span> <span class="n">image</span><span class="p">,</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>First, notice that the shape of the image is height x width. Scikit-Video always interprets images and video matrices as a height then a width, which is a standard matrix format. Second, notice that writing images does not require them to be in the same format as videos. Scikit-Video will interpret shapes of (1, M, N), (M, N), (M, N, C) as images where M is height, N is width, and C is the number of channels. Internally, scikit-video standardizes shapes and datatypes for accurate reading and writing through the ffmpeg/avconv subprocess.</p>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2016, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
