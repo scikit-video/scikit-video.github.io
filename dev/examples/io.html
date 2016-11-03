@@ -268,6 +268,65 @@ Video Reading and Writing
 <p>Chroma channel 2 frame (vid_chroma2.png)</p>
 <img alt="../_images/vid_chroma2.png" src="../_images/vid_chroma2.png" />
 </div>
+<div class="section" id="video-writing-with-quality">
+<h1>Video Writing with Quality<a class="headerlink" href="#video-writing-with-quality" title="Permalink to this headline">¶</a></h1>
+<p>Specifying FFmpeg parameters using the outputdict parameter allows for higher video quality. As you change the bitrate through the &#8220;-b&#8221; parameter, the video output approaches the fidelity of the original signal.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">skvideo.measure</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<span class="n">outputfile</span> <span class="o">=</span> <span class="s">&quot;test.mp4&quot;</span>
+<span class="n">outputdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="mi">255</span>
+<span class="n">outputdata</span> <span class="o">=</span> <span class="n">outputdata</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="c"># start the FFmpeg writing subprocess with following parameters</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span>
+  <span class="s">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="s">&#39;-b&#39;</span><span class="p">:</span> <span class="s">&#39;300000000&#39;</span>
+<span class="p">})</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+  <span class="n">writer</span><span class="o">.</span><span class="n">writeFrame</span><span class="p">(</span><span class="n">outputdata</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">inputdata</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">outputfile</span><span class="p">)</span>
+
+<span class="c"># test each frame&#39;s SSIM score</span>
+<span class="n">mSSIM</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+  <span class="n">mSSIM</span> <span class="o">+=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">ssim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">inputdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">outputdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">mSSIM</span> <span class="o">/=</span> <span class="mf">30.0</span>
+<span class="k">print</span> <span class="n">mSSIM</span>
+</pre></div>
+</td></tr></table></div>
+</div>
 
 
     </div>
