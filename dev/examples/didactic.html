@@ -102,6 +102,8 @@ Miscellaneous Video Demonstrations
       
   <div class="section" id="miscellaneous-video-demonstrations">
 <span id="didacticexample"></span><h1>Miscellaneous Video Demonstrations<a class="headerlink" href="#miscellaneous-video-demonstrations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="visualizing-growth-of-sparse-filters">
+<h2>Visualizing growth of sparse filters<a class="headerlink" href="#visualizing-growth-of-sparse-filters" title="Permalink to this headline">¶</a></h2>
 <p>Videos can be made of sparse filters evolving over time. Below is a code snippet implementing the K-SVD algorithm. The purpose of the snippet is to visualize the state of sparse basis functions at they are iteratively refined.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
@@ -342,6 +344,16 @@ Miscellaneous Video Demonstrations
 <div style="padding-bottom: 28.125000%; padding-top: 30px; position: relative; width: 50%">
 <iframe src="http://www.youtube.com/embed/hJwX7z5JZb4" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
 </iframe></div></div>
+<div class="section" id="selectively-manipulating-frames">
+<h2>Selectively manipulating frames<a class="headerlink" href="#selectively-manipulating-frames" title="Permalink to this headline">¶</a></h2>
+<p>If you want to create a corrupted version of a video, you can use the FFmpegReader/FFmpegWriter in combination. Just make sure that you pass the video metadata along, or you may get incorrect output video (such as incorrect framerate). Provided below is an example corrupting one frame from the source video with white noise:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">skvideo.datasets</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
 
 
     </div>
