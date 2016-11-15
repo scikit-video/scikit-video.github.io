@@ -1,0 +1,12 @@
+:mod:`skvideo`.getLibAVVersion
+===========================================
+
+.. currentmodule:: skvideo
+
+.. autofunction:: getLibAVVersion
+
+.. include:: skvideo.getLibAVVersion.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

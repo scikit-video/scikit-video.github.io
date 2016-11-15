@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>skvideo.motion.blockMotion &mdash; scikit-video 1.1.7 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.1.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
+    <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
+    <link rel="up" title="Motion" href="../motion.html" />
+    <link rel="next" title="skvideo.motion.blockComp" href="skvideo.motion.blockComp.html" />
+    <link rel="prev" title="skvideo.motion.globalEdgeMotion" href="skvideo.motion.globalEdgeMotion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../index.html"><img class="navbar-brand-img" src="../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.7</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../classes.html'>API Reference</a> >>
+
+<tt class="docutils literal"><span class="pre">skvideo.motion</span></tt>.blockMotion
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../index.html">Home</a></li></ul>
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="skvideo-motion-blockmotion">
+<h1><a class="reference internal" href="../motion.html#module-skvideo.motion" title="skvideo.motion"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.motion</span></tt></a>.blockMotion<a class="headerlink" href="#skvideo-motion-blockmotion" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="skvideo.motion.blockMotion">
+<tt class="descclassname">skvideo.motion.</tt><tt class="descname">blockMotion</tt><big>(</big><em>videodata</em>, <em>method='DS'</em>, <em>mbSize=8</em>, <em>p=2</em>, <em>**plugin_args</em><big>)</big><a class="headerlink" href="#skvideo.motion.blockMotion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block-based motion estimation</p>
+<p>Given a sequence of frames, this function
+returns motion vectors between frames.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>videodata</strong> : ndarray, shape (numFrames, height, width, channel)</p>
+<blockquote>
+<div><p>A sequence of frames</p>
+</div></blockquote>
+<p><strong>method</strong> : string</p>
+<blockquote>
+<div><p>&#8220;ES&#8221; &#8211;&gt; exhaustive search</p>
+<p>&#8220;3SS&#8221; &#8211;&gt; 3-step search</p>
+<p>&#8220;N3SS&#8221; &#8211;&gt; &#8220;new&#8221; 3-step search <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<p>&#8220;SE3SS&#8221; &#8211;&gt; Simple and Efficient 3SS <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
+<p>&#8220;4SS&#8221; &#8211;&gt; 4-step search <a class="footnote-reference" href="#f3" id="id3">[3]</a></p>
+<p>&#8220;ARPS&#8221; &#8211;&gt; Adaptive Rood Pattern search <a class="footnote-reference" href="#f4" id="id4">[4]</a></p>
+<p>&#8220;DS&#8221; &#8211;&gt; Diamond search <a class="footnote-reference" href="#f5" id="id5">[5]</a></p>
+</div></blockquote>
+<p><strong>mbSize</strong> : int</p>
+<blockquote>
+<div><p>Macroblock size</p>
+</div></blockquote>
+<p><strong>p</strong> : int</p>
+<blockquote>
+<div><p>Algorithm search distance parameter</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>motionData</strong> : ndarray, shape (numFrames - 1, height/mbSize, width/mbSize, 2)</p>
+<blockquote class="last">
+<div><p>The motion vectors computed from videodata. The first element of the last axis contains the y motion component, and second element contains the x motion component.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Renxiang Li, Bing Zeng, and Ming L. Liou, &#8220;A new three-step search algorithm for block motion estimation.&#8221; IEEE Transactions on Circuits and Systems for Video Technology, 4 (4) 438-442, Aug 1994</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Jianhua Lu and Ming L. Liou, &#8220;A simple and efficient search algorithm for block-matching motion estimation.&#8221; IEEE Transactions on Circuits and Systems for Video Technology, 7 (2) 429-433, Apr 1997</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Lai-Man Po and Wing-Chung Ma, &#8220;A novel four-step search algorithm for fast block motion estimation.&#8221; IEEE Transactions on Circuits and Systems for Video Technology, 6 (3) 313-317, Jun 1996</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Yao Nie and Kai-Kuang Ma, &#8220;Adaptive rood pattern search for fast block-matching motion estimation.&#8221; IEEE Transactions on Image Processing, 11 (12) 1442-1448, Dec 2002</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td>Shan Zhu and Kai-Kuang Ma, &#8220;A new diamond search algorithm for fast block-matching motion estimation.&#8221; IEEE Transactions on Image Processing, 9 (2) 287-290, Feb 2000</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="clearer"></div></div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2016, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
