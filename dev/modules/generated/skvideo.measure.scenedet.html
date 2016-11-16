@@ -104,7 +104,7 @@
 <h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.scenedet<a class="headerlink" href="#skvideo-measure-scenedet" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.measure.scenedet">
-<tt class="descclassname">skvideo.measure.</tt><tt class="descname">scenedet</tt><big>(</big><em>videodata</em>, <em>method='edges'</em>, <em>parameter1=None</em><big>)</big><a class="headerlink" href="#skvideo.measure.scenedet" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">skvideo.measure.</tt><tt class="descname">scenedet</tt><big>(</big><em>videodata</em>, <em>method='histogram'</em>, <em>parameter1=None</em>, <em>min_scene_length=2</em><big>)</big><a class="headerlink" href="#skvideo.measure.scenedet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scene detection algorithms</p>
 <p>Given a sequence of frames, this function
 is able to run find the first index of new
@@ -119,12 +119,17 @@ scenes.</p>
 </div></blockquote>
 <p><strong>method</strong> : string</p>
 <blockquote>
-<div><p>&#8220;intensity&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 0.0625) approach using intensity histogram differences. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<div><p>&#8220;histogram&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 1.0) approach using intensity histogram differences. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
 <p>&#8220;edges&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 0.5) approach measuring the edge-change fraction after global motion compensation <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
+<p>&#8220;intensity&#8221; &#8211;&gt; Detects fast cuts using changes in colour and intensity between frames. Parameter1 is the threshold used for detection, which defaults to 30.0.</p>
 </div></blockquote>
 <p><strong>parameter1</strong> : int</p>
 <blockquote>
 <div><p>Number used as a tuning parameter. See method argument for details.</p>
+</div></blockquote>
+<p><strong>min_scene_length</strong> : int</p>
+<blockquote>
+<div><p>Number used for determining minimum scene length.</p>
 </div></blockquote>
 </td>
 </tr>
