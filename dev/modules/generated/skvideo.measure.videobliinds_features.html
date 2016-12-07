@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.measure.scenedet &mdash; scikit-video 1.1.7 documentation</title>
+    <title>skvideo.measure.videobliinds_features &mdash; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -33,8 +33,8 @@
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
     <link rel="up" title="Measure" href="../measure.html" />
-    <link rel="next" title="skvideo.measure.videobliinds_features" href="skvideo.measure.videobliinds_features.html" />
-    <link rel="prev" title="skvideo.measure.psnr" href="skvideo.measure.psnr.html" />
+    <link rel="next" title="Test Data" href="../datasets.html" />
+    <link rel="prev" title="skvideo.measure.scenedet" href="skvideo.measure.scenedet.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -72,7 +72,7 @@
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
 
-<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.scenedet
+<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.videobliinds_features
 
 </div>
 
@@ -100,42 +100,29 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="skvideo-measure-scenedet">
-<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.scenedet<a class="headerlink" href="#skvideo-measure-scenedet" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="skvideo-measure-videobliinds-features">
+<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.videobliinds_features<a class="headerlink" href="#skvideo-measure-videobliinds-features" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="skvideo.measure.scenedet">
-<tt class="descclassname">skvideo.measure.</tt><tt class="descname">scenedet</tt><big>(</big><em>videodata</em>, <em>method='histogram'</em>, <em>parameter1=None</em>, <em>min_scene_length=2</em><big>)</big><a class="headerlink" href="#skvideo.measure.scenedet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scene detection algorithms</p>
-<p>Given a sequence of frames, this function
-is able to run find the first index of new
-scenes.</p>
+<dt id="skvideo.measure.videobliinds_features">
+<tt class="descclassname">skvideo.measure.</tt><tt class="descname">videobliinds_features</tt><big>(</big><em>videoData</em><big>)</big><a class="headerlink" href="#skvideo.measure.videobliinds_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Video Bliinds features. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<p>Since this is a referenceless quality algorithm, only 1 video is needed. This function
+provides the raw features used by the algorithm.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>videodata</strong> : ndarray</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>videoData</strong> : ndarray</p>
 <blockquote>
-<div><p>an input frame sequence, shape (T, M, N, C), (T, M, N), (M, N, C) or (M, N)</p>
-</div></blockquote>
-<p><strong>method</strong> : string</p>
-<blockquote>
-<div><p>&#8220;histogram&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 1.0) approach using intensity histogram differences. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
-<p>&#8220;edges&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 0.5) approach measuring the edge-change fraction after global motion compensation <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
-<p>&#8220;intensity&#8221; &#8211;&gt; Detects fast cuts using changes in colour and intensity between frames. Parameter1 is the threshold used for detection, which defaults to 30.0.</p>
-</div></blockquote>
-<p><strong>parameter1</strong> : int</p>
-<blockquote>
-<div><p>Number used as a tuning parameter. See method argument for details.</p>
-</div></blockquote>
-<p><strong>min_scene_length</strong> : int</p>
-<blockquote>
-<div><p>Number used for determining minimum scene length.</p>
+<div><p>Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),
+where T is the number of frames, M is the height, N is width,
+and C is number of channels.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sceneCuts</strong> : ndarray, shape (numScenes,)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : ndarray</p>
 <blockquote class="last">
-<div><p>The indices corresponding to the first frame in the detected scenes.</p>
+<div><p>The individual features of the algorithm.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -145,13 +132,10 @@ scenes.</p>
 <table class="docutils footnote" frame="void" id="f1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Kiyotaka Otsuji and Yoshinobu Tonomura. Projection-detecting filter for video cut detection. Multimedia Systems 1.5, 205-210, 1994.</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="f2" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Kevin Mai, Ramin Zabih, and Justin Miller. Feature-based algorithms for detecting and classifying scene breaks. Cornell University, 1995.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple" start="13">
+<li>Saad and A.C. Bovik, &#8220;Blind prediction of natural video quality&#8221; IEEE Transactions on Image Processing, December 2013.</li>
+</ol>
+</td></tr>
 </tbody>
 </table>
 </dd></dl>

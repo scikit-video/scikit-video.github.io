@@ -1,0 +1,12 @@
+:mod:`skvideo.measure`.videobliinds_features
+=========================================================
+
+.. currentmodule:: skvideo.measure
+
+.. autofunction:: videobliinds_features
+
+.. include:: skvideo.measure.videobliinds_features.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
