@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.measure.videobliinds_features &mdash; scikit-video 1.1.7 documentation</title>
+    <title>skvideo.measure.viideo_score &mdash; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -33,8 +33,8 @@
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
     <link rel="up" title="Measure" href="../measure.html" />
-    <link rel="next" title="skvideo.measure.viideo_features" href="skvideo.measure.viideo_features.html" />
-    <link rel="prev" title="skvideo.measure.scenedet" href="skvideo.measure.scenedet.html" />
+    <link rel="next" title="Test Data" href="../datasets.html" />
+    <link rel="prev" title="skvideo.measure.viideo_features" href="skvideo.measure.viideo_features.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -72,7 +72,7 @@
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
 
-<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.videobliinds_features
+<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.viideo_score
 
 </div>
 
@@ -100,14 +100,14 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="skvideo-measure-videobliinds-features">
-<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.videobliinds_features<a class="headerlink" href="#skvideo-measure-videobliinds-features" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="skvideo-measure-viideo-score">
+<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.viideo_score<a class="headerlink" href="#skvideo-measure-viideo-score" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="skvideo.measure.videobliinds_features">
-<tt class="descclassname">skvideo.measure.</tt><tt class="descname">videobliinds_features</tt><big>(</big><em>videoData</em><big>)</big><a class="headerlink" href="#skvideo.measure.videobliinds_features" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes Video Bliinds features. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<dt id="skvideo.measure.viideo_score">
+<tt class="descclassname">skvideo.measure.</tt><tt class="descname">viideo_score</tt><big>(</big><em>videoData</em>, <em>blocksize=(18</em>, <em>18)</em>, <em>blockoverlap=(8</em>, <em>8)</em>, <em>filterlength=7</em><big>)</big><a class="headerlink" href="#skvideo.measure.viideo_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes VIIDEO score. <a class="footnote-reference" href="#f1" id="id1">[1]</a> <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
 <p>Since this is a referenceless quality algorithm, only 1 video is needed. This function
-provides the raw features used by the algorithm.</p>
+provides the score computed by the algorithm.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -118,11 +118,13 @@ provides the raw features used by the algorithm.</p>
 where T is the number of frames, M is the height, N is width,
 and C is number of channels.</p>
 </div></blockquote>
+<p><strong>blocksize</strong> : tuple (2,)</p>
+<p><strong>blockoverlap: tuple (2,)</strong> :</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : ndarray</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>score</strong> : ndarray</p>
 <blockquote class="last">
-<div><p>The individual features of the algorithm.</p>
+<div><p>The video quality score</p>
 </div></blockquote>
 </td>
 </tr>
@@ -132,8 +134,17 @@ and C is number of channels.</p>
 <table class="docutils footnote" frame="void" id="f1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple" start="13">
-<li>Saad and A.C. Bovik, &#8220;Blind prediction of natural video quality&#8221; IEEE Transactions on Image Processing, December 2013.</li>
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple">
+<li>Mittal, M. A. Saad and A. C. Bovik, &#8220;VIIDEO Software Release&#8221;, URL: <a class="reference external" href="http://live.ece.utexas.edu/research/quality/VIIDEO_release.zip">http://live.ece.utexas.edu/research/quality/VIIDEO_release.zip</a>, 2014.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><ol class="first last upperalpha simple">
+<li>Mittal, M. A. Saad and A. C. Bovik, &#8220;A &#8216;Completely Blind&#8217; Video Integrity Oracle&#8221;, submitted to IEEE Transactions in Image Processing, 2014.</li>
 </ol>
 </td></tr>
 </tbody>
