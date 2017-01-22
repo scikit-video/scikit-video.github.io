@@ -120,9 +120,15 @@ and C is number of channels.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : ndarray</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : ndarray, size (46,)</p>
 <blockquote class="last">
-<div><p>The individual features of the algorithm.</p>
+<div><p>The individual features of the algorithm. The features are arranged as follows.</p>
+<p>features[:36] : spatial niqe vector averaged over the video, size (36,)
+features[36] : niqe naturalness score, size (1,)
+features[37:39] : DC measurements between frames, size (2,)
+features[39:44] : Natural Video Statistics, size (5,)
+features[44] : Motion coherence, size (1,)
+features[45] : Global motion, size (1,)</p>
 </div></blockquote>
 </td>
 </tr>
