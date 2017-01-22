@@ -1,0 +1,12 @@
+:mod:`skvideo.measure`.msssim
+==========================================
+
+.. currentmodule:: skvideo.measure
+
+.. autofunction:: msssim
+
+.. include:: skvideo.measure.msssim.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

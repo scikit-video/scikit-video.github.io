@@ -19,7 +19,9 @@ Functions
    :toctree: generated/
    :template: function.rst
 
+   strred
    ssim
+   msssim
    mse
    psnr
    scenedet

@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.measure &mdash; scikit-video 1.1.7 documentation</title>
+    <title>skvideo.measure.strred &mdash; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -32,7 +32,9 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
     <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
-    <link rel="up" title="skvideo" href="../skvideo.html" />
+    <link rel="up" title="Measurement Tools" href="../measure.html" />
+    <link rel="next" title="skvideo.measure.ssim" href="skvideo.measure.ssim.html" />
+    <link rel="prev" title="skvideo.measure.viideo_score" href="skvideo.measure.viideo_score.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -68,9 +70,9 @@
   </div>
 
 <div class='container'>
-<a href='../index.html'>Module code</a> >>
+<a href='../../classes.html'>API Reference</a> >>
 
-skvideo.measure
+<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.strred
 
 </div>
 
@@ -98,34 +100,66 @@ skvideo.measure
       </div>
     <div class="col-md-9 content">
       
-  <h1>Source code for skvideo.measure</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;Measurement and quality assessment tools.</span>
+  <div class="section" id="skvideo-measure-strred">
+<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.strred<a class="headerlink" href="#skvideo-measure-strred" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="skvideo.measure.strred">
+<tt class="descclassname">skvideo.measure.</tt><tt class="descname">strred</tt><big>(</big><em>referenceVideoData</em>, <em>distortedVideoData</em><big>)</big><a class="headerlink" href="#skvideo.measure.strred" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Spatio-Temporal Reduced Reference Entropic Differencing (ST-RRED) Index. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<p>Both video inputs are compared over frame differences, with quality determined by
+differences in the entropy per subband.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>referenceVideoData</strong> : ndarray</p>
+<blockquote>
+<div><p>Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),
+where T is the number of frames, M is the height, N is width,
+and C is number of channels. Here C is only allowed to be 1.</p>
+</div></blockquote>
+<p><strong>distortedVideoData</strong> : ndarray</p>
+<blockquote>
+<div><p>Distorted video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),
+where T is the number of frames, M is the height, N is width,
+and C is number of channels. Here C is only allowed to be 1.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>strred_array</strong> : ndarray</p>
+<blockquote>
+<div><p>The ST-RRED results, ndarray of dimension ((T-1)/2, 4), where T
+is the number of frames.  Each row holds spatial score, temporal score, 
+reduced reference spatial score, and reduced reference temporal score.</p>
+</div></blockquote>
+<p><strong>strred</strong> : float</p>
+<blockquote>
+<div><p>The final ST-RRED score if all blocks are averaged after comparing 
+reference and distorted data. This is close to full-reference.</p>
+</div></blockquote>
+<p><strong>strredssn</strong> : float</p>
+<blockquote class="last">
+<div><p>The final ST-RRED score if all blocks are averaged before comparing 
+reference and distorted data. This is the reduced reference score.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple" start="18">
+<li>Soundararajan and A. C. Bovik, &#8220;Video Quality Assessment by Reduced Reference Spatio-temporal Entropic Differencing,&#8221; IEEE Transactions on Circuits and Systems for Video Technology, April 2013.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+</dd></dl>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<div class="clearer"></div></div>
 
-<span class="kn">from</span> <span class="nn">.msssim</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.ssim</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.strred</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.psnr</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.mse</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.scene</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.brisque</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.videobliinds</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.viideo</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">&#39;msssim&#39;</span><span class="p">,</span>
-    <span class="s">&#39;ssim&#39;</span><span class="p">,</span>
-    <span class="s">&#39;strred&#39;</span><span class="p">,</span>
-    <span class="s">&#39;mse&#39;</span><span class="p">,</span>
-    <span class="s">&#39;psnr&#39;</span><span class="p">,</span>
-    <span class="s">&#39;scenedet&#39;</span><span class="p">,</span>
-    <span class="s">&#39;brisque_features&#39;</span><span class="p">,</span>
-    <span class="s">&#39;videobliinds_features&#39;</span><span class="p">,</span>
-    <span class="s">&#39;viideo_features&#39;</span><span class="p">,</span>
-    <span class="s">&#39;viideo_score&#39;</span><span class="p">,</span>
-<span class="p">]</span>
-</pre></div>
 
     </div>
       
