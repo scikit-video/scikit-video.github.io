@@ -104,7 +104,7 @@
 <h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.ssim<a class="headerlink" href="#skvideo-measure-ssim" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.measure.ssim">
-<tt class="descclassname">skvideo.measure.</tt><tt class="descname">ssim</tt><big>(</big><em>referenceVideoData</em>, <em>distortedVideoData</em>, <em>bitdepth=8</em><big>)</big><a class="headerlink" href="#skvideo.measure.ssim" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">skvideo.measure.</tt><tt class="descname">ssim</tt><big>(</big><em>referenceVideoData</em>, <em>distortedVideoData</em>, <em>bitdepth=8</em>, <em>scaleFix=True</em><big>)</big><a class="headerlink" href="#skvideo.measure.ssim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Structural Similarity (SSIM) Index. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
 <p>Both video inputs are compared frame-by-frame to obtain T
 SSIM measurements on the luminance channel.</p>
@@ -127,6 +127,10 @@ and C is number of channels. Here C is only allowed to be 1.</p>
 <p><strong>bitdepth</strong> : int</p>
 <blockquote>
 <div><p>The number of bits each pixel effectively has</p>
+</div></blockquote>
+<p><strong>scaleFix</strong> : bool</p>
+<blockquote>
+<div><p>Whether to scale the input frame size based on assumed distance, to improve subjective correlation.</p>
 </div></blockquote>
 </td>
 </tr>
