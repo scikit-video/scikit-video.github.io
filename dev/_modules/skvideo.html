@@ -101,7 +101,7 @@ skvideo
   <h1>Source code for skvideo</h1><div class="highlight"><pre>
 <span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.1.7&quot;</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">check_output</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">check_output</span><span class="p">,</span> <span class="n">where</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -111,38 +111,21 @@ skvideo
 <span class="c"># Sets environment variables based on programs</span>
 <span class="c"># found.</span>
 
-<span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="k">def</span> <span class="nf">is_exe</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+  <span class="n">candidates</span> <span class="o">=</span> <span class="n">where</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;</span>
 
-    <span class="n">fpath</span><span class="p">,</span> <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">program</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fpath</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">program</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;PATH&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">)</span>
-            <span class="n">exe_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">program</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">exe_file</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">exe_file</span>
-
-    <span class="k">return</span> <span class="bp">None</span>
 
 <span class="c"># only ffprobe exists with ffmpeg</span>
 <span class="n">_FFMPEG_PATH</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&quot;ffprobe&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">_FFMPEG_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-    <span class="n">_FFMPEG_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
 
 <span class="c"># only avprobe exists with libav</span>
 <span class="n">_AVCONV_PATH</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&quot;avprobe&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">_AVCONV_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-    <span class="n">_AVCONV_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_AVCONV_PATH</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">_MEDIAINFO_PATH</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&quot;mediainfo&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">_MEDIAINFO_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-    <span class="n">_MEDIAINFO_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_MEDIAINFO_PATH</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">_HAS_FFMPEG</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">_HAS_AVCONV</span> <span class="o">=</span> <span class="mi">0</span>
@@ -158,6 +141,19 @@ skvideo
 <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">_LIBAV_SUPPORTED_EXT</span> <span class="o">=</span> <span class="p">[]</span>
 
+<span class="n">_FFPROBE_APPLICATION</span> <span class="o">=</span> <span class="s">&quot;ffprobe&quot;</span>
+<span class="n">_FFMPEG_APPLICATION</span> <span class="o">=</span> <span class="s">&quot;ffmpeg&quot;</span>
+<span class="n">_AVPROBE_APPLICATION</span> <span class="o">=</span> <span class="s">&quot;avprobe&quot;</span>
+<span class="n">_AVCONV_APPLICATION</span> <span class="o">=</span> <span class="s">&quot;avconv&quot;</span>
+<span class="n">_MEDIAINFO_APPLICATION</span> <span class="o">=</span> <span class="s">&quot;mediainfo&quot;</span>
+
+<span class="c"># Windows compat</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&quot;nt&quot;</span><span class="p">:</span>
+    <span class="n">_FFPROBE_APPLICATION</span> <span class="o">+=</span> <span class="s">&quot;.exe&quot;</span>
+    <span class="n">_FFMPEG_APPLICATION</span> <span class="o">+=</span> <span class="s">&quot;.exe&quot;</span>
+    <span class="n">_AVPROBE_APPLICATION</span> <span class="o">+=</span> <span class="s">&quot;.exe&quot;</span>
+    <span class="n">_AVCONV_APPLICATION</span> <span class="o">+=</span> <span class="s">&quot;.exe&quot;</span>
+    <span class="n">_MEDIAINFO_APPLICATION</span> <span class="o">+=</span> <span class="s">&quot;.exe&quot;</span>
 
 <span class="k">def</span> <span class="nf">scan_ffmpeg</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">_FFMPEG_MAJOR_VERSION</span>
@@ -172,7 +168,7 @@ skvideo
     <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c"># grab program version string</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">check_output</span><span class="p">([</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s">&quot;/ffmpeg&quot;</span><span class="p">,</span> <span class="s">&quot;-version&quot;</span><span class="p">])</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">check_output</span><span class="p">([</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">,</span> <span class="s">&quot;-version&quot;</span><span class="p">])</span>
         <span class="c"># only parse the first line returned</span>
         <span class="n">firstline</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">b</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -405,7 +401,7 @@ skvideo
     <span class="n">_FFMPEG_PATH</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="c"># check to see if the executables actually exist on these paths</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s">&quot;/ffmpeg&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s">&quot;/ffprobe&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFPROBE_APPLICATION</span><span class="p">):</span>
         <span class="n">_HAS_FFMPEG</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;ffmpeg/ffprobe not found in path: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
@@ -455,7 +451,7 @@ skvideo
     <span class="n">_AVCONV_PATH</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="c"># check to see if the executables actually exist on these paths</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s">&quot;/avconv&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s">&quot;/avprobe&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_AVCONV_APPLICATION</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_AVPROBE_APPLICATION</span><span class="p">):</span>
         <span class="n">_HAS_AVCONV</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;avconv/avprobe not found in path: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
