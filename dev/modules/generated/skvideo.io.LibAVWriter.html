@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.io.LibAVWriter &mdash; scikit-video 1.1.7 documentation</title>
+    <title>skvideo.io.LibAVWriter &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -31,8 +32,7 @@
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
-    <link rel="up" title="I/O" href="../io.html" />
+    <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="skvideo.io.LibAVReader" href="skvideo.io.LibAVReader.html" />
     <link rel="prev" title="skvideo.io.FFmpegReader" href="skvideo.io.FFmpegReader.html" />
 <meta charset='utf-8'>
@@ -41,7 +41,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -72,7 +72,7 @@
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
 
-<tt class="docutils literal"><span class="pre">skvideo.io</span></tt>.LibAVWriter
+<code class="docutils literal"><span class="pre">skvideo.io</span></code>.LibAVWriter
 
 </div>
 
@@ -101,10 +101,10 @@
     <div class="col-md-9 content">
       
   <div class="section" id="skvideo-io-libavwriter">
-<h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></tt></a>.LibAVWriter<a class="headerlink" href="#skvideo-io-libavwriter" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a>.LibAVWriter<a class="headerlink" href="#skvideo-io-libavwriter" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="skvideo.io.LibAVWriter">
-<em class="property">class </em><tt class="descclassname">skvideo.io.</tt><tt class="descname">LibAVWriter</tt><big>(</big><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><big>)</big><a class="headerlink" href="#skvideo.io.LibAVWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">LibAVWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes frames using libav</p>
 <p>Using libav as a backend, this class
 provides sane initializations for the default case.</p>
@@ -115,17 +115,17 @@ provides sane initializations for the default case.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#skvideo.io.LibAVWriter.close" title="skvideo.io.LibAVWriter.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#skvideo.io.LibAVWriter.close" title="skvideo.io.LibAVWriter.close"><code class="xref py py-obj docutils literal"><span class="pre">close</span></code></a>()</td>
 <td>Closes the video and terminates avconv process</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#skvideo.io.LibAVWriter.writeFrame" title="skvideo.io.LibAVWriter.writeFrame"><tt class="xref py py-obj docutils literal"><span class="pre">writeFrame</span></tt></a>(im)</td>
+<tr class="row-even"><td><a class="reference internal" href="#skvideo.io.LibAVWriter.writeFrame" title="skvideo.io.LibAVWriter.writeFrame"><code class="xref py py-obj docutils literal"><span class="pre">writeFrame</span></code></a>(im)</td>
 <td>Sends ndarray frames to avconv</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="skvideo.io.LibAVWriter.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><big>)</big><a class="headerlink" href="#skvideo.io.LibAVWriter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVWriter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVWriter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares parameters for avconv</p>
 <p>Does not instantiate the avconv subprocess, but simply
 prepares the required parameters.</p>
@@ -157,13 +157,13 @@ when writing to file.</p>
 
 <dl class="method">
 <dt id="skvideo.io.LibAVWriter.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#skvideo.io.LibAVWriter.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVWriter.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the video and terminates avconv process</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skvideo.io.LibAVWriter.writeFrame">
-<tt class="descname">writeFrame</tt><big>(</big><em>im</em><big>)</big><a class="headerlink" href="#skvideo.io.LibAVWriter.writeFrame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">writeFrame</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVWriter.writeFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVWriter.writeFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends ndarray frames to avconv</p>
 </dd></dl>
 
@@ -184,7 +184,7 @@ when writing to file.</p>
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>

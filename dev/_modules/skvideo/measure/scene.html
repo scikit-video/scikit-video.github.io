@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>skvideo.measure.scene &#8212; scikit-video 1.1.7 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.7</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.measure.scene
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.measure.scene</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Implementation of scene detection algorithms.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.spatial</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..motion.gme</span> <span class="k">import</span> <span class="n">globalEdgeMotion</span>
+
+
+<span class="k">def</span> <span class="nf">_percentage_distance</span><span class="p">(</span><span class="n">canny_in</span><span class="p">,</span> <span class="n">canny_out</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="n">diamond</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+    <span class="n">E_1</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">binary_dilation</span><span class="p">(</span><span class="n">canny_in</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">diamond</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">E_2</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">binary_dilation</span><span class="p">(</span><span class="n">canny_out</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">diamond</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">E_1</span> <span class="o">&amp;</span> <span class="n">E_2</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">E_1</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">_scenedet_edges</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">min_scene_len</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># the first frame is always a new scene</span>
+    <span class="n">detected_scenes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mi">6</span>
+
+    <span class="c1"># grayscale</span>
+    <span class="n">luminancedata</span> <span class="o">=</span> <span class="n">rgb2gray</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+
+    <span class="n">numFrames</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">luminancedata</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># lop off the meaningless dimension</span>
+    <span class="n">luminancedata</span> <span class="o">=</span> <span class="n">luminancedata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numFrames</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">canny_in</span> <span class="o">=</span> <span class="n">canny</span><span class="p">(</span><span class="n">luminancedata</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">canny_out</span> <span class="o">=</span> <span class="n">canny</span><span class="p">(</span><span class="n">luminancedata</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># estimate the motion</span>
+        <span class="n">disp</span> <span class="o">=</span> <span class="n">globalEdgeMotion</span><span class="p">(</span><span class="n">canny_in</span><span class="p">,</span> <span class="n">canny_out</span><span class="p">)</span>
+        <span class="n">canny_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">canny_out</span><span class="p">,</span> <span class="n">disp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">canny_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">canny_out</span><span class="p">,</span> <span class="n">disp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># compute percentage</span>
+        <span class="n">p_in</span> <span class="o">=</span> <span class="n">_percentage_distance</span><span class="p">(</span><span class="n">canny_in</span><span class="p">,</span> <span class="n">canny_out</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="n">p_out</span> <span class="o">=</span> <span class="n">_percentage_distance</span><span class="p">(</span><span class="n">canny_out</span><span class="p">,</span> <span class="n">canny_in</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="c1"># print &quot;percentage: &quot;, bt - at</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">((</span><span class="n">p_in</span><span class="p">,</span> <span class="n">p_out</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">detected_scenes</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">detected_scenes</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_scene_len</span><span class="p">):</span>
+            <span class="n">detected_scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">detected_scenes</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_scenedet_histogram</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">parameter1</span><span class="p">,</span> <span class="n">min_scene_len</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># the first frame is always a new scene</span>
+    <span class="n">detected_scenes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># grayscale</span>
+    <span class="n">luminancedata</span> <span class="o">=</span> <span class="n">rgb2gray</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+
+    <span class="n">numFrames</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">luminancedata</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">luminancedata</span> <span class="o">=</span> <span class="n">luminancedata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numFrames</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">hist1</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">luminancedata</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+        <span class="n">hist2</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">luminancedata</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+
+        <span class="n">hist1</span> <span class="o">=</span> <span class="n">hist1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">hist2</span> <span class="o">=</span> <span class="n">hist2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">hist1</span> <span class="o">/=</span> <span class="mf">256.0</span>
+        <span class="n">hist2</span> <span class="o">/=</span> <span class="mf">256.0</span>
+        
+        <span class="n">framediff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">hist1</span> <span class="o">-</span> <span class="n">hist2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">framediff</span> <span class="o">&gt;</span> <span class="n">parameter1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">detected_scenes</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">detected_scenes</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_scene_len</span><span class="p">):</span>
+            <span class="n">detected_scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">detected_scenes</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_scenedet_intensity</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">parameter1</span><span class="p">,</span> <span class="n">min_scene_len</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colorspace</span><span class="o">=</span><span class="s1">&#39;hsv&#39;</span><span class="p">):</span>
+
+    <span class="n">detected_scenes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">numFrames</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">videodata</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numFrames</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">frame0</span> <span class="o">=</span> <span class="n">videodata</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">frame1</span> <span class="o">=</span> <span class="n">videodata</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame1</span> <span class="o">-</span> <span class="n">frame0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">height</span> <span class="o">*</span> <span class="n">width</span> <span class="o">*</span> <span class="n">channels</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="n">parameter1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">detected_scenes</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">detected_scenes</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_scene_len</span><span class="p">):</span>
+            <span class="n">detected_scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">detected_scenes</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="scenedet"><a class="viewcode-back" href="../../../modules/generated/skvideo.measure.scenedet.html#skvideo.measure.scenedet">[docs]</a><span class="k">def</span> <span class="nf">scenedet</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;histogram&#39;</span><span class="p">,</span> <span class="n">parameter1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_scene_length</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Scene detection algorithms</span>
+<span class="sd">    </span>
+<span class="sd">    Given a sequence of frames, this function</span>
+<span class="sd">    is able to run find the first index of new</span>
+<span class="sd">    scenes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    videodata : ndarray</span>
+<span class="sd">        an input frame sequence, shape (T, M, N, C), (T, M, N), (M, N, C) or (M, N)</span>
+
+<span class="sd">    method : string</span>
+<span class="sd">        &quot;histogram&quot; --&gt; threshold-based (parameter1 defaults to 1.0) approach using intensity histogram differences. [#f1]_</span>
+
+<span class="sd">        &quot;edges&quot; --&gt; threshold-based (parameter1 defaults to 0.5) approach measuring the edge-change fraction after global motion compensation [#f2]_</span>
+
+<span class="sd">        &quot;intensity&quot; --&gt; Detects fast cuts using changes in colour and intensity between frames. Parameter1 is the threshold used for detection, which defaults to 30.0.</span>
+
+<span class="sd">    parameter1 : int</span>
+<span class="sd">        Number used as a tuning parameter. See method argument for details.</span>
+
+<span class="sd">    min_scene_length : int</span>
+<span class="sd">        Number used for determining minimum scene length.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sceneCuts : ndarray, shape (numScenes,)</span>
+
+<span class="sd">        The indices corresponding to the first frame in the detected scenes.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#f1] Kiyotaka Otsuji and Yoshinobu Tonomura. Projection-detecting filter for video cut detection. Multimedia Systems 1.5, 205-210, 1994.</span>
+
+<span class="sd">    .. [#f2] Kevin Mai, Ramin Zabih, and Justin Miller. Feature-based algorithms for detecting and classifying scene breaks. Cornell University, 1995.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">videodata</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+
+    <span class="n">detected_scenes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parameter1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameter1</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">detected_scenes</span> <span class="o">=</span> <span class="n">_scenedet_histogram</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">parameter1</span><span class="p">,</span> <span class="n">min_scene_length</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;edges&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parameter1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameter1</span> <span class="o">=</span> <span class="mf">0.6</span>
+        <span class="n">detected_scenes</span> <span class="o">=</span> <span class="n">_scenedet_edges</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">parameter1</span><span class="p">,</span> <span class="n">min_scene_length</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;intensity&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parameter1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameter1</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">detected_scenes</span> <span class="o">=</span> <span class="n">_scenedet_intensity</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">parameter1</span><span class="p">,</span> <span class="n">min_scene_length</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">return</span> <span class="n">detected_scenes</span></div>
+
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

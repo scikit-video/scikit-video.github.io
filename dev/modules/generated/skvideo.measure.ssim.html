@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.measure.ssim &mdash; scikit-video 1.1.7 documentation</title>
+    <title>skvideo.measure.ssim &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -31,8 +32,7 @@
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
-    <link rel="up" title="Measurement Tools" href="../measure.html" />
+    <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="skvideo.measure.msssim" href="skvideo.measure.msssim.html" />
     <link rel="prev" title="skvideo.measure.strred" href="skvideo.measure.strred.html" />
 <meta charset='utf-8'>
@@ -41,7 +41,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -72,7 +72,7 @@
 <div class='container'>
 <a href='../../classes.html'>API Reference</a> >>
 
-<tt class="docutils literal"><span class="pre">skvideo.measure</span></tt>.ssim
+<code class="docutils literal"><span class="pre">skvideo.measure</span></code>.ssim
 
 </div>
 
@@ -101,10 +101,10 @@
     <div class="col-md-9 content">
       
   <div class="section" id="skvideo-measure-ssim">
-<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></tt></a>.ssim<a class="headerlink" href="#skvideo-measure-ssim" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></code></a>.ssim<a class="headerlink" href="#skvideo-measure-ssim" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.measure.ssim">
-<tt class="descclassname">skvideo.measure.</tt><tt class="descname">ssim</tt><big>(</big><em>referenceVideoData</em>, <em>distortedVideoData</em>, <em>bitdepth=8</em>, <em>scaleFix=True</em><big>)</big><a class="headerlink" href="#skvideo.measure.ssim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.measure.</code><code class="descname">ssim</code><span class="sig-paren">(</span><em>referenceVideoData</em>, <em>distortedVideoData</em>, <em>K_1=0.01</em>, <em>K_2=0.03</em>, <em>bitdepth=8</em>, <em>scaleFix=True</em>, <em>avg_window=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/measure/ssim.html#ssim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.measure.ssim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Structural Similarity (SSIM) Index. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
 <p>Both video inputs are compared frame-by-frame to obtain T
 SSIM measurements on the luminance channel.</p>
@@ -124,6 +124,14 @@ and C is number of channels. Here C is only allowed to be 1.</p>
 where T is the number of frames, M is the height, N is width,
 and C is number of channels. Here C is only allowed to be 1.</p>
 </div></blockquote>
+<p><strong>K_1</strong> : float</p>
+<blockquote>
+<div><p>Luminance saturation weight</p>
+</div></blockquote>
+<p><strong>K_2</strong> : float</p>
+<blockquote>
+<div><p>Contrast saturation weight</p>
+</div></blockquote>
 <p><strong>bitdepth</strong> : int</p>
 <blockquote>
 <div><p>The number of bits each pixel effectively has</p>
@@ -131,6 +139,10 @@ and C is number of channels. Here C is only allowed to be 1.</p>
 <p><strong>scaleFix</strong> : bool</p>
 <blockquote>
 <div><p>Whether to scale the input frame size based on assumed distance, to improve subjective correlation.</p>
+</div></blockquote>
+<p><strong>avg_window</strong> : ndarray</p>
+<blockquote>
+<div><p>2-d averaging window, normalized to unit volume.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -170,7 +182,7 @@ is the number of frames</p>
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>

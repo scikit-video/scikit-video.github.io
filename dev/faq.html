@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Frequently Asked Questions &mdash; scikit-video 1.1.7 documentation</title>
+    <title>Frequently Asked Questions &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -31,7 +32,7 @@
     <script type="text/javascript" src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="index.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API Reference" href="classes.html" />
     <link rel="prev" title="Benchmarking scikit-video" href="benchmarks.html" />
 <meta charset='utf-8'>
@@ -40,7 +41,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -95,7 +96,7 @@ Frequently Asked Questions
 <li class="toctree-l1"><a class="reference internal" href="datasets.html">Test Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarking scikit-video</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes.html">API Reference</a></li>
 </ul>
 </ul>
@@ -124,22 +125,22 @@ used in video processing algorithms.</p>
 </div>
 <div class="section" id="how-do-i-tell-scikit-video-to-use-different-ffmpeg-libav-installs">
 <h2>How do I tell scikit-video to use different FFmpeg/LibAV installs?<a class="headerlink" href="#how-do-i-tell-scikit-video-to-use-different-ffmpeg-libav-installs" title="Permalink to this headline">¶</a></h2>
-<p>You can use the function <a class="reference internal" href="modules/generated/skvideo.setFFmpegPath.html#skvideo.setFFmpegPath" title="skvideo.setFFmpegPath"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.setFFmpegPath</span></tt></a> or <a class="reference internal" href="modules/generated/skvideo.setLibAVPath.html#skvideo.setLibAVPath" title="skvideo.setLibAVPath"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo.setLibAVPath</span></tt></a> in the core <a class="reference internal" href="modules/core.html#module-skvideo" title="skvideo"><tt class="xref py py-mod docutils literal"><span class="pre">skvideo</span></tt></a> API.</p>
+<p>You can use the function <a class="reference internal" href="modules/generated/skvideo.setFFmpegPath.html#skvideo.setFFmpegPath" title="skvideo.setFFmpegPath"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.setFFmpegPath</span></code></a> or <a class="reference internal" href="modules/generated/skvideo.setLibAVPath.html#skvideo.setLibAVPath" title="skvideo.setLibAVPath"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.setLibAVPath</span></code></a> in the core <a class="reference internal" href="modules/core.html#module-skvideo" title="skvideo"><code class="xref py py-mod docutils literal"><span class="pre">skvideo</span></code></a> API.</p>
 </div>
 <div class="section" id="i-installed-scikit-video-but-the-api-i-installed-does-not-match-the-website-how-do-i-fix-this">
 <h2>I installed scikit-video, but the API I installed does not match the website! How do I fix this?<a class="headerlink" href="#i-installed-scikit-video-but-the-api-i-installed-does-not-match-the-website-how-do-i-fix-this" title="Permalink to this headline">¶</a></h2>
 <p>You may be using an old version of scikit-video. Uninstall it using</p>
-<div class="highlight-python"><div class="highlight"><pre>$ sudo pip uninstall scikit-video
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ sudo pip uninstall scikit-video
 $ sudo pip install sk-video
 </pre></div>
 </div>
 <p>You can verify the module path by importing skvideo and printing the path to the init file</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo</span>
-<span class="k">print</span><span class="p">(</span><span class="n">skvideo</span><span class="o">.</span><span class="n">__file__</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo</span>
+<span class="k">print</span><span class="p">(</span><span class="n">skvideo</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This should produce output like</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">sk_video</span><span class="o">-*.*.*-</span><span class="n">py2</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">skvideo</span><span class="o">/</span><span class="n">__init__</span><span class="o">.</span><span class="n">pyc</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">sk_video</span><span class="o">-*.*.*-</span><span class="n">py2</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">skvideo</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">pyc</span>
 </pre></div>
 </div>
 </div>
@@ -173,7 +174,7 @@ $ sudo pip install sk-video
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>

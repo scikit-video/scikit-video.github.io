@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Video Reading and Writing &mdash; scikit-video 1.1.7 documentation</title>
+    <title>Video Reading and Writing &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -31,8 +32,7 @@
     <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="../index.html" />
-    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Detecting scene boundaries" href="scene.html" />
     <link rel="prev" title="Examples" href="../examples.html" />
 <meta charset='utf-8'>
@@ -41,7 +41,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -103,7 +103,7 @@ Video Reading and Writing
   <div class="section" id="video-reading-and-writing">
 <span id="ioexamplevideo"></span><h1>Video Reading and Writing<a class="headerlink" href="#video-reading-and-writing" title="Permalink to this headline">¶</a></h1>
 <p>A typical use case for video research includes loading only the luma channel of a video. Often, researchers will convert a source from its arbitrary format to a YUV file, then only load the Y channel. Also, to test an algorithm, only the first N frames are needed. The next example shows how this can be done without generating YUV files</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -123,31 +123,31 @@ Video Reading and Writing
 18
 19
 20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
 <span class="kn">import</span> <span class="nn">skvideo.datasets</span>
 <span class="kn">import</span> <span class="nn">skvideo.utils</span>
 
 <span class="n">filename</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">()</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Loading only luminance channel&quot;</span><span class="p">)</span>
-<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">})[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Enforcing video shape&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading only luminance channel&quot;</span><span class="p">)</span>
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">})[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enforcing video shape&quot;</span><span class="p">)</span>
 <span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">vshape</span><span class="p">(</span><span class="n">vid</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Loading only first 5 luminance channel frames&quot;</span><span class="p">)</span>
-<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">})[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Enforcing video shape&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading only first 5 luminance channel frames&quot;</span><span class="p">)</span>
+<span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">})[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enforcing video shape&quot;</span><span class="p">)</span>
 <span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">vshape</span><span class="p">(</span><span class="n">vid</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 <p>Running this produces the following</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Loading</span> <span class="n">only</span> <span class="n">luminance</span> <span class="n">channel</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Loading</span> <span class="n">only</span> <span class="n">luminance</span> <span class="n">channel</span>
 <span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
 <span class="n">Enforcing</span> <span class="n">video</span> <span class="n">shape</span>
 <span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -159,7 +159,7 @@ Video Reading and Writing
 </pre></div>
 </div>
 <p>Given an input raw video format like yuv, one must specify the width, height, and format. By default, scikit-video assumes pix_fmt is yuvj444p, to provide consistent saving and loading of video content while also maintaining signal fidelity. Note that the current state of skvideo does not support direct loading of yuv420p (i.e. loading into rgb format still works, but you cannot access the yuv420 chroma channels directly yet. This is a data organization issue.)</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -203,51 +203,51 @@ Video Reading and Writing
 42
 43
 44
-45</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
 <span class="kn">import</span> <span class="nn">skvideo.utils</span>
 <span class="kn">import</span> <span class="nn">skvideo.datasets</span>
 
-<span class="c"># since this skvideo does not support images yet</span>
+<span class="c1"># since this skvideo does not support images yet</span>
 <span class="kn">import</span> <span class="nn">skimage.io</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">filename</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">()</span>
-<span class="n">filename_yuv</span> <span class="o">=</span> <span class="s">&quot;test.yuv&quot;</span>
+<span class="n">filename_yuv</span> <span class="o">=</span> <span class="s2">&quot;test.yuv&quot;</span>
 
-<span class="c"># first produce a yuv for demonstration</span>
+<span class="c1"># first produce a yuv for demonstration</span>
 <span class="n">vid</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>
 
-<span class="c"># produces a yuv file using -pix_fmt=yuvj444p</span>
+<span class="c1"># produces a yuv file using -pix_fmt=yuvj444p</span>
 <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="n">filename_yuv</span><span class="p">,</span> <span class="n">vid</span><span class="p">)</span>
 
-<span class="c"># now to demonstrate YUV loading</span>
+<span class="c1"># now to demonstrate YUV loading</span>
 
-<span class="n">vid_luma</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename_yuv</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">})[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">vid_luma</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename_yuv</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">})[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
 <span class="n">vid_luma</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">vshape</span><span class="p">(</span><span class="n">vid_luma</span><span class="p">)</span>
 
 <span class="n">vid_rgb</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename_yuv</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
 
-<span class="c"># now load the YUV &quot;as is&quot; with no conversion</span>
-<span class="n">vid_yuv444</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename_yuv</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;yuvj444p&quot;</span><span class="p">})</span>
+<span class="c1"># now load the YUV &quot;as is&quot; with no conversion</span>
+<span class="n">vid_yuv444</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename_yuv</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;yuvj444p&quot;</span><span class="p">})</span>
 
-<span class="c"># re-organize bytes, since FFmpeg outputs in planar mode</span>
+<span class="c1"># re-organize bytes, since FFmpeg outputs in planar mode</span>
 <span class="n">vid_yuv444</span> <span class="o">=</span> <span class="n">vid_yuv444</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span> <span class="o">*</span> <span class="n">N</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">vid_yuv444</span> <span class="o">=</span> <span class="n">vid_yuv444</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
 <span class="n">vid_yuv444</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vid_yuv444</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
 
-<span class="c"># visualize</span>
-<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s">&quot;luma.mp4&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s">&quot;chroma1.mp4&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s">&quot;chroma2.mp4&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="c1"># visualize</span>
+<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s2">&quot;luma.mp4&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s2">&quot;chroma1.mp4&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s2">&quot;chroma2.mp4&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">])</span>
 
-<span class="c"># write out the first frame of each video</span>
-<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s">&quot;vid_luma_frame1.png&quot;</span><span class="p">,</span> <span class="n">vid_luma</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s">&quot;vid_rgb_frame1.png&quot;</span><span class="p">,</span> <span class="n">vid_rgb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># write out the first frame of each video</span>
+<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s2">&quot;vid_luma_frame1.png&quot;</span><span class="p">,</span> <span class="n">vid_luma</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s2">&quot;vid_rgb_frame1.png&quot;</span><span class="p">,</span> <span class="n">vid_rgb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s">&quot;vid_chroma1.png&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s">&quot;vid_chroma2.png&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s2">&quot;vid_chroma1.png&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">skimage</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="s2">&quot;vid_chroma2.png&quot;</span><span class="p">,</span> <span class="n">vid_yuv444</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </td></tr></table></div>
 <p>Luminance video (luma.mp4)</p>
@@ -265,7 +265,7 @@ Video Reading and Writing
 <div class="section" id="video-writing-with-quality">
 <h1>Video Writing with Quality<a class="headerlink" href="#video-writing-with-quality" title="Permalink to this headline">¶</a></h1>
 <p>Specifying FFmpeg parameters using the outputdict parameter allows for higher video quality. As you change the bitrate through the &#8220;-b&#8221; parameter, the video output approaches the fidelity of the original signal.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -291,18 +291,18 @@ Video Reading and Writing
 24
 25
 26
-27</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
 <span class="kn">import</span> <span class="nn">skvideo.measure</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<span class="n">outputfile</span> <span class="o">=</span> <span class="s">&quot;test.mp4&quot;</span>
+<span class="n">outputfile</span> <span class="o">=</span> <span class="s2">&quot;test.mp4&quot;</span>
 <span class="n">outputdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="mi">255</span>
 <span class="n">outputdata</span> <span class="o">=</span> <span class="n">outputdata</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
-<span class="c"># start the FFmpeg writing subprocess with following parameters</span>
+<span class="c1"># start the FFmpeg writing subprocess with following parameters</span>
 <span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span>
-  <span class="s">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="s">&#39;-b&#39;</span><span class="p">:</span> <span class="s">&#39;300000000&#39;</span>
+  <span class="s1">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s1">&#39;libx264&#39;</span><span class="p">,</span> <span class="s1">&#39;-b&#39;</span><span class="p">:</span> <span class="s1">&#39;300000000&#39;</span>
 <span class="p">})</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
@@ -311,13 +311,13 @@ Video Reading and Writing
 
 <span class="n">inputdata</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">outputfile</span><span class="p">)</span>
 
-<span class="c"># test each frame&#39;s SSIM score</span>
+<span class="c1"># test each frame&#39;s SSIM score</span>
 <span class="n">mSSIM</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
   <span class="n">mSSIM</span> <span class="o">+=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">ssim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">inputdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">outputdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 
 <span class="n">mSSIM</span> <span class="o">/=</span> <span class="mf">30.0</span>
-<span class="k">print</span> <span class="n">mSSIM</span>
+<span class="nb">print</span> <span class="n">mSSIM</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -335,7 +335,7 @@ Video Reading and Writing
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>

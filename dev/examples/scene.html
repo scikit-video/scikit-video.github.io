@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Detecting scene boundaries &mdash; scikit-video 1.1.7 documentation</title>
+    <title>Detecting scene boundaries &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -31,8 +32,7 @@
     <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="../index.html" />
-    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Computing motion" href="motion.html" />
     <link rel="prev" title="Video Reading and Writing" href="io.html" />
 <meta charset='utf-8'>
@@ -41,7 +41,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -103,7 +103,7 @@ Detecting scene boundaries
   <div class="section" id="detecting-scene-boundaries">
 <span id="sceneexample"></span><h1>Detecting scene boundaries<a class="headerlink" href="#detecting-scene-boundaries" title="Permalink to this headline">¶</a></h1>
 <p>For this example, the luminance and edge-based scene detection algorithms are compared.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -172,25 +172,25 @@ Detecting scene boundaries
 67
 68
 69
-70</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+70</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
 <span class="kn">import</span> <span class="nn">skvideo.datasets</span>
 <span class="kn">import</span> <span class="nn">skvideo.measure</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="k">def</span> <span class="nf">getPlot</span><span class="p">(</span><span class="n">edgelist1</span><span class="p">,</span> <span class="n">edgelist2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
     <span class="n">myDPI</span> <span class="o">=</span> <span class="mf">100.0</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="n">myDPI</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="n">myDPI</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">myDPI</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;histogram algorithm&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;histogram algorithm&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgelist1</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;edges algorithm&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;edges algorithm&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgelist2</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span>
@@ -199,7 +199,7 @@ Detecting scene boundaries
     <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
  
-    <span class="c"># Get the RGBA buffer from the figure</span>
+    <span class="c1"># Get the RGBA buffer from the figure</span>
     <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_width_height</span><span class="p">()</span>
     <span class="n">buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">tostring_argb</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
     <span class="n">buf</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -212,27 +212,27 @@ Detecting scene boundaries
 
 <span class="n">videodata</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 <span class="n">videometadata</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ffprobe</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<span class="n">frame_rate</span> <span class="o">=</span> <span class="n">videometadata</span><span class="p">[</span><span class="s">&#39;video&#39;</span><span class="p">][</span><span class="s">&#39;@avg_frame_rate&#39;</span><span class="p">]</span>
-<span class="n">num_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">videometadata</span><span class="p">[</span><span class="s">&#39;video&#39;</span><span class="p">][</span><span class="s">&#39;@nb_frames&#39;</span><span class="p">])</span>
-<span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">videometadata</span><span class="p">[</span><span class="s">&#39;video&#39;</span><span class="p">][</span><span class="s">&#39;@width&#39;</span><span class="p">])</span>
-<span class="n">height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">videometadata</span><span class="p">[</span><span class="s">&#39;video&#39;</span><span class="p">][</span><span class="s">&#39;@height&#39;</span><span class="p">])</span>
+<span class="n">frame_rate</span> <span class="o">=</span> <span class="n">videometadata</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@avg_frame_rate&#39;</span><span class="p">]</span>
+<span class="n">num_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">videometadata</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@nb_frames&#39;</span><span class="p">])</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">videometadata</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@width&#39;</span><span class="p">])</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">videometadata</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@height&#39;</span><span class="p">])</span>
 
-<span class="c"># using the &quot;edge&quot; algorithm</span>
-<span class="n">scene_edge_idx</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">scenedet</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;edges&#39;</span><span class="p">)</span>
+<span class="c1"># using the &quot;edge&quot; algorithm</span>
+<span class="n">scene_edge_idx</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">scenedet</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;edges&#39;</span><span class="p">)</span>
 <span class="n">scene_edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_frames</span><span class="p">,))</span>
 <span class="n">scene_edge</span><span class="p">[</span><span class="n">scene_edge_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-<span class="c"># using the &quot;luminance&quot; algorithm</span>
-<span class="n">scene_lum_idx</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">scenedet</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;histogram&#39;</span><span class="p">,</span> <span class="n">parameter1</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="c1"># using the &quot;luminance&quot; algorithm</span>
+<span class="n">scene_lum_idx</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">scenedet</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;histogram&#39;</span><span class="p">,</span> <span class="n">parameter1</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">scene_lum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_frames</span><span class="p">,))</span>
 <span class="n">scene_lum</span><span class="p">[</span><span class="n">scene_lum_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-<span class="c"># make a video that tracks the scene cuts as the video plays</span>
-<span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s">&quot;scene_cuts.mp4&quot;</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="p">{</span>
-    <span class="s">&quot;-r&quot;</span><span class="p">:</span> <span class="n">frame_rate</span><span class="p">,</span>
+<span class="c1"># make a video that tracks the scene cuts as the video plays</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s2">&quot;scene_cuts.mp4&quot;</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;-r&quot;</span><span class="p">:</span> <span class="n">frame_rate</span><span class="p">,</span>
 <span class="p">})</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">num_frames</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">num_frames</span><span class="p">):</span>
     <span class="n">outputframe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
     <span class="n">chart</span> <span class="o">=</span> <span class="n">getPlot</span><span class="p">(</span><span class="n">scene_lum</span><span class="p">,</span> <span class="n">scene_edge</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">)</span>
@@ -260,7 +260,7 @@ Detecting scene boundaries
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>

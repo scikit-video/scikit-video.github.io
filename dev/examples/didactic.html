@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Miscellaneous Video Demonstrations &mdash; scikit-video 1.1.7 documentation</title>
+    <title>Miscellaneous Video Demonstrations &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -31,8 +32,7 @@
     <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="../index.html" />
-    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Benchmarking scikit-video" href="../benchmarks.html" />
     <link rel="prev" title="Computing motion" href="motion.html" />
 <meta charset='utf-8'>
@@ -41,7 +41,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -105,7 +105,7 @@ Miscellaneous Video Demonstrations
 <div class="section" id="visualizing-growth-of-sparse-filters">
 <h2>Visualizing growth of sparse filters<a class="headerlink" href="#visualizing-growth-of-sparse-filters" title="Permalink to this headline">¶</a></h2>
 <p>Videos can be made of sparse filters evolving over time. Below is a code snippet implementing the K-SVD algorithm. The purpose of the snippet is to visualize the state of sparse basis functions at they are iteratively refined.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
   4
@@ -221,34 +221,34 @@ Miscellaneous Video Demonstrations
 114
 115
 116
-117</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+117</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
 <span class="kn">import</span> <span class="nn">skvideo.datasets</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">gridspec</span>
 <span class="kn">import</span> <span class="nn">sklearn.linear_model</span>
-<span class="kn">from</span> <span class="nn">sklearn.feature_extraction</span> <span class="kn">import</span> <span class="n">image</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction</span> <span class="k">import</span> <span class="n">image</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="c"># use greedy K-SVD algorithm with OMP</span>
+<span class="c1"># use greedy K-SVD algorithm with OMP</span>
 <span class="k">def</span> <span class="nf">code_step</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
   <span class="n">model</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">linear_model</span><span class="o">.</span><span class="n">OrthogonalMatchingPursuit</span><span class="p">(</span>
-          <span class="n">n_nonzero_coefs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span>
+          <span class="n">n_nonzero_coefs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span>
   <span class="p">)</span>
-  <span class="c">#C = sklearn.</span>
+  <span class="c1">#C = sklearn.</span>
   <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span>
 
 <span class="k">def</span> <span class="nf">dict_step</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
   <span class="n">unused_indices</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
     <span class="n">usedidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">C</span><span class="p">[:,</span> <span class="n">k</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">0</span>
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">usedidx</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-      <span class="k">print</span> <span class="s">&quot;Skipping filter #</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,)</span>
+      <span class="nb">print</span> <span class="s2">&quot;Skipping filter #</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,)</span>
       <span class="n">unused_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
       <span class="k">continue</span>
 
@@ -259,7 +259,7 @@ Miscellaneous Video Demonstrations
 
     <span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svds</span><span class="p">(</span><span class="n">E_kR</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="c"># choose sign based on largest dot product</span>
+    <span class="c1"># choose sign based on largest dot product</span>
     <span class="n">choicepos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">k</span><span class="p">,:],</span> <span class="n">U</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
     <span class="n">choiceneg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">k</span><span class="p">,:],</span> <span class="o">-</span><span class="n">U</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
 
@@ -271,7 +271,7 @@ Miscellaneous Video Demonstrations
       <span class="n">C</span><span class="p">[</span><span class="n">usedidx</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
 
 
-  <span class="c"># re-randomize filters that were not used</span>
+  <span class="c1"># re-randomize filters that were not used</span>
   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unused_indices</span><span class="p">:</span>
     <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span> <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,:]))</span>
@@ -286,13 +286,13 @@ Miscellaneous Video Demonstrations
     <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
     <span class="n">rown</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">coln</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>
+    <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">rown</span><span class="p">,</span> <span class="n">coln</span><span class="p">])</span>
             <span class="n">mi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">basis</span><span class="p">[</span><span class="nb">filter</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
             <span class="n">ma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">basis</span><span class="p">[</span><span class="nb">filter</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
             <span class="n">ma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mi</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ma</span><span class="p">)))</span>
             <span class="n">mi</span> <span class="o">=</span> <span class="o">-</span><span class="n">ma</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">basis</span><span class="p">[</span><span class="nb">filter</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">vmin</span><span class="o">=</span><span class="n">mi</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">ma</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;Greys_r&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">basis</span><span class="p">[</span><span class="nb">filter</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">vmin</span><span class="o">=</span><span class="n">mi</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">ma</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys_r&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullLocator</span><span class="p">())</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullLocator</span><span class="p">())</span>
             <span class="n">coln</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -306,20 +306,20 @@ Miscellaneous Video Demonstrations
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">data</span>
 
-<span class="c"># a 5 fps video encoded using x264</span>
-<span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s">&quot;sparsity.mp4&quot;</span><span class="p">,</span> 
+<span class="c1"># a 5 fps video encoded using x264</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s2">&quot;sparsity.mp4&quot;</span><span class="p">,</span> 
   <span class="n">inputdict</span><span class="o">=</span><span class="p">{</span>
-    <span class="s">&quot;-r&quot;</span><span class="p">:</span> <span class="s">&quot;10&quot;</span>
+    <span class="s2">&quot;-r&quot;</span><span class="p">:</span> <span class="s2">&quot;10&quot;</span>
   <span class="p">},</span>
   <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span>
-  <span class="s">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="s">&#39;-b&#39;</span><span class="p">:</span> <span class="s">&#39;30000000&#39;</span>
+  <span class="s1">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s1">&#39;libx264&#39;</span><span class="p">,</span> <span class="s1">&#39;-b&#39;</span><span class="p">:</span> <span class="s1">&#39;30000000&#39;</span>
 <span class="p">})</span>
 
-<span class="c"># open the first frame of bigbuckbunny</span>
+<span class="c1"># open the first frame of bigbuckbunny</span>
 <span class="n">filename</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">()</span>
-<span class="n">vidframe</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s">&quot;gray&quot;</span><span class="p">})[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">vidframe</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">})[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
 
-<span class="c"># initialize D</span>
+<span class="c1"># initialize D</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">7</span><span class="o">*</span><span class="mi">7</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
   <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span> <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,:]))</span>
@@ -328,11 +328,11 @@ Miscellaneous Video Demonstrations
 <span class="n">X</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">extract_patches_2d</span><span class="p">(</span><span class="n">vidframe</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
 
-<span class="c"># sumsample about 10000 patches</span>
+<span class="c1"># sumsample about 10000 patches</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="mi">10000</span><span class="p">]]</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
-  <span class="k">print</span> <span class="s">&quot;Iteration </span><span class="si">%d</span><span class="s"> / </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+  <span class="nb">print</span> <span class="s2">&quot;Iteration </span><span class="si">%d</span><span class="s2"> / </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
   <span class="n">C</span> <span class="o">=</span> <span class="n">code_step</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
   <span class="n">D</span> <span class="o">=</span> <span class="n">dict_step</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
   <span class="n">frame</span> <span class="o">=</span> <span class="n">plot_weights</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
@@ -345,7 +345,7 @@ Miscellaneous Video Demonstrations
 <div class="section" id="selectively-manipulating-frames">
 <h2>Selectively manipulating frames<a class="headerlink" href="#selectively-manipulating-frames" title="Permalink to this headline">¶</a></h2>
 <p>If you want to create a corrupted version of a video, you can use the FFmpegReader/FFmpegWriter in combination. Just make sure that you pass the video metadata along, or you may get incorrect output video (such as incorrect framerate). Provided below is an example corrupting one frame from the source video with white noise:</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -370,28 +370,28 @@ Miscellaneous Video Demonstrations
 23
 24
 25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">skvideo.io</span>
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
 <span class="kn">import</span> <span class="nn">skvideo.datasets</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">filename</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">()</span>
 
 <span class="n">vid_in</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegReader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ffprobe</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="s">&#39;video&#39;</span><span class="p">]</span>
-<span class="n">rate</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;@r_frame_rate&#39;</span><span class="p">]</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;@nb_frames&#39;</span><span class="p">])</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ffprobe</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="s1">&#39;video&#39;</span><span class="p">]</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;@r_frame_rate&#39;</span><span class="p">]</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;@nb_frames&#39;</span><span class="p">])</span>
 
-<span class="n">vid_out</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s">&quot;corrupted_video.mp4&quot;</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="p">{</span>
-      <span class="s">&#39;-r&#39;</span><span class="p">:</span> <span class="n">rate</span><span class="p">,</span>
+<span class="n">vid_out</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s2">&quot;corrupted_video.mp4&quot;</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="p">{</span>
+      <span class="s1">&#39;-r&#39;</span><span class="p">:</span> <span class="n">rate</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="n">outputdict</span><span class="o">=</span><span class="p">{</span>
-      <span class="s">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s">&#39;libx264&#39;</span><span class="p">,</span>
-      <span class="s">&#39;-pix_fmt&#39;</span><span class="p">:</span> <span class="s">&#39;yuv420p&#39;</span><span class="p">,</span>
-      <span class="s">&#39;-r&#39;</span><span class="p">:</span> <span class="n">rate</span><span class="p">,</span>
+      <span class="s1">&#39;-vcodec&#39;</span><span class="p">:</span> <span class="s1">&#39;libx264&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;-pix_fmt&#39;</span><span class="p">:</span> <span class="s1">&#39;yuv420p&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;-r&#39;</span><span class="p">:</span> <span class="n">rate</span><span class="p">,</span>
 <span class="p">})</span>
 <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vid_in</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">()):</span>
-  <span class="k">print</span> <span class="s">&quot;Writing frame </span><span class="si">%d</span><span class="s">/</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+  <span class="nb">print</span> <span class="s2">&quot;Writing frame </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)):</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
   <span class="n">vid_out</span><span class="o">.</span><span class="n">writeFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -415,7 +415,7 @@ Miscellaneous Video Demonstrations
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>

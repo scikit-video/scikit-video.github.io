@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>skvideo.motion &mdash; scikit-video 1.1.7 documentation</title>
+    <title>skvideo.measure.niqe &#8212; scikit-video 1.1.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -19,7 +19,8 @@
         VERSION:     '1.1.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -31,15 +32,16 @@
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
-    <link rel="top" title="scikit-video 1.1.7 documentation" href="../../index.html" />
-    <link rel="up" title="skvideo" href="../skvideo.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Test Datasets" href="../datasets.html" />
+    <link rel="prev" title="skvideo.measure.viideo_score" href="skvideo.measure.viideo_score.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -68,9 +70,9 @@
   </div>
 
 <div class='container'>
-<a href='../index.html'>Module code</a> >>
+<a href='../../classes.html'>API Reference</a> >>
 
-skvideo.motion
+<code class="docutils literal"><span class="pre">skvideo.measure</span></code>.niqe
 
 </div>
 
@@ -98,19 +100,46 @@ skvideo.motion
       </div>
     <div class="col-md-9 content">
       
-  <h1>Source code for skvideo.motion</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;Utilities to handle motion in video</span>
-<span class="sd">&quot;&quot;&quot;</span>
+  <div class="section" id="skvideo-measure-niqe">
+<h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></code></a>.niqe<a class="headerlink" href="#skvideo-measure-niqe" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="skvideo.measure.niqe">
+<code class="descclassname">skvideo.measure.</code><code class="descname">niqe</code><span class="sig-paren">(</span><em>inputVideoData</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/measure/niqe.html#niqe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.measure.niqe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Naturalness Image Quality Evaluator. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<p>Input a video of any quality and get back its distance frame-by-frame
+from naturalness.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>inputVideoData</strong> : ndarray</p>
+<blockquote>
+<div><p>Input video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),
+where T is the number of frames, M is the height, N is width,
+and C is number of channels. Here C is only allowed to be 1.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>niqe_array</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>The niqe results, ndarray of dimension (T,), where T
+is the number of frames</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Mittal, Anish, Rajiv Soundararajan, and Alan C. Bovik. &#8220;Making a &#8216;completely blind&#8217; image quality analyzer.&#8221; IEEE Signal Processing Letters 20.3 (2013): 209-212.</td></tr>
+</tbody>
+</table>
+</dd></dl>
 
-<span class="kn">from</span> <span class="nn">.block</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.gme</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="clearer"></div></div>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">&#39;blockMotion&#39;</span><span class="p">,</span>
-    <span class="s">&#39;blockComp&#39;</span><span class="p">,</span>
-    <span class="s">&#39;globalEdgeMotion&#39;</span>
-<span class="p">]</span>
-</pre></div>
 
     </div>
       
@@ -124,7 +153,7 @@ skvideo.motion
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
 </footer>
