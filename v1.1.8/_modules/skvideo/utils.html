@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>skvideo.utils &#8212; scikit-video 1.1.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.1.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../index.html"><img class="navbar-brand-img" src="../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.8</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../index.html'>Module code</a> >>
+
+skvideo.utils
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../index.html">Home</a></li></ul>
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Various utility functions for manipulating video data</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">.xmltodict</span> <span class="k">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmltodictparser</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.edge</span> <span class="k">import</span> <span class="n">canny</span>
+<span class="kn">from</span> <span class="nn">.stpyr</span> <span class="k">import</span> <span class="n">SpatialSteerablePyramid</span>
+<span class="kn">from</span> <span class="nn">.mscn</span> <span class="k">import</span> <span class="n">compute_image_mscn_transform</span><span class="p">,</span> <span class="n">gen_gauss_window</span>
+<span class="kn">from</span> <span class="nn">.stats</span> <span class="k">import</span> <span class="n">ggd_features</span><span class="p">,</span> <span class="n">aggd_features</span><span class="p">,</span> <span class="n">paired_product</span>
+
+<span class="c1"># dictionary based on pix_fmt keys</span>
+<span class="c1"># first element is number of components</span>
+<span class="c1"># second element is number of bits per pixel</span>
+<span class="n">bpplut</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuyv422&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv410p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv411p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gray&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;monow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;monob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;pal8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuvj420p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuvj422p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuvj444p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;xvmcmc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;xvmcidct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;uyvy422&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;uyyvyy411&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr4&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr4_byte&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb4&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb4_byte&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;nv12&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;nv21&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;argb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgba&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;abgr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gray16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gray16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv440p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuvj440p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau_h264&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau_mpeg1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau_mpeg2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau_wmv3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau_vc1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb48be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb48le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb565be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb565le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb555be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb555le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr565be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr565le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr555be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr555le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vaapi_moco&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vaapi_idct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vaapi_vld&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau_mpeg4&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;dxva2_vld&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb444le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb444be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr444le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr444be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;ya8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr48be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr48le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">18</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">18</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vda_vld&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p9be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p9le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">40</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">40</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">40</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva420p16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">40</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vdpau&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;xyz12le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;xyz12be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;nv16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;nv20le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;nv20be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yvyu422&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;vda&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;ya16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;ya16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;qsv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;mmal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;d3d11va_vld&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgba64be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgba64le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgra64be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgra64le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;0rgb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;rgb0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;0bgr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bgr0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva444p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuva422p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p12be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">18</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p12le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">18</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p14be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">21</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv420p14le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">21</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p12be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p12le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p14be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">28</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv422p14le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">28</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p12be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p12le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p14be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv444p14le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp12be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp12le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp14be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrp14le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrap16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;gbrap16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuvj411p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_bggr8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_rggb8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_gbrg8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_grbg8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_bggr16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_bggr16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_rggb16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_rggb16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_gbrg16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_gbrg16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_grbg16le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;bayer_grbg16be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv440p10le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv440p10be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv440p12le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;yuv440p12be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;ayuv64le&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;ayuv64be&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">bpplut</span><span class="p">[</span><span class="s2">&quot;videotoolbox_vld&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+
+
+<span class="c1"># python2 only</span>
+<span class="n">binary_type</span> <span class="o">=</span> <span class="nb">str</span>
+
+<span class="k">def</span> <span class="nf">check_dict</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">valueifnot</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">valueifnot</span>
+
+
+<span class="c1"># patch for python 2.6</span>
+<span class="k">def</span> <span class="nf">check_output</span><span class="p">(</span><span class="o">*</span><span class="n">popenargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">closeNULL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">DEVNULL</span>
+        <span class="n">closeNULL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">os</span>
+        <span class="n">DEVNULL</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">closeNULL</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">process</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">DEVNULL</span><span class="p">,</span> <span class="o">*</span><span class="n">popenargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">unused_err</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="n">retcode</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">closeNULL</span><span class="p">:</span>
+        <span class="n">DEVNULL</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">retcode</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cmd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">popenargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span><span class="n">retcode</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+        <span class="n">error</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
+        <span class="k">raise</span> <span class="n">error</span>
+    <span class="k">return</span> <span class="n">output</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># on py27 make map/filter behave like an iterator</span>
+    <span class="nb">map</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">ifilter</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+    <span class="c1"># py3+</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">where</span><span class="p">(</span> <span class="n">filename</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns all matching file paths. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iwhere</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">first</span><span class="p">(</span> <span class="n">filename</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns first matching file path. &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">iwhere</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">iwhere</span><span class="p">(</span> <span class="n">filename</span> <span class="p">):</span>
+    <span class="n">possible_paths</span> <span class="o">=</span> <span class="n">_gen_possible_matches</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">existing_file_paths</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">,</span> <span class="n">possible_paths</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">existing_file_paths</span>
+
+<span class="k">def</span> <span class="nf">iter_unique</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="n">yielded</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">yielded</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">yield</span> <span class="n">i</span>
+        <span class="n">yielded</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">imapchain</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kwa</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Like map but also chains the results. &quot;&quot;&quot;</span>
+
+    <span class="n">imap_results</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">imap_results</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_gen_possible_matches</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">path_parts</span> <span class="o">=</span>     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">)</span>
+    <span class="n">path_parts</span> <span class="o">=</span>     <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">,),</span> <span class="n">path_parts</span><span class="p">)</span>
+    <span class="n">possible_paths</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path_part</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_part</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="n">path_parts</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+        <span class="n">possible_paths</span> <span class="o">=</span> <span class="n">imapchain</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="s2">&quot;.bat&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="s2">&quot;.com&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="s2">&quot;.exe&quot;</span><span class="p">),</span> <span class="n">possible_paths</span><span class="p">)</span>
+
+    <span class="n">possible_paths</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">possible_paths</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">iter_unique</span><span class="p">(</span><span class="n">possible_paths</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="vshape"><a class="viewcode-back" href="../../modules/generated/skvideo.utils.vshape.html#skvideo.utils.vshape">[docs]</a><span class="k">def</span> <span class="nf">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Standardizes the input data shape.</span>
+
+<span class="sd">    Transforms video data into the standardized shape (T, M, N, C), where</span>
+<span class="sd">    T is number of frames, M is height, N is width, and C is number of </span>
+<span class="sd">    channels.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    videodata : ndarray</span>
+<span class="sd">        Input data of shape (T, M, N, C), (T, M, N), (M, N, C), or (M, N), where</span>
+<span class="sd">        T is number of frames, M is height, N is width, and C is number of </span>
+<span class="sd">        channels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    videodataout : ndarray</span>
+<span class="sd">        Standardized version of videodata, shape (T, M, N, C)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">videodata</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">videodata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">videodata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> 
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">videodata</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="n">videodata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">videodata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> 
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">videodata</span><span class="o">.</span><span class="n">shape</span>
+        <span class="c1"># check the last dimension small</span>
+        <span class="c1"># interpret as color channel</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">videodata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">videodata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">videodata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="n">videodata</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Improper data input&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="rgb2gray"><a class="viewcode-back" href="../../modules/generated/skvideo.utils.rgb2gray.html#skvideo.utils.rgb2gray">[docs]</a><span class="k">def</span> <span class="nf">rgb2gray</span><span class="p">(</span><span class="n">videodata</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the grayscale video.</span>
+
+<span class="sd">    Computes the grayscale video from the input video returning the </span>
+<span class="sd">    standardized shape (T, M, N, C), where T is number of frames, </span>
+<span class="sd">    M is height, N is width, and C is number of channels (here always 1).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    videodata : ndarray</span>
+<span class="sd">        Input data of shape (T, M, N, C), (T, M, N), (M, N, C), or (M, N), where</span>
+<span class="sd">        T is number of frames, M is height, N is width, and C is number of </span>
+<span class="sd">        channels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    videodataout : ndarray</span>
+<span class="sd">        Standardized grayscaled version of videodata, shape (T, M, N, 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">videodata</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">videodata</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">videodata</span>
+    <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># assume RGB</span>
+        <span class="n">videodata</span> <span class="o">=</span> <span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">0.2989</span> <span class="o">+</span> <span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">0.5870</span> <span class="o">+</span> <span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mf">0.1140</span> 
+        <span class="k">return</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;xmltodictparser&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bpplut&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;where&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;check_output&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb2gray&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;vshape&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;canny&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SpatialSteerablePyramid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;compute_image_mscn_transform&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gen_gauss_window&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;paired_product&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ggd_features&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;aggd_features&#39;</span>
+<span class="p">]</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

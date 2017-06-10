@@ -1,0 +1,12 @@
+:mod:`skvideo.motion`.globalEdgeMotion
+===================================================
+
+.. currentmodule:: skvideo.motion
+
+.. autofunction:: globalEdgeMotion
+
+.. include:: skvideo.motion.globalEdgeMotion.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

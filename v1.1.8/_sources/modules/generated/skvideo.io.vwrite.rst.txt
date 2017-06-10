@@ -1,0 +1,12 @@
+:mod:`skvideo.io`.vwrite
+=====================================
+
+.. currentmodule:: skvideo.io
+
+.. autofunction:: vwrite
+
+.. include:: skvideo.io.vwrite.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

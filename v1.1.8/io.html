@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Reading and Writing Videos &#8212; scikit-video 1.1.8 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Motion Estimation Tools" href="motion.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="index.html"><img class="navbar-brand-img" src="_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.8</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+
+Reading and Writing Videos
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="index.html">Home</a></li></ul><ul class="globaltoc"
+><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reading and Writing Videos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion Estimation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measure.html">Measurement Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Test Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarking scikit-video</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">API Reference</a></li>
+</ul>
+</ul>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="reading-and-writing-videos">
+<span id="input-output"></span><h1>Reading and Writing Videos<a class="headerlink" href="#reading-and-writing-videos" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="modules/io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.io</span></code></a> is a module created for using a FFmpeg/LibAV
+backend to read and write videos. Depending on the available backend, the
+appropriate probing tool (ffprobe, avprobe, or even mediainfo) will be
+used to parse metadata from videos.</p>
+<div class="section" id="reading">
+<h2>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.vread</span></code></a> to load any video (here <cite>bigbuckbunny</cite>) into memory as a single ndarray. Note that this function assumes you have enough memory to do so, and should only be used for small videos.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">skvideo.datasets</span>
+<span class="n">videodata</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vread</span><span class="p">(</span><span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">videodata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Running this code prints:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.vreader</span></code></a> to load any video (here <cite>bigbuckbunny</cite>) frame-by-frame. This is the function to be used for larger files, and is actually faster than loading a video as 1 ndarray. However, it requires handling each frame as it is loaded. An example snippet:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">skvideo.datasets</span>
+<span class="n">videogen</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vreader</span><span class="p">(</span><span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">videogen</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+     <span class="o">...</span>
+     <span class="o">...</span>
+     <span class="o">...</span>
+<span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Sometimes, particular use cases require fine tuning FFmpeg&#8217;s reading parameters. For this, you can use <a class="reference internal" href="modules/generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader" title="skvideo.io.FFmpegReader"><code class="xref py py-class docutils literal"><span class="pre">skvideo.io.FFmpegReader</span></code></a></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">skvideo.datasets</span>
+
+<span class="c1"># here you can set keys and values for parameters in ffmpeg</span>
+<span class="n">inputparameters</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">outputparameters</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegReader</span><span class="p">(</span><span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">(),</span>
+                <span class="n">inputdict</span><span class="o">=</span><span class="n">inputparameters</span><span class="p">,</span>
+                <span class="n">outputdict</span><span class="o">=</span><span class="n">outputparameters</span><span class="p">)</span>
+
+<span class="c1"># iterate through the frames</span>
+<span class="n">accumulation</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">():</span>
+        <span class="c1"># do something with the ndarray frame</span>
+        <span class="n">accumulation</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For example, FFmpegReader will by default return an RGB representation of a video file, but you may want some other color space that FFmpeg supports, by setting appropriate key/values in outputparameters. Since FFmpeg output is piped into stdin, all FFmpeg commands can be used here.</p>
+<p>inputparameters may be useful for raw video which has no header information. Then you should FFmpeg exactly how to interpret your data.</p>
+</div>
+<div class="section" id="writing">
+<h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
+<p>To write an ndarray to a video file, use <code class="xref py py-func docutils literal"><span class="pre">skvideo.io.write</span></code></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">outputdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="mi">255</span>
+<span class="n">outputdata</span> <span class="o">=</span> <span class="n">outputdata</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vwrite</span><span class="p">(</span><span class="s2">&quot;outputvideo.mp4&quot;</span><span class="p">,</span> <span class="n">outputdata</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Often, writing videos requires fine tuning FFmpeg&#8217;s writing parameters to select encoders, framerates, bitrates, etc. For this, you can use <a class="reference internal" href="modules/generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter" title="skvideo.io.FFmpegWriter"><code class="xref py py-class docutils literal"><span class="pre">skvideo.io.FFmpegWriter</span></code></a></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">outputdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="mi">255</span>
+<span class="n">outputdata</span> <span class="o">=</span> <span class="n">outputdata</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="n">writer</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FFmpegWriter</span><span class="p">(</span><span class="s2">&quot;outputvideo.mp4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writeFrame</span><span class="p">(</span><span class="n">outputdata</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:])</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reading-video-metadata">
+<h2>Reading Video Metadata<a class="headerlink" href="#reading-video-metadata" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.ffprobe</span></code></a> to find video metadata. As below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">skvideo.datasets</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ffprobe</span><span class="p">(</span><span class="n">skvideo</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">bigbuckbunny</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;video&quot;</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="modules/generated/skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.ffprobe</span></code></a> returns a dictionary, which can be passed into json.dumps for pretty printing. See the below output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;audio&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;video&#39;</span><span class="p">]</span>
+<span class="p">{</span>
+    <span class="s2">&quot;@index&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@codec_name&quot;</span><span class="p">:</span> <span class="s2">&quot;h264&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@codec_long_name&quot;</span><span class="p">:</span> <span class="s2">&quot;H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@profile&quot;</span><span class="p">:</span> <span class="s2">&quot;Main&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@codec_type&quot;</span><span class="p">:</span> <span class="s2">&quot;video&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@codec_time_base&quot;</span><span class="p">:</span> <span class="s2">&quot;1/50&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@codec_tag_string&quot;</span><span class="p">:</span> <span class="s2">&quot;avc1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@codec_tag&quot;</span><span class="p">:</span> <span class="s2">&quot;0x31637661&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@width&quot;</span><span class="p">:</span> <span class="s2">&quot;1280&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@height&quot;</span><span class="p">:</span> <span class="s2">&quot;720&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@coded_width&quot;</span><span class="p">:</span> <span class="s2">&quot;1280&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@coded_height&quot;</span><span class="p">:</span> <span class="s2">&quot;720&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@has_b_frames&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@sample_aspect_ratio&quot;</span><span class="p">:</span> <span class="s2">&quot;1:1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@display_aspect_ratio&quot;</span><span class="p">:</span> <span class="s2">&quot;16:9&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@pix_fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;yuv420p&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@level&quot;</span><span class="p">:</span> <span class="s2">&quot;31&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@chroma_location&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@refs&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@is_avc&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@nal_length_size&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@r_frame_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;25/1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@avg_frame_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;25/1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@time_base&quot;</span><span class="p">:</span> <span class="s2">&quot;1/12800&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@start_pts&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@duration_ts&quot;</span><span class="p">:</span> <span class="s2">&quot;67584&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@duration&quot;</span><span class="p">:</span> <span class="s2">&quot;5.280000&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@bit_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;1205959&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@bits_per_raw_sample&quot;</span><span class="p">:</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@nb_frames&quot;</span><span class="p">:</span> <span class="s2">&quot;132&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;disposition&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;@default&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@dub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@original&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@comment&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@lyrics&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@karaoke&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@forced&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@hearing_impaired&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@visual_impaired&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@clean_effects&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@attached_pic&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;@key&quot;</span><span class="p">:</span> <span class="s2">&quot;creation_time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@value&quot;</span><span class="p">:</span> <span class="s2">&quot;1970-01-01 00:00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;@key&quot;</span><span class="p">:</span> <span class="s2">&quot;language&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@value&quot;</span><span class="p">:</span> <span class="s2">&quot;und&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;@key&quot;</span><span class="p">:</span> <span class="s2">&quot;handler_name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@value&quot;</span><span class="p">:</span> <span class="s2">&quot;VideoHandler&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

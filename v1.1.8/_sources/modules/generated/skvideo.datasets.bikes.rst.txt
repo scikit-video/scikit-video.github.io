@@ -1,0 +1,12 @@
+:mod:`skvideo.datasets`.bikes
+==========================================
+
+.. currentmodule:: skvideo.datasets
+
+.. autofunction:: bikes
+
+.. include:: skvideo.datasets.bikes.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
