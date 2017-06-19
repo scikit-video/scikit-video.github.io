@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -39,7 +38,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -99,7 +98,7 @@ Image Reading and Writing
       
   <div class="section" id="image-reading-and-writing">
 <span id="ioexampleimages"></span><h1>Image Reading and Writing<a class="headerlink" href="#image-reading-and-writing" title="Permalink to this headline">¶</a></h1>
-<p>The trivial video is a video of 1 frame. This is how images are interpreted by scikit-video. Let&#8217;s walk through the following example for interpreting images:</p>
+<p>The trivial video is a video of 1 frame. This is how images are interpreted by scikit-video. Let’s walk through the following example for interpreting images:</p>
 <div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -129,7 +128,7 @@ Image Reading and Writing
 </pre></div>
 </div>
 <p>As you can see, the 1280x720 sized image has loaded without problems, and is treated as a rgb video with 1 frame.</p>
-<p>If you&#8217;d like to upscale this image during loading, you can run the following:</p>
+<p>If you’d like to upscale this image during loading, you can run the following:</p>
 <div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -168,8 +167,8 @@ Image Reading and Writing
 <span class="n">Number</span> <span class="n">of</span> <span class="n">channels</span><span class="p">:</span> <span class="mi">3</span>
 </pre></div>
 </div>
-<p>Notice that the upscaling type is set to &#8220;bilinear&#8221; by simply writing it out in plain English. You can also upscale using other parameters that ffmpeg/avconv support.</p>
-<p>Note that although ffmpeg/avconv supports relative scaling, scikit-video doesn&#8217;t support that yet. Future support can be added by parsing the video filter &#8220;-vf&#8221; commands, so that scikit-video is aware of the buffer size expected from the ffmpeg/avconv subprocess.</p>
+<p>Notice that the upscaling type is set to “bilinear” by simply writing it out in plain English. You can also upscale using other parameters that ffmpeg/avconv support.</p>
+<p>Note that although ffmpeg/avconv supports relative scaling, scikit-video doesn’t support that yet. Future support can be added by parsing the video filter “-vf” commands, so that scikit-video is aware of the buffer size expected from the ffmpeg/avconv subprocess.</p>
 <p>Of course, images can be written just as easily as they can be read.</p>
 <div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -208,7 +207,7 @@ Image Reading and Writing
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.<br/>
     </p>
   </div>
 </footer>

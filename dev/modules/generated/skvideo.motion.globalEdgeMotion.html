@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -41,7 +40,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -104,7 +103,7 @@
 <h1><a class="reference internal" href="../motion.html#module-skvideo.motion" title="skvideo.motion"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.motion</span></code></a>.globalEdgeMotion<a class="headerlink" href="#skvideo-motion-globaledgemotion" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.motion.globalEdgeMotion">
-<code class="descclassname">skvideo.motion.</code><code class="descname">globalEdgeMotion</code><span class="sig-paren">(</span><em>frame1</em>, <em>frame2</em>, <em>r=6</em>, <em>method='hamming'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/motion/gme.html#globalEdgeMotion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.motion.globalEdgeMotion" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.motion.</code><code class="descname">globalEdgeMotion</code><span class="sig-paren">(</span><em>frame1</em>, <em>frame2</em>, <em>r=6</em>, <em>method=’hamming’</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/motion/gme.html#globalEdgeMotion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.motion.globalEdgeMotion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global motion estimation using edge features</p>
 <p>Given two frames, find a robust global translation vector
 found using edge information.</p>
@@ -126,8 +125,8 @@ found using edge information.</p>
 </div></blockquote>
 <p><strong>method</strong> : string</p>
 <blockquote>
-<div><p>&#8220;hamming&#8221; &#8211;&gt; use Hamming distance when measuring edge correspondence distances. The distance used in the census transform. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
-<p>&#8220;hausdorff&#8221; &#8211;&gt; use Hausdorff distance when measuring edge correspondence distances. <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
+<div><p>“hamming” –&gt; use Hamming distance when measuring edge correspondence distances. The distance used in the census transform. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<p>“hausdorff” –&gt; use Hausdorff distance when measuring edge correspondence distances. <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
 </div></blockquote>
 </td>
 </tr>
@@ -169,7 +168,7 @@ found using edge information.</p>
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.<br/>
     </p>
   </div>
 </footer>

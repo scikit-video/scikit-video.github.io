@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -41,7 +40,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -104,7 +103,7 @@
 <h1><a class="reference internal" href="../measure.html#module-skvideo.measure" title="skvideo.measure"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></code></a>.scenedet<a class="headerlink" href="#skvideo-measure-scenedet" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skvideo.measure.scenedet">
-<code class="descclassname">skvideo.measure.</code><code class="descname">scenedet</code><span class="sig-paren">(</span><em>videodata</em>, <em>method='histogram'</em>, <em>parameter1=None</em>, <em>min_scene_length=2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/measure/scene.html#scenedet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.measure.scenedet" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skvideo.measure.</code><code class="descname">scenedet</code><span class="sig-paren">(</span><em>videodata</em>, <em>method=’histogram’</em>, <em>parameter1=None</em>, <em>min_scene_length=2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/measure/scene.html#scenedet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.measure.scenedet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scene detection algorithms</p>
 <p>Given a sequence of frames, this function
 is able to run find the first index of new
@@ -119,9 +118,9 @@ scenes.</p>
 </div></blockquote>
 <p><strong>method</strong> : string</p>
 <blockquote>
-<div><p>&#8220;histogram&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 1.0) approach using intensity histogram differences. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
-<p>&#8220;edges&#8221; &#8211;&gt; threshold-based (parameter1 defaults to 0.5) approach measuring the edge-change fraction after global motion compensation <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
-<p>&#8220;intensity&#8221; &#8211;&gt; Detects fast cuts using changes in colour and intensity between frames. Parameter1 is the threshold used for detection, which defaults to 30.0.</p>
+<div><p>“histogram” –&gt; threshold-based (parameter1 defaults to 1.0) approach using intensity histogram differences. <a class="footnote-reference" href="#f1" id="id1">[1]</a></p>
+<p>“edges” –&gt; threshold-based (parameter1 defaults to 0.5) approach measuring the edge-change fraction after global motion compensation <a class="footnote-reference" href="#f2" id="id2">[2]</a></p>
+<p>“intensity” –&gt; Detects fast cuts using changes in colour and intensity between frames. Parameter1 is the threshold used for detection, which defaults to 30.0.</p>
 </div></blockquote>
 <p><strong>parameter1</strong> : int</p>
 <blockquote>
@@ -171,7 +170,7 @@ scenes.</p>
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.<br/>
     </p>
   </div>
 </footer>
