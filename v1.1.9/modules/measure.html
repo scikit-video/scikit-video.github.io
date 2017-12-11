@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Measurement Tools &#8212; scikit-video 1.1.9 documentation</title>
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skvideo.measure.strred" href="generated/skvideo.measure.strred.html" />
+    <link rel="prev" title="skvideo.motion.globalEdgeMotion" href="generated/skvideo.motion.globalEdgeMotion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../index.html"><img class="navbar-brand-img" src="../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.9</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../classes.html'>API Reference</a> >>
+
+Measurement Tools
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../index.html">Home</a></li></ul>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="measurement-tools">
+<h1>Measurement Tools<a class="headerlink" href="#measurement-tools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-skvideo.measure">
+<span id="skvideo-measure-measurement-routines"></span><span id="measure-ref"></span><h2><a class="reference internal" href="#module-skvideo.measure" title="skvideo.measure"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.measure</span></code></a>: Measurement routines<a class="headerlink" href="#module-skvideo.measure" title="Permalink to this headline">¶</a></h2>
+<p>Measurement and quality assessment tools.</p>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.strred.html#skvideo.measure.strred" title="skvideo.measure.strred"><code class="xref py py-obj docutils literal"><span class="pre">strred</span></code></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes Spatio-Temporal Reduced Reference Entropic Differencing (ST-RRED) Index.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.ssim.html#skvideo.measure.ssim" title="skvideo.measure.ssim"><code class="xref py py-obj docutils literal"><span class="pre">ssim</span></code></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes Structural Similarity (SSIM) Index.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.msssim.html#skvideo.measure.msssim" title="skvideo.measure.msssim"><code class="xref py py-obj docutils literal"><span class="pre">msssim</span></code></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes Multiscale Structural Similarity (MS-SSIM) Index.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.mse.html#skvideo.measure.mse" title="skvideo.measure.mse"><code class="xref py py-obj docutils literal"><span class="pre">mse</span></code></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes mean-squared error (MSE).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.mad.html#skvideo.measure.mad" title="skvideo.measure.mad"><code class="xref py py-obj docutils literal"><span class="pre">mad</span></code></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes mean absolute deviation (MAD).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.psnr.html#skvideo.measure.psnr" title="skvideo.measure.psnr"><code class="xref py py-obj docutils literal"><span class="pre">psnr</span></code></a>(referenceVideoData,&nbsp;distortedVideoData)</td>
+<td>Computes Peak Signal to Noise Ratio (PSNR).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.scenedet.html#skvideo.measure.scenedet" title="skvideo.measure.scenedet"><code class="xref py py-obj docutils literal"><span class="pre">scenedet</span></code></a>(videodata[,&nbsp;method,&nbsp;parameter1,&nbsp;…])</td>
+<td>Scene detection algorithms</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.brisque_features.html#skvideo.measure.brisque_features" title="skvideo.measure.brisque_features"><code class="xref py py-obj docutils literal"><span class="pre">brisque_features</span></code></a>(videoData)</td>
+<td>Computes Blind/Referenceless Image Spatial QUality Evaluator (BRISQUE) features.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.videobliinds_features.html#skvideo.measure.videobliinds_features" title="skvideo.measure.videobliinds_features"><code class="xref py py-obj docutils literal"><span class="pre">videobliinds_features</span></code></a>(videoData)</td>
+<td>Computes Video Bliinds features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.viideo_features.html#skvideo.measure.viideo_features" title="skvideo.measure.viideo_features"><code class="xref py py-obj docutils literal"><span class="pre">viideo_features</span></code></a>(videoData[,&nbsp;blocksize,&nbsp;…])</td>
+<td>Computes VIIDEO features.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/skvideo.measure.viideo_score.html#skvideo.measure.viideo_score" title="skvideo.measure.viideo_score"><code class="xref py py-obj docutils literal"><span class="pre">viideo_score</span></code></a>(videoData[,&nbsp;blocksize,&nbsp;…])</td>
+<td>Computes VIIDEO score.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/skvideo.measure.niqe.html#skvideo.measure.niqe" title="skvideo.measure.niqe"><code class="xref py py-obj docutils literal"><span class="pre">niqe</span></code></a>(inputVideoData)</td>
+<td>Computes Naturalness Image Quality Evaluator.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>skvideo.measure.strred &#8212; scikit-video 1.1.9 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.9</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.measure.strred
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.measure.strred</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span>
+
+<span class="k">def</span> <span class="nf">est_params</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">blk</span><span class="p">,</span> <span class="n">sigma_nn</span><span class="p">):</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">sizeim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="n">blk</span><span class="p">)</span> <span class="o">*</span> <span class="n">blk</span>
+    <span class="n">sizeim</span> <span class="o">=</span> <span class="n">sizeim</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[:</span><span class="n">sizeim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span><span class="n">sizeim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="c1">#paired_products</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">blk</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">blk</span><span class="p">):</span>
+        <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">v</span><span class="p">:(</span><span class="n">sizeim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">blk</span><span class="o">-</span><span class="n">v</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">u</span><span class="p">:(</span><span class="n">sizeim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">blk</span><span class="o">-</span><span class="n">u</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)]))</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">cov_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># force PSD</span>
+    <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cov_mat</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">eigvec</span><span class="p">)</span>
+    <span class="n">xdiag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">eigval</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+    <span class="n">cov_mat</span> <span class="o">=</span> <span class="n">Q</span><span class="o">*</span><span class="n">xdiag</span><span class="o">*</span><span class="n">Q</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">blk</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">blk</span><span class="p">):</span>
+        <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">v</span><span class="p">::</span><span class="n">blk</span><span class="p">,</span> <span class="n">u</span><span class="p">::</span><span class="n">blk</span><span class="p">]))</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># float32 vs float64 difference between python2 and python3 </span>
+    <span class="c1"># avoiding this problem with quick cast to float64</span>
+    <span class="n">V</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cov_mat</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># Estimate local variance</span>
+    <span class="n">sizeim_reduced</span> <span class="o">=</span> <span class="p">(</span><span class="n">sizeim</span><span class="o">/</span><span class="n">blk</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">sizeim_reduced</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sizeim_reduced</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="c1"># avoid the matrix inverse for extra speed/accuracy</span>
+      <span class="n">ss</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">cov_mat</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
+      <span class="n">ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">blk</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      <span class="n">ss</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">sizeim_reduced</span><span class="p">)</span>
+
+    <span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">V</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Compute entropy</span>
+    <span class="n">ent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="n">ent</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">ss</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">sigma_nn</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+
+    <span class="k">return</span> <span class="n">ss</span><span class="p">,</span> <span class="n">ent</span>
+
+
+<span class="k">def</span> <span class="nf">extract_info</span><span class="p">(</span><span class="n">frame1</span><span class="p">,</span> <span class="n">frame2</span><span class="p">):</span>
+    <span class="n">blk</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">sigma_nsq</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">sigma_nsqt</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SpatialSteerablePyramid</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">extractSingleBand</span><span class="p">(</span><span class="n">frame1</span><span class="p">,</span> <span class="n">filtfile</span><span class="o">=</span><span class="s2">&quot;sp5Filters&quot;</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">extractSingleBand</span><span class="p">(</span><span class="n">frame2</span><span class="p">,</span> <span class="n">filtfile</span><span class="o">=</span><span class="s2">&quot;sp5Filters&quot;</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="n">ydiff</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span>
+
+    <span class="n">ss</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">est_params</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">blk</span><span class="p">,</span> <span class="n">sigma_nsq</span><span class="p">)</span>
+    <span class="n">ssdiff</span><span class="p">,</span> <span class="n">qdiff</span> <span class="o">=</span> <span class="n">est_params</span><span class="p">(</span><span class="n">ydiff</span><span class="p">,</span> <span class="n">blk</span><span class="p">,</span> <span class="n">sigma_nsqt</span><span class="p">)</span>
+
+
+    <span class="n">spatial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">ss</span><span class="p">))</span>
+    <span class="n">temporal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">qdiff</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">ss</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">ssdiff</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">temporal</span>
+
+
+
+<div class="viewcode-block" id="strred"><a class="viewcode-back" href="../../../modules/generated/skvideo.measure.strred.html#skvideo.measure.strred">[docs]</a><span class="k">def</span> <span class="nf">strred</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">,</span> <span class="n">distortedVideoData</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes Spatio-Temporal Reduced Reference Entropic Differencing (ST-RRED) Index. [#f1]_</span>
+
+<span class="sd">    Both video inputs are compared over frame differences, with quality determined by</span>
+<span class="sd">    differences in the entropy per subband.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    referenceVideoData : ndarray</span>
+<span class="sd">        Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    distortedVideoData : ndarray</span>
+<span class="sd">        Distorted video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    strred_array : ndarray</span>
+<span class="sd">        The ST-RRED results, ndarray of dimension ((T-1)/2, 4), where T</span>
+<span class="sd">        is the number of frames.  Each row holds spatial score, temporal score, </span>
+<span class="sd">        reduced reference spatial score, and reduced reference temporal score.</span>
+
+<span class="sd">    strred : float</span>
+<span class="sd">        The final ST-RRED score if all blocks are averaged after comparing </span>
+<span class="sd">        reference and distorted data. This is close to full-reference.</span>
+
+<span class="sd">    strredssn : float</span>
+<span class="sd">        The final ST-RRED score if all blocks are averaged before comparing </span>
+<span class="sd">        reference and distorted data. This is the reduced reference score.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [#f1] R. Soundararajan and A. C. Bovik, &quot;Video Quality Assessment by Reduced Reference Spatio-temporal Entropic Differencing,&quot; IEEE Transactions on Circuits and Systems for Video Technology, April 2013.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">referenceVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">)</span>
+    <span class="n">distortedVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">distortedVideoData</span><span class="p">)</span>
+
+    <span class="k">assert</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">distortedVideoData</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">referenceVideoData</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">assert</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;strred called with videos containing </span><span class="si">%d</span><span class="s2"> channels. Please supply only the luminance channel&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,)</span>
+
+    <span class="n">referenceVideoData</span> <span class="o">=</span> <span class="n">referenceVideoData</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">distortedVideoData</span> <span class="o">=</span> <span class="n">distortedVideoData</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">rreds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">rredt</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">rredssn</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">rredtsn</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+      <span class="n">refFrame1</span> <span class="o">=</span> <span class="n">referenceVideoData</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+      <span class="n">refFrame2</span> <span class="o">=</span> <span class="n">referenceVideoData</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+      <span class="n">disFrame1</span> <span class="o">=</span> <span class="n">distortedVideoData</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+      <span class="n">disFrame2</span> <span class="o">=</span> <span class="n">distortedVideoData</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+      <span class="n">spatialRef</span><span class="p">,</span> <span class="n">temporalRef</span> <span class="o">=</span> <span class="n">extract_info</span><span class="p">(</span><span class="n">refFrame1</span><span class="p">,</span> <span class="n">refFrame2</span><span class="p">)</span> 
+      <span class="n">spatialDis</span><span class="p">,</span> <span class="n">temporalDis</span> <span class="o">=</span> <span class="n">extract_info</span><span class="p">(</span><span class="n">disFrame1</span><span class="p">,</span> <span class="n">disFrame2</span><span class="p">)</span> 
+
+      <span class="n">rreds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">spatialRef</span> <span class="o">-</span> <span class="n">spatialDis</span><span class="p">)))</span>
+      <span class="n">rredt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">temporalRef</span> <span class="o">-</span> <span class="n">temporalDis</span><span class="p">)))</span>
+
+      <span class="n">rredssn</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spatialRef</span> <span class="o">-</span> <span class="n">spatialDis</span><span class="p">)))</span>
+      <span class="n">rredtsn</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temporalRef</span> <span class="o">-</span> <span class="n">temporalDis</span><span class="p">)))</span>
+
+    <span class="n">rreds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rreds</span><span class="p">)</span>
+    <span class="n">rredt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rredt</span><span class="p">)</span>
+    <span class="n">rredssn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rredssn</span><span class="p">)</span>
+    <span class="n">rredtsn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rredtsn</span><span class="p">)</span>
+
+    <span class="n">srred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rreds</span><span class="p">)</span>
+    <span class="n">trred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rredt</span><span class="p">)</span>
+    <span class="n">srredsn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rredssn</span><span class="p">)</span>
+    <span class="n">trredsn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rredtsn</span><span class="p">)</span>
+
+    <span class="n">strred</span> <span class="o">=</span> <span class="n">srred</span> <span class="o">*</span> <span class="n">trred</span>
+    <span class="n">strredsn</span> <span class="o">=</span> <span class="n">srredsn</span> <span class="o">*</span> <span class="n">trredsn</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">rreds</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">rredt</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">rredssn</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">rredtsn</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))),</span> <span class="n">strred</span><span class="p">,</span> <span class="n">strredsn</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Benchmarking scikit-video &#8212; scikit-video 1.1.9 documentation</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="prev" title="Miscellaneous Video Demonstrations" href="examples/didactic.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="index.html"><img class="navbar-brand-img" src="_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.9</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+
+Benchmarking scikit-video
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="index.html">Home</a></li></ul><ul class="globaltoc"
+><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="io.html">Reading and Writing Videos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion Estimation Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measure.html">Measurement Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Test Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmarking scikit-video</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">API Reference</a></li>
+</ul>
+</ul>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="benchmarking-scikit-video">
+<span id="benchmarks"></span><h1>Benchmarking scikit-video<a class="headerlink" href="#benchmarking-scikit-video" title="Permalink to this headline">¶</a></h1>
+<p>To be useful in any project, we would like to approach real-time performance. Some algorithms implemented may not be able to achieve this (exhaustive search algorithms, for example), but we still set our goals high!</p>
+<p>All tests computed for scikit-video v1.1.1</p>
+<div class="section" id="reading-speed">
+<h2>Reading speed<a class="headerlink" href="#reading-speed" title="Permalink to this headline">¶</a></h2>
+<p>Minimum time from 10 trials, loading the 3 test videos in <a class="reference internal" href="modules/datasets.html#module-skvideo.datasets" title="skvideo.datasets"><code class="xref py py-mod docutils literal"><span class="pre">skvideo.datasets</span></code></a>:</p>
+<table border="1" class="table-striped docutils">
+<colgroup>
+<col width="65%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Time</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>skvideo.io.vread (FFmpeg)</td>
+<td>0.718217 seconds</td>
+</tr>
+<tr class="row-odd"><td>skvideo.io.vread (LibAV)</td>
+<td>0.815005 seconds</td>
+</tr>
+<tr class="row-even"><td>skvideo.io.vreader (FFmpeg)</td>
+<td>0.671952 seconds</td>
+</tr>
+<tr class="row-odd"><td>skvideo.io.vreader (LibAV)</td>
+<td>0.774765 seconds</td>
+</tr>
+</tbody>
+</table>
+<p>The fastest backend appears to be FFmpeg for both <a class="reference internal" href="modules/generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.vread</span></code></a> and <a class="reference internal" href="modules/generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.vreader</span></code></a>. Naturally, since <a class="reference internal" href="modules/generated/skvideo.io.vreader.html#skvideo.io.vreader" title="skvideo.io.vreader"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.vreader</span></code></a> uses a yield-based generator to supply frames, it is faster to use than <a class="reference internal" href="modules/generated/skvideo.io.vread.html#skvideo.io.vread" title="skvideo.io.vread"><code class="xref py py-func docutils literal"><span class="pre">skvideo.io.vread</span></code></a> which allocates space then copies data frame-by-frame.</p>
+</div>
+<div class="section" id="block-motion-estimation">
+<h2>Block Motion estimation<a class="headerlink" href="#block-motion-estimation" title="Permalink to this headline">¶</a></h2>
+<p>Using the default settings on the <cite>carphone_pristine.mp4</cite> sequence, shape (120, 144, 176, 3)</p>
+<p>Performance on block motion algorithms using skvideo.motion.blockMotion:</p>
+<table border="1" class="table-striped docutils">
+<colgroup>
+<col width="67%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Time</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>exhaustive</td>
+<td>43.946715 seconds</td>
+</tr>
+<tr class="row-odd"><td>3-step search</td>
+<td>17.558664 seconds</td>
+</tr>
+<tr class="row-even"><td>“new” 3-step search</td>
+<td>32.340459 seconds</td>
+</tr>
+<tr class="row-odd"><td>simple and efficient 3-step search</td>
+<td>13.861776 seconds</td>
+</tr>
+<tr class="row-even"><td>4-step search</td>
+<td>36.315580 seconds</td>
+</tr>
+<tr class="row-odd"><td>adaptive rood pattern search</td>
+<td>21.413136 seconds</td>
+</tr>
+<tr class="row-even"><td>diamond search</td>
+<td>25.679036 seconds</td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p>We can see that 3-step search is currently the fastest algorithm at 17.5 seconds. That comes out to 0.146 seconds per frame, for 144x176 sized frames. Clearly this is not realtime, which makes sense given that the core computations are in non-optimized python.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

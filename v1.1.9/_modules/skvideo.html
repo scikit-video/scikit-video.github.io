@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>skvideo &#8212; scikit-video 1.1.9 documentation</title>
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../index.html"><img class="navbar-brand-img" src="../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.9</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='index.html'>Module code</a> >>
+
+skvideo
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../index.html">Home</a></li></ul>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo</h1><div class="highlight"><pre>
+<span></span><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.1.9&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">check_output</span><span class="p">,</span> <span class="n">where</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Run a program-based check to see if all install</span>
+<span class="c1"># requirements have been met. </span>
+<span class="c1"># Sets environment variables based on programs</span>
+<span class="c1"># found.</span>
+
+<span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+  <span class="n">candidates</span> <span class="o">=</span> <span class="n">where</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+
+<span class="c1"># only ffprobe exists with ffmpeg</span>
+<span class="n">_FFMPEG_PATH</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;ffprobe&quot;</span><span class="p">)</span>
+
+<span class="c1"># only avprobe exists with libav</span>
+<span class="n">_AVCONV_PATH</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;avprobe&quot;</span><span class="p">)</span>
+
+<span class="n">_MEDIAINFO_PATH</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;mediainfo&quot;</span><span class="p">)</span>
+
+<span class="n">_HAS_FFMPEG</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">_HAS_AVCONV</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">_HAS_MEDIAINFO</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">_LIBAV_MAJOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+<span class="n">_LIBAV_MINOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+<span class="n">_FFMPEG_MAJOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+<span class="n">_FFMPEG_MINOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+<span class="n">_FFMPEG_PATCH_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+
+<span class="n">_FFMPEG_SUPPORTED_DECODERS</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">_FFMPEG_SUPPORTED_ENCODERS</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">_LIBAV_SUPPORTED_EXT</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">_FFPROBE_APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;ffprobe&quot;</span>
+<span class="n">_FFMPEG_APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;ffmpeg&quot;</span>
+<span class="n">_AVPROBE_APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;avprobe&quot;</span>
+<span class="n">_AVCONV_APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;avconv&quot;</span>
+<span class="n">_MEDIAINFO_APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;mediainfo&quot;</span>
+
+<span class="c1"># Windows compat</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;nt&quot;</span><span class="p">:</span>
+    <span class="n">_FFPROBE_APPLICATION</span> <span class="o">+=</span> <span class="s2">&quot;.exe&quot;</span>
+    <span class="n">_FFMPEG_APPLICATION</span> <span class="o">+=</span> <span class="s2">&quot;.exe&quot;</span>
+    <span class="n">_AVPROBE_APPLICATION</span> <span class="o">+=</span> <span class="s2">&quot;.exe&quot;</span>
+    <span class="n">_AVCONV_APPLICATION</span> <span class="o">+=</span> <span class="s2">&quot;.exe&quot;</span>
+    <span class="n">_MEDIAINFO_APPLICATION</span> <span class="o">+=</span> <span class="s2">&quot;.exe&quot;</span>
+
+<span class="k">def</span> <span class="nf">scan_ffmpeg</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_FFMPEG_MAJOR_VERSION</span>
+    <span class="k">global</span> <span class="n">_FFMPEG_MINOR_VERSION</span>
+    <span class="k">global</span> <span class="n">_FFMPEG_PATCH_VERSION</span>
+    <span class="k">global</span> <span class="n">_FFMPEG_SUPPORTED_DECODERS</span>
+    <span class="k">global</span> <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span>
+    <span class="n">_FFMPEG_MAJOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+    <span class="n">_FFMPEG_MINOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+    <span class="n">_FFMPEG_PATCH_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+    <span class="n">_FFMPEG_SUPPORTED_DECODERS</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># grab program version string</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">check_output</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span><span class="p">,</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">),</span> <span class="s2">&quot;-version&quot;</span><span class="p">])</span>
+        <span class="c1"># only parse the first line returned</span>
+        <span class="n">firstline</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># the 3rd element in this line is the version number</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">firstline</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">versionparts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;N&#39;</span><span class="p">:</span>
+            <span class="c1"># this is the &#39;git&#39; version of FFmpeg</span>
+            <span class="n">_FFMPEG_MAJOR_VERSION</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_FFMPEG_MAJOR_VERSION</span> <span class="o">=</span> <span class="n">versionparts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">_FFMPEG_MINOR_VERSION</span> <span class="o">=</span> <span class="n">versionparts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">versionparts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">_FFMPEG_PATCH_VERSION</span> <span class="o">=</span> <span class="n">versionparts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># decoders = []</span>
+    <span class="c1"># encoders = []</span>
+
+    <span class="c1"># try:</span>
+    <span class="c1">#     extension_lst = check_output([_FFMPEG_PATH + &quot;/ffmpeg&quot;, &quot;-formats&quot;])</span>
+    <span class="c1">#     extension_lst = extension_lst.split(b&#39;\n&#39;)</span>
+    <span class="c1">#     # skip first line</span>
+    <span class="c1">#     for item in extension_lst[4:]:</span>
+    <span class="c1">#         parts = [x.strip() for x in item.split(b&#39; &#39;) if x]</span>
+    <span class="c1">#         if len(parts) &lt; 2:</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#         rule = parts[0]</span>
+    <span class="c1">#         extension = parts[1]</span>
+    <span class="c1">#         if b&#39;D&#39; in rule:</span>
+    <span class="c1">#             for item in extension.split(b&quot;,&quot;):</span>
+    <span class="c1">#                 decoders.append(item)</span>
+    <span class="c1">#         if b&#39;E&#39; in rule:</span>
+    <span class="c1">#             for item in extension.split(b&quot;,&quot;):</span>
+    <span class="c1">#                 encoders.append(item)</span>
+    <span class="c1"># except:</span>
+    <span class="c1">#     pass</span>
+
+    <span class="c1"># try:</span>
+    <span class="c1">#     for enc in encoders:</span>
+    <span class="c1">#         extension_lst = check_output([_FFMPEG_PATH + &quot;/ffmpeg&quot;, &quot;-v&quot;, &quot;1&quot;, &quot;-h&quot;, &quot;muxer=&quot;+str(enc)])</span>
+    <span class="c1">#         csvstring = &quot;&quot;</span>
+    <span class="c1">#         for line in extension_lst.split(&#39;\n&#39;):</span>
+    <span class="c1">#             if &quot;Common extensions:&quot; in line:</span>
+    <span class="c1">#                 csvstring = line.replace(&quot;Common extensions:&quot;, &quot;&quot;).replace(&quot;.&quot;, &quot;&quot;).strip()</span>
+    <span class="c1">#                 break</span>
+    <span class="c1">#         if csvstring == &quot;&quot;:</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#         csvlist = csvstring.split(&#39;,&#39;)</span>
+    <span class="c1">#         for listitem in csvlist:</span>
+    <span class="c1">#             _FFMPEG_SUPPORTED_ENCODERS.append(b&quot;.&quot; + listitem)</span>
+    <span class="c1">#     for enc in encoders:</span>
+    <span class="c1">#         extension_lst = check_output([_FFMPEG_PATH + &quot;/ffmpeg&quot;, &quot;-v&quot;, &quot;1&quot;, &quot;-h&quot;, &quot;demuxer=&quot;+str(enc)])</span>
+    <span class="c1">#         csvstring = &quot;&quot;</span>
+    <span class="c1">#         for line in extension_lst.split(&#39;\n&#39;):</span>
+    <span class="c1">#             if &quot;Common extensions:&quot; in line:</span>
+    <span class="c1">#                 csvstring = line.replace(&quot;Common extensions:&quot;, &quot;&quot;).replace(&quot;.&quot;, &quot;&quot;).strip()</span>
+    <span class="c1">#                 break</span>
+    <span class="c1">#         if csvstring == &quot;&quot;:</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#         csvlist = csvstring.split(&#39;,&#39;)</span>
+    <span class="c1">#         for listitem in csvlist:</span>
+    <span class="c1">#             _FFMPEG_SUPPORTED_ENCODERS.append(b&quot;.&quot; + listitem)</span>
+
+    <span class="c1">#     _FFMPEG_SUPPORTED_ENCODERS = np.unique(_FFMPEG_SUPPORTED_ENCODERS)</span>
+    <span class="c1"># except:</span>
+    <span class="c1">#     pass</span>
+
+    <span class="c1"># try:</span>
+    <span class="c1">#     for dec in decoders:</span>
+    <span class="c1">#         extension_lst = check_output([_FFMPEG_PATH + &quot;/ffmpeg&quot;, &quot;-v&quot;, &quot;1&quot;, &quot;-h&quot;, &quot;muxer=&quot;+str(dec)])</span>
+    <span class="c1">#         csvstring = &quot;&quot;</span>
+    <span class="c1">#         for line in extension_lst.split(&#39;\n&#39;):</span>
+    <span class="c1">#             if &quot;Common extensions:&quot; in line:</span>
+    <span class="c1">#                 csvstring = line.replace(&quot;Common extensions:&quot;, &quot;&quot;).replace(&quot;.&quot;, &quot;&quot;).strip()</span>
+    <span class="c1">#                 break</span>
+    <span class="c1">#         if csvstring == &quot;&quot;:</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#         csvlist = csvstring.split(&#39;,&#39;)</span>
+    <span class="c1">#         for listitem in csvlist:</span>
+    <span class="c1">#             _FFMPEG_SUPPORTED_DECODERS.append(b&quot;.&quot; + listitem)</span>
+    <span class="c1">#     for dec in decoders:</span>
+    <span class="c1">#         extension_lst = check_output([_FFMPEG_PATH + &quot;/ffmpeg&quot;, &quot;-v&quot;, &quot;1&quot;, &quot;-h&quot;, &quot;demuxer=&quot;+str(dec)])</span>
+    <span class="c1">#         csvstring = &quot;&quot;</span>
+    <span class="c1">#         for line in extension_lst.split(&#39;\n&#39;):</span>
+    <span class="c1">#             if &quot;Common extensions:&quot; in line:</span>
+    <span class="c1">#                 csvstring = line.replace(&quot;Common extensions:&quot;, &quot;&quot;).replace(&quot;.&quot;, &quot;&quot;).strip()</span>
+    <span class="c1">#                 break</span>
+    <span class="c1">#         if csvstring == &quot;&quot;:</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#         csvlist = csvstring.split(&#39;,&#39;)</span>
+    <span class="c1">#         for listitem in csvlist:</span>
+    <span class="c1">#             _FFMPEG_SUPPORTED_DECODERS.append(b&quot;.&quot; + listitem)</span>
+
+    <span class="c1">#     _FFMPEG_SUPPORTED_DECODERS = np.unique(_FFMPEG_SUPPORTED_DECODERS)</span>
+    <span class="c1"># except:</span>
+    <span class="c1">#     pass</span>
+
+    <span class="c1"># by running the above code block, the bottom arrays are populated</span>
+    <span class="c1"># output staticly provided for speed concerns</span>
+    <span class="n">_FFMPEG_SUPPORTED_DECODERS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">b</span><span class="s1">&#39;.264&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.265&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.302&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.3g2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.3gp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.722&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aa&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aa3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aac&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ac3&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.acm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.adf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.adp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ads&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.adx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aea&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.afc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aifc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aiff&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.al&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.amr&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ans&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ape&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.apl&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.apng&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aqt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.art&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.asc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.asf&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.ass&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ast&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.au&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.avc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.avi&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.avr&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bcstm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bfstm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bin&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bit&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.bmp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bmv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.brstm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.caf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cavs&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cdata&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cdg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cdxl&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cgi&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.cif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.daud&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.diz&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dnxhd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dpx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.drc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dss&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dtk&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dts&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.dtshd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.eac3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.fap&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ffm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ffmeta&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.flac&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.flm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.flv&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.fsb&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.g722&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.g723_1&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.g729&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.genh&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.gif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.gsm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.gxf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h261&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.h263&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h264&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h265&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h26l&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.hevc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ice&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ico&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.idf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.idx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.im1&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.im24&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.im8&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ircam&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ivf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ivr&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.j2c&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.j2k&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jls&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jp2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jpeg&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.js&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jss&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.lbc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ljpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.lrc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.lvf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2a&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2t&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2ts&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m4a&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m4v&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mac&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mj2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mjpeg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mjpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mk3d&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mka&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mks&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.mkv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mlp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mmf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mov&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mp2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mp3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mp4&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpa&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpeg&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.mpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpl2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpo&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.msf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mvi&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mxf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mxg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.nfo&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.nist&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.nut&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ogg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ogv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.oma&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.omg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.paf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pam&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pbm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pcx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pgm&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.pgmyuv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pix&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pjs&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ppm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pvf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.qcif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ra&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ras&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rco&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.rcv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rgb&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.roq&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rs&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rsd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rso&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sami&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sb&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sbg&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.sdr2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sgi&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.shn&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sln&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.smi&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.son&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sox&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.spdif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sph&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.srt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ss2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ssa&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.stl&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.str&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sub&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sun&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sunras&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sup&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.svag&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.sw&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.swf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tak&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tco&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tga&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.thd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tiff&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tta&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ub&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ul&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.uw&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.v&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.v210&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vag&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vb&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vc1&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.viv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.voc&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.vpk&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vqe&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vqf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vql&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vtt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.w64&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wav&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.webm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wma&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.wmv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wtv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xbm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xface&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xl&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xml&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xvag&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xwd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.y&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.y4m&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.yop&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.yuv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.yuv10&#39;</span><span class="p">,</span>
+
+        <span class="c1"># extra extensions that are known container formats</span>
+        <span class="sa">b</span><span class="s1">&#39;.raw&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.iso&#39;</span>
+    <span class="p">]</span>
+
+    <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">b</span><span class="s1">&#39;., A64&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.264&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.265&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.302&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.3g2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.3gp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.722&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.a64&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aa3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aac&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.ac3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.adts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.adx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.afc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aifc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.aiff&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.al&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.amr&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.apng&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.asf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ass&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ast&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.au&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.avc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.avi&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bit&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.bmp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.caf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cavs&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.chk&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.cif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.daud&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dnxhd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dpx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.drc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.dvd&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.eac3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.f4v&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ffm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ffmeta&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.flac&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.flm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.flv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.g722&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.g723_1&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.gif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.gxf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h261&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h263&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h264&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h265&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.h26l&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.hevc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ico&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.im1&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.im24&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.im8&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ircam&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.isma&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ismv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ivf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.j2c&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.j2k&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jls&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.jp2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jpeg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.js&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.jss&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.latm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.lbc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ljpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.loas&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.lrc&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.m1v&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2a&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2t&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2ts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m2v&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m4a&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.m4v&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mj2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mjpeg&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.mjpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mk3d&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mka&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mks&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mkv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mlp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mmf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mov&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mp2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mp3&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.mp4&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpa&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpeg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mpo&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.mxf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.nut&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.oga&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ogg&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.ogv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.oma&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.omg&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.opus&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pam&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pbm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pcx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pgm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pgmyuv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.pix&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ppm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.psp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.qcif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ra&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ras&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rco&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rcv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rgb&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rm&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.roq&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rs&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.rso&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sb&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sgi&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sox&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.spdif&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.spx&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.srt&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.ssa&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sub&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sun&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sunras&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.sw&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.swf&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tco&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tga&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.thd&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.tif&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.tiff&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ts&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ub&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.ul&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.uw&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vc1&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vob&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.voc&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.vtt&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.w64&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wav&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.webm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.webp&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wma&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wmv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wtv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.wv&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xbm&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xface&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xml&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.xwd&#39;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s1">&#39;.y&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.y4m&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.yuv&#39;</span><span class="p">,</span>
+
+        <span class="c1"># extra extensions that are known container formats</span>
+        <span class="sa">b</span><span class="s1">&#39;.raw&#39;</span>
+    <span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">scan_libav</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_LIBAV_MAJOR_VERSION</span>
+    <span class="k">global</span> <span class="n">_LIBAV_MINOR_VERSION</span>
+    <span class="n">_LIBAV_MAJOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+    <span class="n">_LIBAV_MINOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># grab program version string</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">check_output</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_AVCONV_PATH</span><span class="p">,</span> <span class="n">_AVCONV_APPLICATION</span><span class="p">),</span> <span class="s2">&quot;-version&quot;</span><span class="p">])</span>
+        <span class="c1"># only parse the first line returned</span>
+        <span class="n">firstline</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">firstlineparts</span> <span class="o">=</span> <span class="n">firstline</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+        <span class="c1"># in older versions, the second word is &quot;version&quot;,</span>
+        <span class="c1"># else the version number starts with &quot;v&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">firstlineparts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;version&quot;</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">firstlineparts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">firstlineparts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># check for underscore</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">versionparts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">versionparts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;v&#39;</span><span class="p">:</span>
+            <span class="n">_LIBAV_MAJOR_VERSION</span> <span class="o">=</span> <span class="n">versionparts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_LIBAV_MAJOR_VERSION</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">versionparts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="n">_LIBAV_MINOR_VERSION</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">versionparts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+
+<span class="k">if</span> <span class="n">_MEDIAINFO_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">_HAS_MEDIAINFO</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<span class="c1"># allow library configuration checking</span>
+<div class="viewcode-block" id="getFFmpegPath"><a class="viewcode-back" href="../modules/generated/skvideo.getFFmpegPath.html#skvideo.getFFmpegPath">[docs]</a><span class="k">def</span> <span class="nf">getFFmpegPath</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Returns the path to the directory containing both ffmpeg and ffprobe </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_FFMPEG_PATH</span></div>
+
+
+<div class="viewcode-block" id="getFFmpegVersion"><a class="viewcode-back" href="../modules/generated/skvideo.getFFmpegVersion.html#skvideo.getFFmpegVersion">[docs]</a><span class="k">def</span> <span class="nf">getFFmpegVersion</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Returns the version of FFmpeg that is currently being used</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_FFMPEG_MAJOR_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_FFMPEG_MAJOR_VERSION</span><span class="p">,</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_FFMPEG_MAJOR_VERSION</span><span class="p">,</span> <span class="n">_FFMPEG_MINOR_VERSION</span><span class="p">,</span> <span class="n">_FFMPEG_PATCH_VERSION</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setFFmpegPath"><a class="viewcode-back" href="../modules/generated/skvideo.setFFmpegPath.html#skvideo.setFFmpegPath">[docs]</a><span class="k">def</span> <span class="nf">setFFmpegPath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sets up the path to the directory containing both ffmpeg and ffprobe</span>
+
+<span class="sd">        Use this function for to specify specific system installs of FFmpeg. All</span>
+<span class="sd">        calls to ffmpeg and ffprobe will use this path as a prefix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : string</span>
+<span class="sd">            Path to directory containing ffmpeg and ffprobe</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        none</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_FFMPEG_PATH</span>
+    <span class="k">global</span> <span class="n">_HAS_FFMPEG</span>
+    <span class="n">_FFMPEG_PATH</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="c1"># check to see if the executables actually exist on these paths</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span><span class="p">,</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">))</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span><span class="p">,</span> <span class="n">_FFPROBE_APPLICATION</span><span class="p">)):</span>
+        <span class="n">_HAS_FFMPEG</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;ffmpeg/ffprobe not found in path: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="n">_HAS_FFMPEG</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">global</span> <span class="n">_FFMPEG_MAJOR_VERSION</span>
+        <span class="k">global</span> <span class="n">_FFMPEG_MINOR_VERSION</span>
+        <span class="k">global</span> <span class="n">_FFMPEG_PATCH_VERSION</span>
+        <span class="n">_FFMPEG_MAJOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="n">_FFMPEG_MINOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="n">_FFMPEG_PATCH_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="k">return</span>
+
+    <span class="c1"># reload version from new path</span>
+    <span class="n">scan_ffmpeg</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="getLibAVPath"><a class="viewcode-back" href="../modules/generated/skvideo.getLibAVPath.html#skvideo.getLibAVPath">[docs]</a><span class="k">def</span> <span class="nf">getLibAVPath</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Returns the path to the directory containing both avconv and avprobe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_AVCONV_PATH</span></div>
+
+
+<div class="viewcode-block" id="getLibAVVersion"><a class="viewcode-back" href="../modules/generated/skvideo.getLibAVVersion.html#skvideo.getLibAVVersion">[docs]</a><span class="k">def</span> <span class="nf">getLibAVVersion</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Returns the version of LibAV that is currently being used</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_LIBAV_MAJOR_VERSION</span><span class="p">,</span> <span class="n">_LIBAV_MINOR_VERSION</span><span class="p">)</span> </div>
+
+
+<div class="viewcode-block" id="setLibAVPath"><a class="viewcode-back" href="../modules/generated/skvideo.setLibAVPath.html#skvideo.setLibAVPath">[docs]</a><span class="k">def</span> <span class="nf">setLibAVPath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sets up the path to the directory containing both avconv and avprobe</span>
+
+<span class="sd">        Use this function for to specify specific system installs of LibAV. All</span>
+<span class="sd">        calls to avconv and avprobe will use this path as a prefix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : string</span>
+<span class="sd">            Path to directory containing avconv and avprobe</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        none</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">global</span> <span class="n">_AVCONV_PATH</span>
+    <span class="k">global</span> <span class="n">_HAS_AVCONV</span>
+    <span class="n">_AVCONV_PATH</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="c1"># check to see if the executables actually exist on these paths</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_AVCONV_PATH</span><span class="p">,</span> <span class="n">_AVCONV_APPLICATION</span><span class="p">))</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_AVCONV_PATH</span><span class="p">,</span> <span class="n">_AVPROBE_APPLICATION</span><span class="p">)):</span>
+        <span class="n">_HAS_AVCONV</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;avconv/avprobe not found in path: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="n">_HAS_AVCONV</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">global</span> <span class="n">_LIBAV_MAJOR_VERSION</span>
+        <span class="k">global</span> <span class="n">_LIBAV_MINOR_VERSION</span>
+        <span class="n">_LIBAV_MAJOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="n">_LIBAV_MINOR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="k">return</span>
+
+    <span class="c1"># reload version from new path</span>
+    <span class="n">scan_libav</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="n">setFFmpegPath</span><span class="p">(</span><span class="n">_FFMPEG_PATH</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_AVCONV_PATH</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="n">setLibAVPath</span><span class="p">(</span><span class="n">_AVCONV_PATH</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">getFFmpegPath</span><span class="p">,</span>
+    <span class="n">getFFmpegVersion</span><span class="p">,</span>
+    <span class="n">setFFmpegPath</span><span class="p">,</span>
+    <span class="n">getLibAVPath</span><span class="p">,</span>
+    <span class="n">getLibAVVersion</span><span class="p">,</span>
+    <span class="n">setLibAVPath</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

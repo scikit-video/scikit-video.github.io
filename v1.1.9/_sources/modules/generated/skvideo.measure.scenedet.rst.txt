@@ -1,0 +1,12 @@
+:mod:`skvideo.measure`.scenedet
+============================================
+
+.. currentmodule:: skvideo.measure
+
+.. autofunction:: scenedet
+
+.. include:: skvideo.measure.scenedet.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

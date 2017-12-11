@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>skvideo.io.avconv &#8212; scikit-video 1.1.9 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.9</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.io.avconv
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.io.avconv</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Plugin that uses Libav to read and write series of images to</span>
+<span class="sd">a wide range of video formats.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Heavily inspired from Almar Klein&#39;s imageio code</span>
+<span class="c1"># Copyright (c) 2015, imageio contributors</span>
+<span class="c1"># distributed under the terms of the BSD License (included in release).</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.avprobe</span> <span class="k">import</span> <span class="n">avprobe</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_HAS_AVCONV</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_AVCONV_PATH</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_AVCONV_APPLICATION</span>
+
+<span class="c1"># uses libav to read the given file with parameters</span>
+<div class="viewcode-block" id="LibAVReader"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVReader.html#skvideo.io.LibAVReader">[docs]</a><span class="k">class</span> <span class="nc">LibAVReader</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Reads frames using Libav</span>
+
+<span class="sd">    Using libav as a backend, this class</span>
+<span class="sd">    provides sane initializations meant to</span>
+<span class="sd">    handle the default case well.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LibAVReader.__init__"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVReader.html#skvideo.io.LibAVReader.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes libav in reading mode with the given parameters</span>
+
+<span class="sd">        During initialization, additional parameters about the video file</span>
+<span class="sd">        are parsed using :func:`skvideo.io.avprobe`. Then avconv is launched</span>
+<span class="sd">        as a subprocess. Parameters passed into inputdict are parsed and</span>
+<span class="sd">        used to set as internal variables about the video. If the parameter,</span>
+<span class="sd">        such as &quot;Height&quot; is not found in the inputdict, it is found through</span>
+<span class="sd">        scanning the file&#39;s header information. If not in the header, avprobe</span>
+<span class="sd">        is used to decode the file to determine the information. In the case</span>
+<span class="sd">        that the information is not supplied and connot be inferred from the</span>
+<span class="sd">        input file, a ValueError exception is thrown.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : string</span>
+<span class="sd">            Video file path</span>
+
+<span class="sd">        inputdict : dict</span>
+<span class="sd">            Input dictionary parameters, i.e. how to interpret the input file.</span>
+
+<span class="sd">        outputdict : dict</span>
+<span class="sd">            Output dictionary parameters, i.e. how to encode the data </span>
+<span class="sd">            when sending back to the python process.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        none</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if avconv exists in the path</span>
+        <span class="k">assert</span> <span class="n">_HAS_AVCONV</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of libav (which comes with avprobe).&quot;</span>
+
+
+        <span class="n">israw</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
+            <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">outputdict</span><span class="p">:</span>
+            <span class="n">outputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># General information</span>
+        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probeInfo</span> <span class="o">=</span> <span class="n">avprobe</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">viddict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s2">&quot;video&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">probeInfo</span><span class="p">:</span>
+            <span class="n">viddict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probeInfo</span><span class="p">[</span><span class="s2">&quot;video&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputfps</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-r&quot;</span> <span class="ow">in</span> <span class="n">inputdict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputfps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-r&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="s2">&quot;avg_frame_rate&quot;</span> <span class="ow">in</span> <span class="n">viddict</span><span class="p">:</span>
+            <span class="c1"># check for the slash</span>
+            <span class="n">frtxt</span> <span class="o">=</span> <span class="n">viddict</span><span class="p">[</span><span class="s2">&quot;avg_frame_rate&quot;</span><span class="p">]</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">frtxt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> 
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">den</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">inputfps</span> <span class="o">=</span> <span class="mi">25</span>
+                <span class="k">else</span><span class="p">:</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">inputfps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputfps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">frtxt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># simply default to a common 25 fps and warn</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputfps</span> <span class="o">=</span> <span class="mi">25</span>
+            <span class="c1"># No input frame rate detected. Assuming 25 fps. Consult documentation on I/O if this is not desired.</span>
+
+        <span class="c1"># if we don&#39;t have width or height at all, raise exception</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-s&quot;</span> <span class="ow">in</span> <span class="n">inputdict</span><span class="p">):</span>
+            <span class="n">widthheight</span> <span class="o">=</span> <span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">widthheight</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">widthheight</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">((</span><span class="s2">&quot;width&quot;</span> <span class="ow">in</span> <span class="n">viddict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;height&quot;</span> <span class="ow">in</span> <span class="n">viddict</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">viddict</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">viddict</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No way to determine width or height from video. Need `-s` in `inputdict`. Consult documentation on I/O.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># bits per pixel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="c1"># completely unsure of this:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-pix_fmt&quot;</span> <span class="ow">in</span> <span class="n">inputdict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;pix_fmt&quot;</span> <span class="ow">in</span> <span class="n">viddict</span><span class="p">):</span>
+            <span class="c1"># parse this bpp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="n">viddict</span><span class="p">[</span><span class="s2">&quot;pix_fmt&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="s2">&quot;yuvj444p&quot;</span>
+            <span class="k">if</span> <span class="n">verbosity</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No input color space detected. Assuming yuvj444p.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputdepth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;.yuv&quot;</span><span class="p">):</span>
+            <span class="n">israw</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-vframes&quot;</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-vframes&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;nb_frames&quot;</span> <span class="ow">in</span> <span class="n">viddict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">viddict</span><span class="p">[</span><span class="s2">&quot;nb_frames&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">israw</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># we can compute it based on the input size and color space</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bpp</span><span class="o">/</span><span class="mf">8.0</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">verbosity</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot determine frame count. Scanning input file, this is slow when repeated many times. Need `-vframes` in inputdict. Consult documentation on I/O.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span> 
+
+        <span class="k">if</span> <span class="n">israw</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span> <span class="o">=</span> <span class="n">filename</span>
+
+        <span class="k">if</span> <span class="s1">&#39;-f&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span>
+
+        <span class="k">if</span> <span class="s1">&#39;-pix_fmt&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb24&quot;</span>
+
+        <span class="k">if</span> <span class="s1">&#39;-s&#39;</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
+            <span class="n">widthheight</span> <span class="o">=</span> <span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">widthheight</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">widthheight</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputbpp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]][</span><span class="mi">1</span><span class="p">])</span>
+
+
+        <span class="c1"># Create input args</span>
+        <span class="n">iargs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">inputdict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">iargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">iargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inputdict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="n">oargs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">oargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">oargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputdict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># open process with supplied arguments,</span>
+            <span class="c1"># grabbing number of frames using ffprobe</span>
+            <span class="n">probecmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s2">&quot;/avprobe&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;-count_frames&quot;</span><span class="p">,</span> <span class="s2">&quot;-select_streams&quot;</span><span class="p">,</span> <span class="s2">&quot;v:0&quot;</span><span class="p">,</span> <span class="s2">&quot;-show_entries&quot;</span><span class="p">,</span> <span class="s2">&quot;stream=nb_read_frames&quot;</span><span class="p">,</span> <span class="s2">&quot;-of&quot;</span><span class="p">,</span> <span class="s2">&quot;default=nokey=1:noprint_wrappers=1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">check_output</span><span class="p">(</span><span class="n">probecmd</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Create process</span>
+
+        <span class="k">if</span> <span class="n">verbosity</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_AVCONV_APPLICATION</span><span class="p">,</span> <span class="s2">&quot;-nostats&quot;</span><span class="p">,</span> <span class="s2">&quot;-loglevel&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span> <span class="o">+</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;pipe:&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_AVCONV_APPLICATION</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span> <span class="o">+</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;pipe:&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LibAVReader.getShape"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVReader.html#skvideo.io.LibAVReader.getShape">[docs]</a>    <span class="k">def</span> <span class="nf">getShape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a tuple (T, M, N, C) </span>
+<span class="sd">        </span>
+<span class="sd">        Returns the video shape in number of frames, height, width, and channels per pixel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+           
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdepth</span> </div>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_terminate</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>  <span class="c1"># Short timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Terminate the sub process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">return</span>  <span class="c1"># no process</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># process already dead</span>
+        <span class="c1"># Terminate process</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="c1"># Wait for it to close (but do not get stuck)</span>
+        <span class="n">etime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">etime</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Init and check</span>
+        <span class="n">framesize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Read framesize bytes</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">framesize</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="n">framesize</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_terminate</span><span class="p">()</span>
+            <span class="n">err1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">err1</span><span class="p">,))</span>
+        <span class="k">return</span> <span class="n">arr</span>
+
+    <span class="k">def</span> <span class="nf">_readFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Read and convert to numpy array</span>
+        <span class="c1"># t0 = time.time()</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_data</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
+        <span class="c1"># t1 = time.time()</span>
+        <span class="c1"># print(&#39;etime&#39;, t1-t0)</span>
+
+        <span class="c1"># Store and return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="LibAVReader.nextFrame"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVReader.html#skvideo.io.LibAVReader.nextFrame">[docs]</a>    <span class="k">def</span> <span class="nf">nextFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Yields frames using a generator </span>
+<span class="sd">        </span>
+<span class="sd">        Returns T ndarrays of size (M, N, C), where T is number of frames, </span>
+<span class="sd">        M is height, N is width, and C is number of channels per pixel.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="LibAVWriter"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVWriter.html#skvideo.io.LibAVWriter">[docs]</a><span class="k">class</span> <span class="nc">LibAVWriter</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Writes frames using libav</span>
+
+<span class="sd">    Using libav as a backend, this class</span>
+<span class="sd">    provides sane initializations for the default case.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="LibAVWriter.__init__"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVWriter.html#skvideo.io.LibAVWriter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prepares parameters for avconv</span>
+<span class="sd">    </span>
+<span class="sd">        Does not instantiate the avconv subprocess, but simply</span>
+<span class="sd">        prepares the required parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : string</span>
+<span class="sd">            Video file path</span>
+
+<span class="sd">        inputdict : dict</span>
+<span class="sd">            Input dictionary parameters, i.e. how to interpret the data coming from python.</span>
+
+<span class="sd">        outputdict : dict</span>
+<span class="sd">            Output dictionary parameters, i.e. how to encode the data </span>
+<span class="sd">            when writing to file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        none</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">_HAS_AVCONV</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of libav (which comes with avprobe).&quot;</span>
+
+        <span class="c1"># complain about the use of avconv :(</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;avconv corrupts video data between reading and writing. Search for </span><span class="se">\&quot;</span><span class="s2">drift</span><span class="se">\&quot;</span><span class="s2"> in the test script test_vread.py for proof. Please consider using FFMPEG.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
+            <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">outputdict</span><span class="p">:</span>
+            <span class="n">outputdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">)</span>
+
+        <span class="c1"># extract extension used (only used for raw outputs)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span> <span class="o">=</span> <span class="n">inputdict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span> <span class="o">=</span> <span class="n">outputdict</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">verbosity</span>
+
+        <span class="k">if</span> <span class="s2">&quot;-f&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb2grayhack</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+    <span class="k">def</span> <span class="nf">_warmStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="s2">&quot;-pix_fmt&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">:</span>
+            <span class="c1"># check the number channels to guess </span>
+            <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># unfortunately, &#39;gray&#39; has a bug for avconv</span>
+                <span class="c1"># enable gray -&gt; rgb hack</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb24&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rgb2grayhack</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">C</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ya8&quot;</span>
+            <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb24&quot;</span>
+            <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgba&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="bp">NotImplemented</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpp</span> <span class="o">=</span> <span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span> <span class="o">=</span> <span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span> <span class="o">==</span> <span class="n">C</span><span class="p">,</span> <span class="s2">&quot;Failed to pass the correct number of channels </span><span class="si">%d</span><span class="s2"> for the pixel format </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">])</span>  
+
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-s&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">):</span>
+            <span class="n">widthheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">widthheight</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">widthheight</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span> <span class="o">=</span> <span class="n">N</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="o">=</span> <span class="n">M</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-sws_flags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bitexact&quot;</span>
+
+        <span class="c1"># prepare output parameters, if raw</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;.yuv&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;-pix_fmt&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;yuvj444p&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No output color space provided. Assuming yuvj444p.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
+        <span class="c1"># Create input args</span>
+        <span class="n">iargs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">iargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">iargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="n">oargs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">oargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">oargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_AVCONV_PATH</span> <span class="o">+</span> <span class="s2">&quot;/avconv&quot;</span><span class="p">,</span> <span class="s2">&quot;-y&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;pipe:&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+        <span class="c1"># Launch process</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LibAVWriter.close"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVWriter.html#skvideo.io.LibAVWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Closes the video and terminates avconv process</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;LibAVWriter: No frames written.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">return</span>  <span class="c1"># no process</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># process already dead</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="LibAVWriter.writeFrame"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.LibAVWriter.html#skvideo.io.LibAVWriter.writeFrame">[docs]</a>    <span class="k">def</span> <span class="nf">writeFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends ndarray frames to avconv</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vid</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warmStart</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+
+        <span class="c1"># Ensure that ndarray image is in uint8</span>
+        <span class="n">vid</span><span class="p">[</span><span class="n">vid</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
+        <span class="n">vid</span><span class="p">[</span><span class="n">vid</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">vid</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb2grayhack</span><span class="p">:</span>
+            <span class="c1"># convert grayscale vid to 3 channel</span>
+            <span class="n">vid2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">vid2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">vid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">vid2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">vid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">vid2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">vid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">vid</span> <span class="o">=</span> <span class="n">vid2</span>
+            <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Check size of image</span>
+        <span class="k">if</span> <span class="n">M</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="ow">or</span> <span class="n">N</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All images in a movie should have same size&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">C</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All images in a movie should have same &#39;</span>
+                             <span class="s1">&#39;number of channels&#39;</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># Check status</span>
+
+        <span class="c1"># Write</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">vid</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Show the command and stderr from pipe</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:}</span><span class="se">\n\n</span><span class="s1">avconv COMMAND:</span><span class="se">\n</span><span class="si">{1:}</span><span class="se">\n\n</span><span class="s1">avconv STDERR &#39;</span> \
+                  <span class="s1">&#39;OUTPUT:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
