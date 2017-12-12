@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>skvideo.measure.ssim &#8212; scikit-video 1.1.10 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.10</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.measure.ssim
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.measure.ssim</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+
+<span class="k">def</span> <span class="nf">_ssim_core</span><span class="p">(</span><span class="n">referenceVideoFrame</span><span class="p">,</span> <span class="n">distortedVideoFrame</span><span class="p">,</span> <span class="n">K_1</span><span class="p">,</span> <span class="n">K_2</span><span class="p">,</span> <span class="n">bitdepth</span><span class="p">,</span> <span class="n">scaleFix</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">):</span>
+
+    <span class="n">referenceVideoFrame</span> <span class="o">=</span> <span class="n">referenceVideoFrame</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">distortedVideoFrame</span> <span class="o">=</span> <span class="n">distortedVideoFrame</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">M</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">referenceVideoFrame</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">extend_mode</span> <span class="o">=</span> <span class="s1">&#39;constant&#39;</span>
+    <span class="k">if</span> <span class="n">avg_window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">avg_window</span> <span class="o">=</span> <span class="n">gen_gauss_window</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+    
+    <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">bitdepth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">C1</span> <span class="o">=</span> <span class="p">(</span><span class="n">K_1</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">C2</span> <span class="o">=</span> <span class="p">(</span><span class="n">K_2</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span><span class="o">/</span><span class="mf">256.0</span><span class="p">))))</span>
+    <span class="n">factor_lpf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">factor</span><span class="p">,</span><span class="n">factor</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">factor_lpf</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">factor_lpf</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">scaleFix</span><span class="p">:</span>
+      <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">))</span>
+      <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">))</span>
+
+    <span class="n">mu1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">mu2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">var1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">var2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">var12</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># scale if enabled</span>
+    <span class="k">if</span> <span class="n">scaleFix</span> <span class="ow">and</span> <span class="p">(</span><span class="n">factor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">referenceVideoFrame</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">correlate2d</span><span class="p">(</span><span class="n">referenceVideoFrame</span><span class="p">,</span> <span class="n">factor_lpf</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s1">&#39;symm&#39;</span><span class="p">)</span>
+        <span class="n">distortedVideoFrame</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">correlate2d</span><span class="p">(</span><span class="n">distortedVideoFrame</span><span class="p">,</span> <span class="n">factor_lpf</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s1">&#39;symm&#39;</span><span class="p">)</span>
+        <span class="n">referenceVideoFrame</span> <span class="o">=</span> <span class="n">referenceVideoFrame</span><span class="p">[::</span><span class="n">factor</span><span class="p">,</span> <span class="p">::</span><span class="n">factor</span><span class="p">]</span>
+        <span class="n">distortedVideoFrame</span> <span class="o">=</span> <span class="n">distortedVideoFrame</span><span class="p">[::</span><span class="n">factor</span><span class="p">,</span> <span class="p">::</span><span class="n">factor</span><span class="p">]</span>
+
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">referenceVideoFrame</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mu1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">mu1</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mu1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">distortedVideoFrame</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mu2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">mu2</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mu2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+
+    <span class="n">mu1_sq</span> <span class="o">=</span> <span class="n">mu1</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">mu2_sq</span> <span class="o">=</span> <span class="n">mu2</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">mu1_mu2</span> <span class="o">=</span> <span class="n">mu1</span> <span class="o">*</span> <span class="n">mu2</span>
+
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">referenceVideoFrame</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">var1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">var1</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">var1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">distortedVideoFrame</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">var2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">var2</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">var2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">referenceVideoFrame</span> <span class="o">*</span> <span class="n">distortedVideoFrame</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">var12</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+    <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">var12</span><span class="p">,</span> <span class="n">avg_window</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">var12</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">extend_mode</span><span class="p">)</span>
+
+    <span class="n">sigma1_sq</span> <span class="o">=</span> <span class="n">var1</span> <span class="o">-</span> <span class="n">mu1_sq</span>
+    <span class="n">sigma2_sq</span> <span class="o">=</span> <span class="n">var2</span> <span class="o">-</span> <span class="n">mu2_sq</span>
+    <span class="n">sigma12</span> <span class="o">=</span> <span class="n">var12</span> <span class="o">-</span> <span class="n">mu1_mu2</span>
+
+    <span class="n">ssim_map</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu1_mu2</span> <span class="o">+</span> <span class="n">C1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma12</span> <span class="o">+</span> <span class="n">C2</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">mu1_sq</span> <span class="o">+</span> <span class="n">mu2_sq</span> <span class="o">+</span> <span class="n">C1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma1_sq</span> <span class="o">+</span> <span class="n">sigma2_sq</span> <span class="o">+</span> <span class="n">C2</span><span class="p">))</span>
+    <span class="n">cs_map</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma12</span> <span class="o">+</span> <span class="n">C2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">sigma1_sq</span> <span class="o">+</span> <span class="n">sigma2_sq</span> <span class="o">+</span> <span class="n">C2</span><span class="p">)</span>
+
+    <span class="n">ssim_map</span> <span class="o">=</span> <span class="n">ssim_map</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+    <span class="n">cs_map</span> <span class="o">=</span> <span class="n">cs_map</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+
+    <span class="n">mssim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ssim_map</span><span class="p">)</span>
+    <span class="n">mcs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cs_map</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mssim</span><span class="p">,</span> <span class="n">ssim_map</span><span class="p">,</span> <span class="n">mcs</span><span class="p">,</span> <span class="n">cs_map</span>
+
+
+<div class="viewcode-block" id="ssim"><a class="viewcode-back" href="../../../modules/generated/skvideo.measure.ssim.html#skvideo.measure.ssim">[docs]</a><span class="k">def</span> <span class="nf">ssim</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">,</span> <span class="n">distortedVideoData</span><span class="p">,</span> <span class="n">K_1</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">K_2</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">bitdepth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">scaleFix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">avg_window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes Structural Similarity (SSIM) Index. [#f1]_</span>
+
+<span class="sd">    Both video inputs are compared frame-by-frame to obtain T</span>
+<span class="sd">    SSIM measurements on the luminance channel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    referenceVideoData : ndarray</span>
+<span class="sd">        Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    distortedVideoData : ndarray</span>
+<span class="sd">        Distorted video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    K_1 : float</span>
+<span class="sd">        Luminance saturation weight</span>
+
+<span class="sd">    K_2 : float</span>
+<span class="sd">        Contrast saturation weight</span>
+
+<span class="sd">    bitdepth : int</span>
+<span class="sd">        The number of bits each pixel effectively has</span>
+
+<span class="sd">    scaleFix : bool</span>
+<span class="sd">        Whether to scale the input frame size based on assumed distance, to improve subjective correlation.</span>
+
+<span class="sd">    avg_window : ndarray</span>
+<span class="sd">        2-d averaging window, normalized to unit volume.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ssim_array : ndarray</span>
+<span class="sd">        The ssim results, ndarray of dimension (T,), where T</span>
+<span class="sd">        is the number of frames</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [#f1] Z. Wang, A. C. Bovik, H. R. Sheikh, and E. P. Simoncelli, &quot;Image quality assessment: From error measurement to structural similarity&quot; IEEE Transactions on Image Processing, vol. 13, no. 1, Jan. 2004.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">referenceVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">)</span>
+    <span class="n">distortedVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">distortedVideoData</span><span class="p">)</span>
+
+    <span class="k">assert</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">distortedVideoData</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">referenceVideoData</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">assert</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;ssim called with videos containing </span><span class="si">%d</span><span class="s2"> channels. Please supply only the luminance channel&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,)</span>
+
+    <span class="n">ssim_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+      <span class="n">mssim</span><span class="p">,</span> <span class="n">ssim_map</span><span class="p">,</span> <span class="n">mcs</span><span class="p">,</span> <span class="n">cs_map</span> <span class="o">=</span> <span class="n">_ssim_core</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">distortedVideoData</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">K_1</span> <span class="o">=</span> <span class="n">K_1</span><span class="p">,</span> <span class="n">K_2</span> <span class="o">=</span> <span class="n">K_2</span><span class="p">,</span> <span class="n">bitdepth</span><span class="o">=</span><span class="n">bitdepth</span><span class="p">,</span> <span class="n">scaleFix</span><span class="o">=</span><span class="n">scaleFix</span><span class="p">,</span> <span class="n">avg_window</span><span class="o">=</span><span class="n">avg_window</span><span class="p">)</span>
+      <span class="n">ssim_scores</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">mssim</span>
+
+    <span class="k">return</span> <span class="n">ssim_scores</span></div>
+
+
+<span class="k">def</span> <span class="nf">ssim_full</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">,</span> <span class="n">distortedVideoData</span><span class="p">,</span> <span class="n">K_1</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">K_2</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">bitdepth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">scaleFix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">avg_window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns all parameters from the Structural Similarity (SSIM) Index. [#f1]_</span>
+
+<span class="sd">    Both video inputs are compared frame-by-frame to obtain T</span>
+<span class="sd">    SSIM measurements on the luminance channel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    referenceVideoData : ndarray</span>
+<span class="sd">        Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    distortedVideoData : ndarray</span>
+<span class="sd">        Distorted video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    K_1 : float</span>
+<span class="sd">        Luminance saturation weight</span>
+
+<span class="sd">    K_2 : float</span>
+<span class="sd">        Contrast saturation weight</span>
+
+<span class="sd">    bitdepth : int</span>
+<span class="sd">        The number of bits each pixel effectively has</span>
+
+<span class="sd">    scaleFix : bool</span>
+<span class="sd">        Whether to scale the input frame size based on assumed distance, to improve subjective correlation.</span>
+
+<span class="sd">    avg_window : ndarray</span>
+<span class="sd">        2-d averaging window, normalized to unit volume.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ssim_array : ndarray</span>
+<span class="sd">        The ssim results, ndarray of dimension (T,), where T</span>
+<span class="sd">        is the number of frames</span>
+
+<span class="sd">    ssim_map_array : ndarray</span>
+<span class="sd">        The ssim maps, ndarray of dimension (T,M-10, N-10), where T</span>
+<span class="sd">        is the number of frames, and MxN are the widthxheight</span>
+
+<span class="sd">    contrast_array : ndarray</span>
+<span class="sd">        The ssim result based on only on contrast (no luminance masking),</span>
+<span class="sd">        ndarray of dimension (T,), where T is the number of frames</span>
+
+<span class="sd">    contrast_map_array : ndarray</span>
+<span class="sd">        The ssim contrast-only maps, ndarray of dimension (T,M-10, N-10), where T</span>
+<span class="sd">        is the number of frames, and MxN are the widthxheight</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [#f1] Z. Wang, A. C. Bovik, H. R. Sheikh, and E. P. Simoncelli, &quot;Image quality assessment: From error measurement to structural similarity&quot; IEEE Transactions on Image Processing, vol. 13, no. 1, Jan. 2004.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">referenceVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">)</span>
+    <span class="n">distortedVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">distortedVideoData</span><span class="p">)</span>
+
+    <span class="k">assert</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">distortedVideoData</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">referenceVideoData</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">assert</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;ssim called with videos containing </span><span class="si">%d</span><span class="s2"> channels. Please supply only the luminance channel&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,)</span>
+
+    <span class="n">ssim_maps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">contrast_maps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ssim_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">contrast_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+      <span class="n">mssim</span><span class="p">,</span> <span class="n">ssim_map</span><span class="p">,</span> <span class="n">mcs</span><span class="p">,</span> <span class="n">cs_map</span> <span class="o">=</span> <span class="n">_ssim_core</span><span class="p">(</span><span class="n">referenceVideoData</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">distortedVideoData</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">K_1</span> <span class="o">=</span> <span class="n">K_1</span><span class="p">,</span> <span class="n">K_2</span> <span class="o">=</span> <span class="n">K_2</span><span class="p">,</span> <span class="n">bitdepth</span><span class="o">=</span><span class="n">bitdepth</span><span class="p">,</span> <span class="n">scaleFix</span><span class="o">=</span><span class="n">scaleFix</span><span class="p">,</span> <span class="n">avg_window</span><span class="o">=</span><span class="n">avg_window</span><span class="p">)</span>
+      <span class="n">ssim_scores</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">mssim</span>
+      <span class="n">contrast_scores</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">mcs</span>
+      <span class="n">ssim_maps</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssim_map</span>
+      <span class="n">contrast_maps</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs_map</span>
+
+    <span class="k">return</span> <span class="n">ssim_scores</span><span class="p">,</span> <span class="n">ssim_maps</span><span class="p">,</span> <span class="n">contrast_scores</span><span class="p">,</span> <span class="n">contrast_maps</span>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

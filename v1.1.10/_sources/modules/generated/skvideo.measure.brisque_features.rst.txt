@@ -1,0 +1,12 @@
+:mod:`skvideo.measure`.brisque_features
+====================================================
+
+.. currentmodule:: skvideo.measure
+
+.. autofunction:: brisque_features
+
+.. include:: skvideo.measure.brisque_features.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

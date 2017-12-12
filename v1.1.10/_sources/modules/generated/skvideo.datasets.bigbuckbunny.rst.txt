@@ -1,0 +1,12 @@
+:mod:`skvideo.datasets`.bigbuckbunny
+=================================================
+
+.. currentmodule:: skvideo.datasets
+
+.. autofunction:: bigbuckbunny
+
+.. include:: skvideo.datasets.bigbuckbunny.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

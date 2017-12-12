@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>skvideo.measure.niqe &#8212; scikit-video 1.1.10 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.10</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.measure.niqe
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.measure.niqe</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.misc</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span>
+
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">join</span>
+
+<span class="c1"># only used during training </span>
+<span class="c1">#from skimage.util.shape import view_as_windows</span>
+
+<span class="k">def</span> <span class="nf">_niqe_extract_subband_feats</span><span class="p">(</span><span class="n">mscncoefs</span><span class="p">):</span>
+    <span class="c1"># alpha_m,  = extract_ggd_features(mscncoefs)</span>
+    <span class="n">alpha_m</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">bl</span><span class="p">,</span> <span class="n">br</span><span class="p">,</span> <span class="n">lsq</span><span class="p">,</span> <span class="n">rsq</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">mscncoefs</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    <span class="n">pps1</span><span class="p">,</span> <span class="n">pps2</span><span class="p">,</span> <span class="n">pps3</span><span class="p">,</span> <span class="n">pps4</span> <span class="o">=</span> <span class="n">paired_product</span><span class="p">(</span><span class="n">mscncoefs</span><span class="p">)</span>
+    <span class="n">alpha1</span><span class="p">,</span> <span class="n">N1</span><span class="p">,</span> <span class="n">bl1</span><span class="p">,</span> <span class="n">br1</span><span class="p">,</span> <span class="n">lsq1</span><span class="p">,</span> <span class="n">rsq1</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps1</span><span class="p">)</span>
+    <span class="n">alpha2</span><span class="p">,</span> <span class="n">N2</span><span class="p">,</span> <span class="n">bl2</span><span class="p">,</span> <span class="n">br2</span><span class="p">,</span> <span class="n">lsq2</span><span class="p">,</span> <span class="n">rsq2</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps2</span><span class="p">)</span>
+    <span class="n">alpha3</span><span class="p">,</span> <span class="n">N3</span><span class="p">,</span> <span class="n">bl3</span><span class="p">,</span> <span class="n">br3</span><span class="p">,</span> <span class="n">lsq3</span><span class="p">,</span> <span class="n">rsq3</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps3</span><span class="p">)</span>
+    <span class="n">alpha4</span><span class="p">,</span> <span class="n">N4</span><span class="p">,</span> <span class="n">bl4</span><span class="p">,</span> <span class="n">br4</span><span class="p">,</span> <span class="n">lsq4</span><span class="p">,</span> <span class="n">rsq4</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps4</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">alpha_m</span><span class="p">,</span> <span class="p">(</span><span class="n">bl</span><span class="o">+</span><span class="n">br</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">alpha1</span><span class="p">,</span> <span class="n">N1</span><span class="p">,</span> <span class="n">bl1</span><span class="p">,</span> <span class="n">br1</span><span class="p">,</span>  <span class="c1"># (V)</span>
+            <span class="n">alpha2</span><span class="p">,</span> <span class="n">N2</span><span class="p">,</span> <span class="n">bl2</span><span class="p">,</span> <span class="n">br2</span><span class="p">,</span>  <span class="c1"># (H)</span>
+            <span class="n">alpha3</span><span class="p">,</span> <span class="n">N3</span><span class="p">,</span> <span class="n">bl3</span><span class="p">,</span> <span class="n">bl3</span><span class="p">,</span>  <span class="c1"># (D1)</span>
+            <span class="n">alpha4</span><span class="p">,</span> <span class="n">N4</span><span class="p">,</span> <span class="n">bl4</span><span class="p">,</span> <span class="n">bl4</span><span class="p">,</span>  <span class="c1"># (D2)</span>
+    <span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">get_patches_train_features</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_get_patches_generic</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stride</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_patches_test_features</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_get_patches_generic</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">stride</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">extract_on_patches</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">):</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">patch_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">patch_size</span><span class="p">)</span>
+    <span class="n">patches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span><span class="o">-</span><span class="n">patch_size</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="o">-</span><span class="n">patch_size</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">):</span>
+            <span class="n">patch</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
+            <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span>
+
+    <span class="n">patches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">patches</span><span class="p">)</span>
+    
+    <span class="n">patch_features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patches</span><span class="p">:</span>
+        <span class="n">patch_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_niqe_extract_subband_feats</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="n">patch_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">patch_features</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">patch_features</span>
+
+<span class="k">def</span> <span class="nf">_get_patches_generic</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">is_train</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="n">patch_size</span> <span class="ow">or</span> <span class="n">w</span> <span class="o">&lt;</span> <span class="n">patch_size</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input image is too small&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># ensure that the patch divides evenly into img</span>
+    <span class="n">hoffset</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">%</span> <span class="n">patch_size</span><span class="p">)</span>
+    <span class="n">woffset</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">%</span> <span class="n">patch_size</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">hoffset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:</span><span class="o">-</span><span class="n">hoffset</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="k">if</span> <span class="n">woffset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">woffset</span><span class="p">]</span>
+
+
+    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">img2</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">imresize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+    <span class="n">mscn1</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">compute_image_mscn_transform</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">mscn1</span> <span class="o">=</span> <span class="n">mscn1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">mscn2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">compute_image_mscn_transform</span><span class="p">(</span><span class="n">img2</span><span class="p">)</span>
+    <span class="n">mscn2</span> <span class="o">=</span> <span class="n">mscn2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+
+    <span class="n">feats_lvl1</span> <span class="o">=</span> <span class="n">extract_on_patches</span><span class="p">(</span><span class="n">mscn1</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">)</span>
+    <span class="n">feats_lvl2</span> <span class="o">=</span> <span class="n">extract_on_patches</span><span class="p">(</span><span class="n">mscn2</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">feats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">feats_lvl1</span><span class="p">,</span> <span class="n">feats_lvl2</span><span class="p">))</span><span class="c1"># feats_lvl3))</span>
+
+    <span class="c1">#if is_train:</span>
+    <span class="c1">#    variancefield = view_as_windows(var, (patch_size, patch_size), step=patch_size)</span>
+    <span class="c1">#    variancefield = variancefield.reshape(-1, patch_size, patch_size)</span>
+    <span class="c1">#    avg_variance = np.mean(np.mean(variancefield, axis=2), axis=1)</span>
+    <span class="c1">#    avg_variance /= np.max(avg_variance)</span>
+    <span class="c1">#    feats = feats[avg_variance &gt; 0.75]</span>
+
+    <span class="k">return</span> <span class="n">feats</span>
+
+<div class="viewcode-block" id="niqe"><a class="viewcode-back" href="../../../modules/generated/skvideo.measure.niqe.html#skvideo.measure.niqe">[docs]</a><span class="k">def</span> <span class="nf">niqe</span><span class="p">(</span><span class="n">inputVideoData</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes Naturalness Image Quality Evaluator. [#f1]_</span>
+
+<span class="sd">    Input a video of any quality and get back its distance frame-by-frame</span>
+<span class="sd">    from naturalness.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    inputVideoData : ndarray</span>
+<span class="sd">        Input video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels. Here C is only allowed to be 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    niqe_array : ndarray</span>
+<span class="sd">        The niqe results, ndarray of dimension (T,), where T</span>
+<span class="sd">        is the number of frames</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [#f1] Mittal, Anish, Rajiv Soundararajan, and Alan C. Bovik. &quot;Making a &#39;completely blind&#39; image quality analyzer.&quot; IEEE Signal Processing Letters 20.3 (2013): 209-212.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># cache</span>
+    <span class="n">patch_size</span> <span class="o">=</span> <span class="mi">96</span>
+    <span class="n">module_path</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+    <span class="c1"># TODO: memoize</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;niqe_image_params.mat&#39;</span><span class="p">))</span>
+    <span class="n">pop_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;pop_mu&quot;</span><span class="p">])</span>
+    <span class="n">pop_cov</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;pop_cov&quot;</span><span class="p">]</span>
+
+
+    <span class="c1"># load the training data</span>
+    <span class="n">inputVideoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">inputVideoData</span><span class="p">)</span>
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">inputVideoData</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">assert</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;niqe called with videos containing </span><span class="si">%d</span><span class="s2"> channels. Please supply only the luminance channel&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,)</span>
+    <span class="k">assert</span> <span class="n">M</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">patch_size</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;niqe called with small frame size, requires &gt; 192x192 resolution video using current training parameters&quot;</span>
+    <span class="k">assert</span> <span class="n">N</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">patch_size</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;niqe called with small frame size, requires &gt; 192x192 resolution video using current training parameters&quot;</span>
+
+    <span class="n">niqe_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+      <span class="n">feats</span> <span class="o">=</span> <span class="n">get_patches_test_features</span><span class="p">(</span><span class="n">inputVideoData</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">patch_size</span><span class="p">)</span>
+      <span class="n">sample_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">feats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      <span class="n">sample_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">feats</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+      <span class="n">X</span> <span class="o">=</span> <span class="n">sample_mu</span> <span class="o">-</span> <span class="n">pop_mu</span>
+      <span class="n">covmat</span> <span class="o">=</span> <span class="p">((</span><span class="n">pop_cov</span><span class="o">+</span><span class="n">sample_cov</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+      <span class="n">pinvmat</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">covmat</span><span class="p">)</span>
+      <span class="n">niqe_scores</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pinvmat</span><span class="p">),</span> <span class="n">X</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">niqe_scores</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
