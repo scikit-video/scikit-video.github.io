@@ -126,8 +126,8 @@ used in video processing algorithms.</p>
 <div class="section" id="i-installed-scikit-video-but-the-api-i-installed-does-not-match-the-website-how-do-i-fix-this">
 <h2>I installed scikit-video, but the API I installed does not match the website! How do I fix this?<a class="headerlink" href="#i-installed-scikit-video-but-the-api-i-installed-does-not-match-the-website-how-do-i-fix-this" title="Permalink to this headline">¶</a></h2>
 <p>You may be using an old version of scikit-video. Uninstall it using</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>$ sudo pip uninstall scikit-video
-$ sudo pip install sk-video
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ sudo pip uninstall sk-video
+$ sudo pip install scikit-video
 </pre></div>
 </div>
 <p>You can verify the module path by importing skvideo and printing the path to the init file</p>
@@ -136,7 +136,7 @@ $ sudo pip install sk-video
 </pre></div>
 </div>
 <p>This should produce output like</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">sk_video</span><span class="o">-*.*.*-</span><span class="n">py2</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">skvideo</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">pyc</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python</span><span class="o">*/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">scikit_video</span><span class="o">-*.*.*-</span><span class="n">py</span><span class="o">*.</span><span class="n">egg</span><span class="o">/</span><span class="n">skvideo</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">pyc</span>
 </pre></div>
 </div>
 </div>
