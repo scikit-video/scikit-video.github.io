@@ -105,9 +105,10 @@ skvideo.utils
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.edge</span> <span class="k">import</span> <span class="n">canny</span>
-<span class="kn">from</span> <span class="nn">.stpyr</span> <span class="k">import</span> <span class="n">SpatialSteerablePyramid</span>
+<span class="kn">from</span> <span class="nn">.stpyr</span> <span class="k">import</span> <span class="n">SpatialSteerablePyramid</span><span class="p">,</span> <span class="n">rolling_window</span>
 <span class="kn">from</span> <span class="nn">.mscn</span> <span class="k">import</span> <span class="n">compute_image_mscn_transform</span><span class="p">,</span> <span class="n">gen_gauss_window</span>
 <span class="kn">from</span> <span class="nn">.stats</span> <span class="k">import</span> <span class="n">ggd_features</span><span class="p">,</span> <span class="n">aggd_features</span><span class="p">,</span> <span class="n">paired_product</span>
+
 
 <span class="c1"># dictionary based on pix_fmt keys</span>
 <span class="c1"># first element is number of components</span>
@@ -457,7 +458,8 @@ skvideo.utils
     <span class="s1">&#39;gen_gauss_window&#39;</span><span class="p">,</span>
     <span class="s1">&#39;paired_product&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ggd_features&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;aggd_features&#39;</span>
+    <span class="s1">&#39;aggd_features&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rolling_window&#39;</span>
 <span class="p">]</span>
 </pre></div>
 
@@ -473,7 +475,7 @@ skvideo.utils
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
     </p>
   </div>
 </footer>
