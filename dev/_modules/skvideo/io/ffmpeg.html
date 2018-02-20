@@ -169,6 +169,7 @@ skvideo.io.ffmpeg
         <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
 
         <span class="n">israw</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">iswebcam</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
             <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -250,6 +251,9 @@ skvideo.io.ffmpeg
         <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;.raw&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;.yuv&quot;</span><span class="p">]):</span>
             <span class="n">israw</span> <span class="o">=</span> <span class="mi">1</span>
 
+        <span class="k">if</span> <span class="n">viddict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;@codec_name&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;rawvideo&#39;</span><span class="p">:</span>
+            <span class="n">iswebcam</span> <span class="o">=</span> <span class="mi">1</span>
+
         <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-vframes&quot;</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-vframes&quot;</span><span class="p">])</span>
         <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;-r&quot;</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">):</span>
@@ -261,12 +265,15 @@ skvideo.io.ffmpeg
         <span class="k">elif</span> <span class="n">israw</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># we can compute it based on the input size and color space</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bpp</span><span class="o">/</span><span class="mf">8.0</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">iswebcam</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># webcam can stream frames endlessly, lets use the special default value of 0 to indicate that</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
             <span class="k">if</span> <span class="n">verbosity</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot determine frame count. Scanning input file, this is slow when repeated many times. Need `-vframes` in inputdict. Consult documentation on I/O.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span> 
 
-        <span class="k">if</span> <span class="n">israw</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">israw</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">iswebcam</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># check that the extension makes sense</span>
@@ -390,8 +397,12 @@ skvideo.io.ffmpeg
 <span class="sd">        M is height, N is width, and C is number of channels per pixel.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="FFmpegWriter"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter">[docs]</a><span class="k">class</span> <span class="nc">FFmpegWriter</span><span class="p">():</span>
