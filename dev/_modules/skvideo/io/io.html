@@ -2,6 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>skvideo.io.io &#8212; scikit-video 1.1.10 documentation</title>
     <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
@@ -9,16 +10,7 @@
     <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '1.1.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -34,8 +26,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default ">
     <div class="container">
@@ -167,8 +158,8 @@ skvideo.io.io
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">writeFrame</span><span class="p">(</span><span class="n">videodata</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
         <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+    <span class="k">else</span><span class="p">:</span></div>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span>
 
 
 <div class="viewcode-block" id="vread"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.vread.html#skvideo.io.vread">[docs]</a><span class="k">def</span> <span class="nf">vread</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_grey</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -270,8 +261,8 @@ skvideo.io.io
         <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">videodata</span>
 
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+    <span class="k">else</span><span class="p">:</span></div>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span>
 
 
 <div class="viewcode-block" id="vreader"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.vreader.html#skvideo.io.vreader">[docs]</a><span class="k">def</span> <span class="nf">vreader</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_frames</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_grey</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -372,8 +363,8 @@ skvideo.io.io
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+    <span class="k">else</span><span class="p">:</span></div>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span>
 </pre></div>
 
     </div>
@@ -388,7 +379,7 @@ skvideo.io.io
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.0.<br/>
     </p>
   </div>
 </footer>
