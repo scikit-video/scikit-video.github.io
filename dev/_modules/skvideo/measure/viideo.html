@@ -184,8 +184,8 @@ skvideo.measure.viideo
         <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
 
     <span class="n">change_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-</div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">change_score</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">change_score</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="viideo_features"><a class="viewcode-back" href="../../../modules/generated/skvideo.measure.viideo_features.html#skvideo.measure.viideo_features">[docs]</a><span class="k">def</span> <span class="nf">viideo_features</span><span class="p">(</span><span class="n">videoData</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">blockoverlap</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">filterlength</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
@@ -290,8 +290,8 @@ skvideo.measure.viideo
               <span class="n">shaped2</span><span class="p">,</span> <span class="n">bld2</span><span class="p">,</span> <span class="n">brd2</span><span class="p">,</span>
             <span class="p">])</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">mu</span>
-</div>
-    <span class="k">return</span> <span class="n">features</span>
+
+    <span class="k">return</span> <span class="n">features</span></div>
 </pre></div>
 
     </div>
@@ -306,7 +306,7 @@ skvideo.measure.viideo
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>

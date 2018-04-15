@@ -403,8 +403,8 @@ skvideo.utils
             <span class="k">return</span> <span class="n">videodata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">videodata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> 
         <span class="k">return</span> <span class="n">videodata</span>
-    <span class="k">else</span><span class="p">:</span></div>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Improper data input&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Improper data input&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="rgb2gray"><a class="viewcode-back" href="../../modules/generated/skvideo.utils.rgb2gray.html#skvideo.utils.rgb2gray">[docs]</a><span class="k">def</span> <span class="nf">rgb2gray</span><span class="p">(</span><span class="n">videodata</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Computes the grayscale video.</span>
@@ -433,8 +433,8 @@ skvideo.utils
     <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># assume RGB</span>
         <span class="n">videodata</span> <span class="o">=</span> <span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">0.2989</span> <span class="o">+</span> <span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">0.5870</span> <span class="o">+</span> <span class="n">videodata</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mf">0.1140</span> 
         <span class="k">return</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videodata</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span></div>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;xmltodictparser&#39;</span><span class="p">,</span>
@@ -466,7 +466,7 @@ skvideo.utils
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>

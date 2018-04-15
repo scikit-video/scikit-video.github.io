@@ -319,16 +319,16 @@ skvideo.io.ffmpeg
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span> <span class="o">+</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">]</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span></div>
-                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FFmpegReader.getShape"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader.getShape">[docs]</a>    <span class="k">def</span> <span class="nf">getShape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a tuple (T, M, N, C) </span>
 <span class="sd">        </span>
 <span class="sd">        Returns the video shape in number of frames, height, width, and channels per pixel.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-</div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span></div>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -392,8 +392,8 @@ skvideo.io.ffmpeg
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">):</span></div></div>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputframenum</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readFrame</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="FFmpegWriter"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter">[docs]</a><span class="k">class</span> <span class="nc">FFmpegWriter</span><span class="p">():</span>
@@ -457,8 +457,8 @@ skvideo.io.ffmpeg
         <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">verbosity</span>
 
         <span class="k">if</span> <span class="s2">&quot;-f&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">0</span></div>
 
     <span class="k">def</span> <span class="nf">_warmStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">1</span>
@@ -533,8 +533,8 @@ skvideo.io.ffmpeg
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DEVNULL</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DEVNULL</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FFmpegWriter.writeFrame"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter.writeFrame">[docs]</a>    <span class="k">def</span> <span class="nf">writeFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">):</span>
@@ -566,8 +566,8 @@ skvideo.io.ffmpeg
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="c1"># Show the command and stderr from pipe</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:}</span><span class="se">\n\n</span><span class="s1">FFMPEG COMMAND:</span><span class="se">\n</span><span class="si">{1:}</span><span class="se">\n\n</span><span class="s1">FFMPEG STDERR &#39;</span> \
-                  <span class="s1">&#39;OUTPUT:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span></div></div>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                  <span class="s1">&#39;OUTPUT:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div></div>
 </pre></div>
 
     </div>
@@ -582,7 +582,7 @@ skvideo.io.ffmpeg
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
