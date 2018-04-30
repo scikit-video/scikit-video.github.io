@@ -104,8 +104,8 @@ skvideo.motion.gme
     <span class="n">diamond</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 
     <span class="c1"># extract only 1-pixel border line of objects</span>
-    <span class="n">E_1_per</span> <span class="o">=</span> <span class="n">E_1</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">binary_erosion</span><span class="p">(</span><span class="n">E_1</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">diamond</span><span class="p">)</span>
-    <span class="n">E_2_per</span> <span class="o">=</span> <span class="n">E_2</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">binary_erosion</span><span class="p">(</span><span class="n">E_2</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">diamond</span><span class="p">)</span>
+    <span class="n">E_1_per</span> <span class="o">=</span> <span class="n">E_1</span><span class="o">^</span><span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">binary_erosion</span><span class="p">(</span><span class="n">E_1</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">diamond</span><span class="p">)</span>
+    <span class="n">E_2_per</span> <span class="o">=</span> <span class="n">E_2</span><span class="o">^</span><span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">binary_erosion</span><span class="p">(</span><span class="n">E_2</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">diamond</span><span class="p">)</span>
 
     <span class="n">A</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">distance_transform_edt</span><span class="p">(</span><span class="o">~</span><span class="n">E_2_per</span><span class="p">)[</span><span class="n">E_1_per</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">morphology</span><span class="o">.</span><span class="n">distance_transform_edt</span><span class="p">(</span><span class="o">~</span><span class="n">E_1_per</span><span class="p">)[</span><span class="n">E_2_per</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
@@ -148,6 +148,14 @@ skvideo.motion.gme
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">frame1</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">frame1</span><span class="p">)</span>
+    <span class="n">frame2</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">frame2</span><span class="p">)</span>
+    
+    <span class="k">assert</span><span class="p">(</span><span class="n">frame1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">frame2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">frame1</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">assert</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;called with frames having </span><span class="si">%d</span><span class="s2"> channels. Please supply only the luminance channel.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,)</span>
     <span class="c1"># if type bool, then these are edge maps. No need to convert them</span>
     <span class="k">if</span> <span class="n">frame1</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
         <span class="n">E_1</span> <span class="o">=</span> <span class="n">canny</span><span class="p">(</span><span class="n">frame1</span><span class="p">)</span>
@@ -192,7 +200,7 @@ skvideo.motion.gme
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.3.<br/>
     </p>
   </div>
 </footer>
