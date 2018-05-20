@@ -141,7 +141,7 @@ skvideo.measure.viideo
 
 <span class="sd">    .. [#f2] A. Mittal, M. A. Saad and A. C. Bovik, &quot;A &#39;Completely Blind&#39; Video Integrity Oracle&quot;, submitted to IEEE Transactions in Image Processing, 2014.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">features</span> <span class="o">=</span> <span class="n">viideo_features</span><span class="p">(</span><span class="n">videoData</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">blockoverlap</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">filterlength</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">viideo_features</span><span class="p">(</span><span class="n">videoData</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">blockoverlap</span><span class="o">=</span><span class="n">blockoverlap</span><span class="p">,</span> <span class="n">filterlength</span><span class="o">=</span><span class="n">filterlength</span><span class="p">)</span>
 
     <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
 
@@ -306,7 +306,7 @@ skvideo.measure.viideo
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>
