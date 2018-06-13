@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -95,26 +95,21 @@ skvideo.io.ffmpeg
 <span class="c1"># Copyright (c) 2015, imageio contributors</span>
 <span class="c1"># distributed under the terms of the BSD License (included in release).</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">stat</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.ffprobe</span> <span class="k">import</span> <span class="n">ffprobe</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_HAS_FFMPEG</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_FFMPEG_APPLICATION</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_FFMPEG_PATH</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_FFMPEG_SUPPORTED_DECODERS</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_FFMPEG_APPLICATION</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_HAS_FFMPEG</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+
 
 <span class="c1"># uses FFmpeg to read the given file with parameters</span>
 <div class="viewcode-block" id="FFmpegReader"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader">[docs]</a><span class="k">class</span> <span class="nc">FFmpegReader</span><span class="p">():</span>
@@ -289,6 +284,17 @@ skvideo.io.ffmpeg
 
         <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">outputbpp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">bitpercomponent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputbpp</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span>
+        <span class="k">if</span> <span class="n">bitpercomponent</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;u1&#39;</span><span class="p">)</span> <span class="c1"># np.uint8</span>
+        <span class="k">elif</span> <span class="n">bitpercomponent</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;le&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&lt;u2&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;be&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&gt;u2&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;is not a valid pix_fmt for numpy conversion&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s1">&#39;-vcodec&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
             <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-vcodec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span>
@@ -362,7 +368,7 @@ skvideo.io.ffmpeg
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Read framesize bytes</span>
-            <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">framesize</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">framesize</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="n">framesize</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_terminate</span><span class="p">()</span>
@@ -372,14 +378,8 @@ skvideo.io.ffmpeg
 
     <span class="k">def</span> <span class="nf">_readFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read and convert to numpy array</span>
-        <span class="c1"># t0 = time.time()</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_data</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
-
-        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">result</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_data</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span>
 
 <div class="viewcode-block" id="FFmpegReader.nextFrame"><a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader.nextFrame">[docs]</a>    <span class="k">def</span> <span class="nf">nextFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Yields frames using a generator </span>
@@ -460,24 +460,48 @@ skvideo.io.ffmpeg
             <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">0</span></div>
 
-    <span class="k">def</span> <span class="nf">_warmStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_warmStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="s2">&quot;-pix_fmt&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">:</span>
-            <span class="c1"># check the number channels to guess </span>
-            <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
-            <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ya8&quot;</span>
-            <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb24&quot;</span>
-            <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgba&quot;</span>
+            <span class="c1"># check the number channels to guess</span>
+            <span class="k">if</span> <span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;u&#39;</span> <span class="ow">and</span> <span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span> <span class="k">if</span> <span class="n">dtype</span><span class="o">.</span><span class="n">byteorder</span> <span class="k">else</span> <span class="s1">&#39;&gt;&#39;</span>
+                <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray16&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+                <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ya16&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+                <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb48&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+                <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgba64&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="bp">NotImplemented</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="bp">NotImplemented</span>
+                <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+                <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ya8&quot;</span>
+                <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb24&quot;</span>
+                <span class="k">elif</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgba&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="bp">NotImplemented</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bpp</span> <span class="o">=</span> <span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span> <span class="o">=</span> <span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bitpercomponent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bpp</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span>
+        <span class="k">if</span> <span class="n">bitpercomponent</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;u1&#39;</span><span class="p">)</span> <span class="c1">#np.uint8</span>
+        <span class="k">elif</span> <span class="n">bitpercomponent</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;le&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&lt;u2&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;be&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&gt;u2&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;is not a valid pix_fmt for numpy conversion&#39;</span><span class="p">)</span>
         
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span> <span class="o">==</span> <span class="n">C</span><span class="p">,</span> <span class="s2">&quot;Failed to pass the correct number of channels </span><span class="si">%d</span><span class="s2"> for the pixel format </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">])</span>  
 
@@ -544,12 +568,9 @@ skvideo.io.ffmpeg
         <span class="n">vid</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
         <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmStarted</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_warmStart</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warmStart</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="c1"># Ensure that ndarray image is in uint8</span>
-        <span class="n">vid</span><span class="p">[</span><span class="n">vid</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
-        <span class="n">vid</span><span class="p">[</span><span class="n">vid</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">vid</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">vid</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">0</span><span class="p">,(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="o">&lt;&lt;</span><span class="mi">3</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># Check size of image</span>
         <span class="k">if</span> <span class="n">M</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputheight</span> <span class="ow">or</span> <span class="n">N</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputwidth</span><span class="p">:</span>
@@ -568,6 +589,7 @@ skvideo.io.ffmpeg
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:}</span><span class="se">\n\n</span><span class="s1">FFMPEG COMMAND:</span><span class="se">\n</span><span class="si">{1:}</span><span class="se">\n\n</span><span class="s1">FFMPEG STDERR &#39;</span> \
                   <span class="s1">&#39;OUTPUT:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div></div>
+
 </pre></div>
 
     </div>
@@ -582,7 +604,7 @@ skvideo.io.ffmpeg
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.<br/>
     </p>
   </div>
 </footer>
