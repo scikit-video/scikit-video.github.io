@@ -86,13 +86,15 @@ skvideo.measure.brisque
     <div class="col-md-9 content">
       
   <h1>Source code for skvideo.measure.brisque</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.fftpack</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span>
 <span class="kn">import</span> <span class="nn">scipy.io</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">scipy.misc</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+
 
 <span class="k">def</span> <span class="nf">_extract_subband_feats</span><span class="p">(</span><span class="n">mscncoefs</span><span class="p">):</span>
     <span class="c1"># alpha_m,  = extract_ggd_features(mscncoefs)</span>

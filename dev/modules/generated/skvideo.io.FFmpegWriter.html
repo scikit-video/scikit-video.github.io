@@ -91,7 +91,7 @@
 <h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skvideo.io</span></code></a>.FFmpegWriter<a class="headerlink" href="#skvideo-io-ffmpegwriter" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="skvideo.io.FFmpegWriter">
-<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">FFmpegWriter</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes frames using FFmpeg</p>
 <p>Using FFmpeg as a backend, this class
 provides sane initializations for the default case.</p>
@@ -112,8 +112,8 @@ provides sane initializations for the default case.</p>
 </table>
 <dl class="method">
 <dt id="skvideo.io.FFmpegWriter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegWriter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegWriter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepares parameters for FFmpeg</p>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegWriter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegWriter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares parameters</p>
 <p>Does not instantiate the an FFmpeg subprocess, but simply
 prepares the required parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -130,7 +130,7 @@ prepares the required parameters.</p>
 </div></blockquote>
 <p><strong>outputdict</strong> : dict</p>
 <blockquote>
-<div><p>Output dictionary parameters, i.e. how to encode the data 
+<div><p>Output dictionary parameters, i.e. how to encode the data
 when writing to file.</p>
 </div></blockquote>
 </td>
@@ -144,13 +144,13 @@ when writing to file.</p>
 
 <dl class="method">
 <dt id="skvideo.io.FFmpegWriter.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegWriter.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the video and terminates FFmpeg process</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skvideo.io.FFmpegWriter.writeFrame">
-<code class="descname">writeFrame</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/ffmpeg.html#FFmpegWriter.writeFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.FFmpegWriter.writeFrame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">writeFrame</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.FFmpegWriter.writeFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends ndarray frames to FFmpeg</p>
 </dd></dl>
 

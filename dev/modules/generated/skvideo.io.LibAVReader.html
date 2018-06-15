@@ -91,9 +91,9 @@
 <h1><a class="reference internal" href="../io.html#module-skvideo.io" title="skvideo.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skvideo.io</span></code></a>.LibAVReader<a class="headerlink" href="#skvideo-io-libavreader" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="skvideo.io.LibAVReader">
-<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">LibAVReader</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads frames using Libav</p>
-<p>Using libav as a backend, this class
+<em class="property">class </em><code class="descclassname">skvideo.io.</code><code class="descname">LibAVReader</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads frames using Libav
+Using libav as a backend, this class
 provides sane initializations meant to
 handle the default case well.</p>
 <p class="rubric">Methods</p>
@@ -116,14 +116,14 @@ handle the default case well.</p>
 </table>
 <dl class="method">
 <dt id="skvideo.io.LibAVReader.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>inputdict=None</em>, <em>outputdict=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVReader.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVReader.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes libav in reading mode with the given parameters</p>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVReader.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVReader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes FFmpeg in reading mode with the given parameters</p>
 <p>During initialization, additional parameters about the video file
-are parsed using <a class="reference internal" href="skvideo.io.avprobe.html#skvideo.io.avprobe" title="skvideo.io.avprobe"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.io.avprobe</span></code></a>. Then avconv is launched
+are parsed using <a class="reference internal" href="skvideo.io.ffprobe.html#skvideo.io.ffprobe" title="skvideo.io.ffprobe"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.io.ffprobe</span></code></a>. Then FFmpeg is launched
 as a subprocess. Parameters passed into inputdict are parsed and
 used to set as internal variables about the video. If the parameter,
 such as “Height” is not found in the inputdict, it is found through
-scanning the file’s header information. If not in the header, avprobe
+scanning the file’s header information. If not in the header, ffprobe
 is used to decode the file to determine the information. In the case
 that the information is not supplied and connot be inferred from the
 input file, a ValueError exception is thrown.</p>
@@ -141,7 +141,7 @@ input file, a ValueError exception is thrown.</p>
 </div></blockquote>
 <p><strong>outputdict</strong> : dict</p>
 <blockquote>
-<div><p>Output dictionary parameters, i.e. how to encode the data 
+<div><p>Output dictionary parameters, i.e. how to encode the data
 when sending back to the python process.</p>
 </div></blockquote>
 </td>
@@ -155,16 +155,16 @@ when sending back to the python process.</p>
 
 <dl class="method">
 <dt id="skvideo.io.LibAVReader.getShape">
-<code class="descname">getShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVReader.getShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVReader.getShape" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.LibAVReader.getShape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple (T, M, N, C)</p>
 <p>Returns the video shape in number of frames, height, width, and channels per pixel.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skvideo.io.LibAVReader.nextFrame">
-<code class="descname">nextFrame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/io/avconv.html#LibAVReader.nextFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skvideo.io.LibAVReader.nextFrame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nextFrame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skvideo.io.LibAVReader.nextFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields frames using a generator</p>
-<p>Returns T ndarrays of size (M, N, C), where T is number of frames, 
+<p>Returns T ndarrays of size (M, N, C), where T is number of frames,
 M is height, N is width, and C is number of channels per pixel.</p>
 </dd></dl>
 

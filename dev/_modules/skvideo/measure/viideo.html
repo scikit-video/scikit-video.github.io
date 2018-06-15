@@ -86,18 +86,14 @@ skvideo.measure.viideo
     <div class="col-md-9 content">
       
   <h1>Source code for skvideo.measure.viideo</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">..motion</span> <span class="k">import</span> <span class="n">blockMotion</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.fftpack</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span>
 <span class="kn">import</span> <span class="nn">scipy.io</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
 
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+
 
 <span class="k">def</span> <span class="nf">gauss_window_full</span><span class="p">(</span><span class="n">lw</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="n">sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
@@ -168,14 +164,14 @@ skvideo.measure.viideo
         <span class="n">vec1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">low_Fr1</span> <span class="o">-</span> <span class="n">low_Fr2</span><span class="p">)</span>
         <span class="n">vec2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">high_Fr1</span><span class="o">-</span> <span class="n">high_Fr2</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">f1_cum</span> <span class="o">==</span> <span class="p">[]:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f1_cum</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
           <span class="n">f1_cum</span> <span class="o">=</span> <span class="n">vec1</span>
           <span class="n">f2_cum</span> <span class="o">=</span> <span class="n">vec2</span>
         <span class="k">else</span><span class="p">:</span>
           <span class="n">f1_cum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">f1_cum</span><span class="p">,</span> <span class="n">vec1</span><span class="p">))</span>
           <span class="n">f2_cum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">f2_cum</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span>
 
-      <span class="k">if</span> <span class="n">f1_cum</span> <span class="o">!=</span> <span class="p">[]:</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f1_cum</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">f1_cum</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f1_cum</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
           <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f1_cum</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f2_cum</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>

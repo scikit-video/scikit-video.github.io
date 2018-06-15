@@ -159,15 +159,21 @@ Detecting scene boundaries
 67
 68
 69
-70</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skvideo.io</span>
-<span class="kn">import</span> <span class="nn">skvideo.datasets</span>
+70
+71
+72
+73</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">import</span> <span class="nn">skvideo.measure</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">xrange</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">xrange</span> <span class="o">=</span> <span class="nb">range</span>
 
 <span class="k">def</span> <span class="nf">getPlot</span><span class="p">(</span><span class="n">edgelist1</span><span class="p">,</span> <span class="n">edgelist2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-    <span class="n">myDPI</span> <span class="o">=</span> <span class="mf">100.0</span>
+    <span class="n">myDPI</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="n">myDPI</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="n">myDPI</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">myDPI</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;histogram algorithm&quot;</span><span class="p">)</span>
