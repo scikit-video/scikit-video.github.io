@@ -144,6 +144,7 @@ skvideo.io.abstract
         <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">verbosity</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inputdict</span><span class="p">:</span>
             <span class="n">inputdict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -261,6 +262,7 @@ skvideo.io.abstract
 
         <span class="k">if</span> <span class="s1">&#39;-pix_fmt&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
             <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rgb24&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span> <span class="o">=</span> <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="s1">&#39;-s&#39;</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
             <span class="n">widthheight</span> <span class="o">=</span> <span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
@@ -355,7 +357,19 @@ skvideo.io.abstract
 
     <span class="k">def</span> <span class="nf">_readFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read and convert to numpy array</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_data</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_data</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuv444p&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span> <span class="o">==</span> <span class="s1">&#39;rgb24&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unsupported reshaping from raw buffer to images frames  for format </span><span class="si">{:}</span><span class="s1">. Assuming HEIGHTxWIDTHxCOLOR&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span>
 
     <span class="k">def</span> <span class="nf">nextFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -595,7 +609,7 @@ skvideo.io.abstract
     </p>
     <p>
         &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>
