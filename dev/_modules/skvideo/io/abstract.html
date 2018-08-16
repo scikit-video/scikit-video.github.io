@@ -100,15 +100,15 @@ skvideo.io.abstract
     <span class="sd">&quot;&quot;&quot;Reads frames</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">INFO_AVERAGE_FRAMERATE</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&quot;avg_frame_rate&quot;</span>
-    <span class="n">INFO_WIDTH</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&quot;width&quot;</span>
-    <span class="n">INFO_HEIGHT</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&quot;height&quot;</span>
-    <span class="n">INFO_PIX_FMT</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&quot;pix_fmt&quot;</span>
-    <span class="n">INFO_DURATION</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&quot;duration&quot;</span>
-    <span class="n">INFO_NB_FRAMES</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&quot;nb_frames&quot;</span>
+    <span class="n">INFO_AVERAGE_FRAMERATE</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;avg_frame_rate&quot;</span>
+    <span class="n">INFO_WIDTH</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;width&quot;</span>
+    <span class="n">INFO_HEIGHT</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;height&quot;</span>
+    <span class="n">INFO_PIX_FMT</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;pix_fmt&quot;</span>
+    <span class="n">INFO_DURATION</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;duration&quot;</span>
+    <span class="n">INFO_NB_FRAMES</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;nb_frames&quot;</span>
     <span class="n">DEFAULT_FRAMERATE</span> <span class="o">=</span> <span class="mf">25.</span>
     <span class="n">DEFAULT_INPUT_PIX_FMT</span> <span class="o">=</span> <span class="s2">&quot;yuvj444p&quot;</span>
-    <span class="n">OUTPUT_METHOD</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># &quot;rawvideo&quot;</span>
+    <span class="n">OUTPUT_METHOD</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;rawvideo&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes FFmpeg in reading mode with the given parameters</span>
@@ -158,7 +158,7 @@ skvideo.io.abstract
         <span class="bp">self</span><span class="o">.</span><span class="n">probeInfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probe</span><span class="p">()</span>
 
         <span class="c1"># smartphone video data is weird</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rotationAngle</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="c1">#specific FFMPEG</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotationAngle</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>  <span class="c1"># specific FFMPEG</span>
 
         <span class="n">viddict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="s2">&quot;video&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">probeInfo</span><span class="p">:</span>
@@ -219,7 +219,8 @@ skvideo.io.abstract
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_INPUT_PIX_FMT</span>
             <span class="k">if</span> <span class="n">verbosity</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No input color space detected. Assuming </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_INPUT_PIX_FMT</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No input color space detected. Assuming </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_INPUT_PIX_FMT</span><span class="p">),</span>
+                              <span class="ne">UserWarning</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">inputdepth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bpp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">bpplut</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pix_fmt</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
@@ -287,6 +288,9 @@ skvideo.io.abstract
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;is not a valid pix_fmt for numpy conversion&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_createProcess</span><span class="p">(</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">_createProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -361,11 +365,14 @@ skvideo.io.abstract
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span> <span class="o">==</span> <span class="s1">&#39;rgb24&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuv444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuvj444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuva444p&#39;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuv444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                <span class="s1">&#39;yuvj444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuva444p&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unsupported reshaping from raw buffer to images frames  for format </span><span class="si">{:}</span><span class="s1">. Assuming HEIGHTxWIDTHxCOLOR&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;Unsupported reshaping from raw buffer to images frames  for format </span><span class="si">{:}</span><span class="s1">. Assuming HEIGHTxWIDTHxCOLOR&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">output_pix_fmt</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">outputheight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdepth</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastread</span>
@@ -389,6 +396,7 @@ skvideo.io.abstract
 
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 
 <span class="k">class</span> <span class="nc">VideoWriterAbstract</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes frames</span>
@@ -506,7 +514,7 @@ skvideo.io.abstract
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;is not a valid pix_fmt for numpy conversion&#39;</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span> <span class="o">==</span> <span class="n">C</span><span class="p">,</span> <span class="s2">&quot;Failed to pass the correct number of channels </span><span class="si">%d</span><span class="s2"> for the pixel format </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputNumChannels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;-s&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">):</span>
             <span class="n">widthheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
@@ -522,7 +530,8 @@ skvideo.io.abstract
             <span class="k">if</span> <span class="s2">&quot;-pix_fmt&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_OUTPUT_PIX_FMT</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No output color space provided. Assuming </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_OUTPUT_PIX_FMT</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No output color space provided. Assuming </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_OUTPUT_PIX_FMT</span><span class="p">),</span>
+                                  <span class="ne">UserWarning</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_createProcess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span><span class="p">)</span>
 
@@ -530,7 +539,7 @@ skvideo.io.abstract
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_prepareData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">data</span> <span class="c1"># general case : do nothing</span>
+        <span class="k">return</span> <span class="n">data</span>  <span class="c1"># general case : do nothing</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Closes the video and terminates FFmpeg process</span>
@@ -557,11 +566,12 @@ skvideo.io.abstract
 
         <span class="n">vid</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">vid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepareData</span><span class="p">(</span><span class="n">vid</span><span class="p">)</span>
-        <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span> <span class="c1"># in case of hack ine prepareData to change the image shape (gray2RGB in libAV for exemple)</span>
+        <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># in case of hack ine prepareData to change the image shape (gray2RGB in libAV for exemple)</span>
 
         <span class="c1"># check if we need to do some bit-plane swapping</span>
         <span class="c1"># for the raw data format</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuv444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuvj444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuva444p&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuv444p&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuvj444p&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputdict</span><span class="p">[</span><span class="s2">&quot;-pix_fmt&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;yuva444p&#39;</span><span class="p">):</span>
             <span class="n">vid</span> <span class="o">=</span> <span class="n">vid</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 
         <span class="c1"># Check size of image</span>
