@@ -292,6 +292,10 @@ skvideo.io.abstract
     <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">())</span>
 
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nextFrame</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">frame</span>
+    
     <span class="k">def</span> <span class="nf">_createProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">):</span>
         <span class="k">pass</span>
 
