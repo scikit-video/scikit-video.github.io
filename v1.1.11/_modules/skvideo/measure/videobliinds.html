@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>skvideo.measure.videobliinds &#8212; scikit-video 1.1.11 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html"><img class="navbar-brand-img" src="../../../_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.11</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.measure.videobliinds
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.measure.videobliinds</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">join</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.fftpack</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span>
+<span class="kn">import</span> <span class="nn">scipy.misc</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+
+<span class="kn">from</span> <span class="nn">..motion</span> <span class="k">import</span> <span class="n">blockMotion</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<span class="k">def</span> <span class="nf">motion_feature_extraction</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="c1"># setup</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">mblock</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">gen_gauss_window</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="c1"># step 1: motion vector calculation</span>
+    <span class="n">motion_vectors</span> <span class="o">=</span> <span class="n">blockMotion</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;N3SS&#39;</span><span class="p">,</span> <span class="n">mbSize</span><span class="o">=</span><span class="n">mblock</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="n">mblock</span><span class="p">))</span>
+    <span class="n">motion_vectors</span> <span class="o">=</span> <span class="n">motion_vectors</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># step 2: compute coherency</span>
+    <span class="n">Eigens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="n">motion_frame</span> <span class="o">=</span> <span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+      <span class="n">upper_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+      <span class="n">lower_right</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+      <span class="n">off_diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+      <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">upper_left</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span> 
+      <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">upper_left</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">upper_left</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span> 
+      <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lower_right</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span> 
+      <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">lower_right</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lower_right</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span> 
+      <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">motion_frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">off_diag</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span> 
+      <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">correlate1d</span><span class="p">(</span><span class="n">off_diag</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">off_diag</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span>
+
+      <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+          <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">upper_left</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">off_diag</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">off_diag</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">lower_right</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]],</span>
+          <span class="p">])</span>
+          <span class="n">w</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+          <span class="n">Eigens</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span> 
+
+    <span class="n">num</span> <span class="o">=</span> <span class="p">(</span><span class="n">Eigens</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">Eigens</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">den</span> <span class="o">=</span> <span class="p">(</span><span class="n">Eigens</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Eigens</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">Coh10x10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="n">Coh10x10</span><span class="p">[</span><span class="n">den</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="p">[</span><span class="n">den</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">den</span><span class="p">[</span><span class="n">den</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">meanCoh10x10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Coh10x10</span><span class="p">)</span>
+
+    <span class="c1"># step 3: global motion</span>
+    <span class="n">mode10x10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">mean10x10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="n">motion_frame</span> <span class="o">=</span> <span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+      <span class="n">motion_amplitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+      <span class="n">mode10x10</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">motion_amplitude</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">mean10x10</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">motion_amplitude</span><span class="p">)</span>
+
+    <span class="n">motion_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mode10x10</span> <span class="o">-</span> <span class="n">mean10x10</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">motion_diff</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mode10x10</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">meanCoh10x10</span><span class="p">,</span> <span class="n">G</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">_extract_subband_feats</span><span class="p">(</span><span class="n">mscncoefs</span><span class="p">):</span>
+    <span class="c1"># alpha_m,  = extract_ggd_features(mscncoefs)</span>
+    <span class="n">alpha_m</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">bl</span><span class="p">,</span> <span class="n">br</span><span class="p">,</span> <span class="n">lsq</span><span class="p">,</span> <span class="n">rsq</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">mscncoefs</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    <span class="n">pps1</span><span class="p">,</span> <span class="n">pps2</span><span class="p">,</span> <span class="n">pps3</span><span class="p">,</span> <span class="n">pps4</span> <span class="o">=</span> <span class="n">paired_product</span><span class="p">(</span><span class="n">mscncoefs</span><span class="p">)</span>
+    <span class="n">alpha1</span><span class="p">,</span> <span class="n">N1</span><span class="p">,</span> <span class="n">bl1</span><span class="p">,</span> <span class="n">br1</span><span class="p">,</span> <span class="n">lsq1</span><span class="p">,</span> <span class="n">rsq1</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps1</span><span class="p">)</span>
+    <span class="n">alpha2</span><span class="p">,</span> <span class="n">N2</span><span class="p">,</span> <span class="n">bl2</span><span class="p">,</span> <span class="n">br2</span><span class="p">,</span> <span class="n">lsq2</span><span class="p">,</span> <span class="n">rsq2</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps2</span><span class="p">)</span>
+    <span class="n">alpha3</span><span class="p">,</span> <span class="n">N3</span><span class="p">,</span> <span class="n">bl3</span><span class="p">,</span> <span class="n">br3</span><span class="p">,</span> <span class="n">lsq3</span><span class="p">,</span> <span class="n">rsq3</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps3</span><span class="p">)</span>
+    <span class="n">alpha4</span><span class="p">,</span> <span class="n">N4</span><span class="p">,</span> <span class="n">bl4</span><span class="p">,</span> <span class="n">br4</span><span class="p">,</span> <span class="n">lsq4</span><span class="p">,</span> <span class="n">rsq4</span> <span class="o">=</span> <span class="n">aggd_features</span><span class="p">(</span><span class="n">pps4</span><span class="p">)</span>
+    <span class="c1"># print bl1, br1</span>
+    <span class="c1"># print bl2, br2</span>
+    <span class="c1"># print bl3, br3</span>
+    <span class="c1"># print bl4, br4</span>
+    <span class="c1"># exit(0)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">alpha_m</span><span class="p">,</span> <span class="p">(</span><span class="n">bl</span><span class="o">+</span><span class="n">br</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="n">alpha1</span><span class="p">,</span> <span class="n">N1</span><span class="p">,</span> <span class="n">bl1</span><span class="p">,</span> <span class="n">br1</span><span class="p">,</span>  <span class="c1"># (V)</span>
+            <span class="n">alpha2</span><span class="p">,</span> <span class="n">N2</span><span class="p">,</span> <span class="n">bl2</span><span class="p">,</span> <span class="n">br2</span><span class="p">,</span>  <span class="c1"># (H)</span>
+            <span class="n">alpha3</span><span class="p">,</span> <span class="n">N3</span><span class="p">,</span> <span class="n">bl3</span><span class="p">,</span> <span class="n">br3</span><span class="p">,</span>  <span class="c1"># (D1)</span>
+            <span class="n">alpha4</span><span class="p">,</span> <span class="n">N4</span><span class="p">,</span> <span class="n">bl4</span><span class="p">,</span> <span class="n">br4</span><span class="p">,</span>  <span class="c1"># (D2)</span>
+    <span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">extract_on_patches</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">blocksizerow</span><span class="p">,</span> <span class="n">blocksizecol</span><span class="p">):</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">blocksizerow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">blocksizerow</span><span class="p">)</span>
+    <span class="n">blocksizecol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">blocksizecol</span><span class="p">)</span>
+    <span class="n">patches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="n">blocksizerow</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">blocksizerow</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="n">blocksizecol</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">blocksizecol</span><span class="p">)):</span>
+            <span class="n">patch</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">blocksizerow</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">blocksizecol</span><span class="p">]</span>
+            <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span>
+
+    <span class="n">patches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">patches</span><span class="p">)</span>
+    
+    <span class="n">patch_features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patches</span><span class="p">:</span>
+        <span class="n">mscn_features</span><span class="p">,</span> <span class="n">pp_features</span> <span class="o">=</span> <span class="n">_extract_subband_feats</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">patch_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">mscn_features</span><span class="p">,</span> <span class="n">pp_features</span><span class="p">)))</span>
+    <span class="n">patch_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">patch_features</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">patch_features</span>
+
+<span class="k">def</span> <span class="nf">computequality</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">blocksizerow</span><span class="p">,</span> <span class="n">blocksizecol</span><span class="p">,</span> <span class="n">mu_prisparam</span><span class="p">,</span> <span class="n">cov_prisparam</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">h</span> <span class="o">&lt;</span> <span class="n">blocksizerow</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">w</span> <span class="o">&lt;</span> <span class="n">blocksizecol</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input frame is too small&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># ensure that the patch divides evenly into img</span>
+    <span class="n">hoffset</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">%</span> <span class="n">blocksizerow</span><span class="p">)</span>
+    <span class="n">woffset</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">%</span> <span class="n">blocksizecol</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">hoffset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:</span><span class="o">-</span><span class="n">hoffset</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="k">if</span> <span class="n">woffset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">woffset</span><span class="p">]</span>
+
+    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">img2</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">imresize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+    <span class="n">mscn1</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">compute_image_mscn_transform</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">extend_mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="n">mscn1</span> <span class="o">=</span> <span class="n">mscn1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">mscn2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">compute_image_mscn_transform</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">extend_mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="n">mscn2</span> <span class="o">=</span> <span class="n">mscn2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">feats_lvl1</span> <span class="o">=</span> <span class="n">extract_on_patches</span><span class="p">(</span><span class="n">mscn1</span><span class="p">,</span> <span class="n">blocksizerow</span><span class="p">,</span> <span class="n">blocksizecol</span><span class="p">)</span>
+    <span class="n">feats_lvl2</span> <span class="o">=</span> <span class="n">extract_on_patches</span><span class="p">(</span><span class="n">mscn2</span><span class="p">,</span> <span class="n">blocksizerow</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">blocksizecol</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># stack the scale features</span>
+    <span class="n">feats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">feats_lvl1</span><span class="p">,</span> <span class="n">feats_lvl2</span><span class="p">))</span><span class="c1"># feats_lvl3))</span>
+
+    <span class="n">mu_distparam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">feats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">cov_distparam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">feats</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="n">invcov_param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">((</span><span class="n">cov_prisparam</span> <span class="o">+</span> <span class="n">cov_distparam</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">xd</span> <span class="o">=</span> <span class="n">mu_prisparam</span> <span class="o">-</span> <span class="n">mu_distparam</span> 
+    <span class="n">quality</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">invcov_param</span><span class="p">),</span> <span class="n">xd</span><span class="o">.</span><span class="n">T</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">mu_distparam</span><span class="p">,</span> <span class="p">[</span><span class="n">quality</span><span class="p">]))</span>
+
+
+<span class="k">def</span> <span class="nf">compute_niqe_features</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="n">blocksizerow</span> <span class="o">=</span> <span class="mi">96</span>
+    <span class="n">blocksizecol</span> <span class="o">=</span> <span class="mi">96</span>
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="p">((</span><span class="n">M</span> <span class="o">&gt;=</span> <span class="n">blocksizerow</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">N</span> <span class="o">&gt;=</span> <span class="n">blocksizecol</span><span class="o">*</span><span class="mi">2</span><span class="p">)),</span> <span class="s2">&quot;Video too small for NIQE extraction&quot;</span>
+
+    <span class="n">module_path</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_modelparameters.mat&#39;</span><span class="p">))</span>
+    <span class="n">mu_prisparam</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;mu_prisparam&#39;</span><span class="p">]</span>
+    <span class="n">cov_prisparam</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cov_prisparam&#39;</span><span class="p">]</span>
+
+    <span class="n">niqe_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">37</span><span class="p">))</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">5</span><span class="p">):</span>
+      <span class="n">niqe_features</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">computequality</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">blocksizerow</span><span class="p">,</span> <span class="n">blocksizecol</span><span class="p">,</span> <span class="n">mu_prisparam</span><span class="p">,</span> <span class="n">cov_prisparam</span><span class="p">)</span>
+      <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">niqe_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">niqe_features</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">niqe_features</span>
+
+<span class="k">def</span> <span class="nf">temporal_dc_variation_feature_extraction</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">mblock</span><span class="o">=</span><span class="mi">16</span>
+    <span class="n">mbsize</span><span class="o">=</span><span class="mi">16</span>
+    <span class="n">ih</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">mbsize</span><span class="p">)</span><span class="o">*</span><span class="n">mbsize</span>
+    <span class="n">iw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">mbsize</span><span class="p">)</span><span class="o">*</span><span class="n">mbsize</span>
+    <span class="c1"># step 1: motion vector calculation</span>
+    <span class="n">motion_vectors</span> <span class="o">=</span> <span class="n">blockMotion</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;N3SS&#39;</span><span class="p">,</span> <span class="n">mbSize</span><span class="o">=</span><span class="n">mblock</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="c1"># step 2: compensated temporal dct differences</span>
+    <span class="n">dct_motion_comp_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+          <span class="n">patchP</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">mblock</span><span class="p">:(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">mblock</span><span class="p">:(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+          <span class="n">patchI</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">mblock</span><span class="o">+</span><span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="o">+</span><span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="o">*</span><span class="n">mblock</span><span class="o">+</span><span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="o">+</span><span class="n">motion_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+          <span class="n">diff</span> <span class="o">=</span> <span class="n">patchP</span> <span class="o">-</span> <span class="n">patchI</span>
+          <span class="n">t</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">fftpack</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">fftpack</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">)</span>
+          <span class="c1">#dct_motion_comp_diff[i, y*mblock:(y+1)*mblock, x*mblock:(x+1)*mblock] = t </span>
+          <span class="n">dct_motion_comp_diff</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> 
+
+    <span class="n">dct_motion_comp_diff</span> <span class="o">=</span> <span class="n">dct_motion_comp_diff</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">motion_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
+
+    <span class="n">std_dc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dct_motion_comp_diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dt_dc_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">std_dc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">std_dc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">dt_dc_measure1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dt_dc_temp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt_dc_measure1</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">NSS_spectral_ratios_feature_extraction</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">zigzag</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+      <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+      <span class="n">d</span><span class="o">=</span><span class="nb">sum</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">i</span><span class="p">)[::(</span><span class="n">i</span><span class="o">+</span><span class="n">nrows</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span><span class="o">*-</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">nrows</span><span class="p">,</span><span class="n">nrows</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]))],</span> <span class="p">[])</span>
+      <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="n">mblock</span><span class="o">=</span><span class="mi">5</span>
+
+    <span class="c1"># step 1: compute local dct frame differences</span>
+    <span class="n">dct_diff5x5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">mblock</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">mblock</span><span class="p">),</span><span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+          <span class="n">diff</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">mblock</span><span class="p">:(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">mblock</span><span class="p">:(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">mblock</span><span class="p">:(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">mblock</span><span class="p">:(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">mblock</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  
+          <span class="n">t</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">fftpack</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">fftpack</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">)</span>
+          <span class="n">dct_diff5x5</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">dct_diff5x5</span> <span class="o">=</span> <span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># step 2: compute gamma</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mi">10</span><span class="o">+</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">g</span><span class="p">)</span> <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="n">g</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="n">g</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">gamma_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> 
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">dct_diff5x5</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">s</span><span class="p">]</span>
+        <span class="n">mean_gauss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="n">var_gauss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mean_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">temp</span> <span class="o">-</span> <span class="n">mean_gauss</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="n">var_gauss</span><span class="o">/</span><span class="p">(</span><span class="n">mean_abs</span> <span class="o">+</span> <span class="mf">1e-7</span><span class="p">)</span>
+
+        <span class="n">gamma_gauss</span> <span class="o">=</span> <span class="mi">11</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">rho</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rho</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">[</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">gamma_gauss</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+            <span class="k">break</span>
+        <span class="n">gamma_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamma_gauss</span>
+
+    <span class="n">gamma_matrix</span> <span class="o">=</span> <span class="n">gamma_matrix</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mblock</span><span class="p">,</span> <span class="n">mblock</span><span class="p">)</span>
+
+    <span class="c1">#zigzag = lambda N,w,h:[N[i*w+s-i]for s in range(w+h+1)for i in range(h)[::s%2*2-1]if-1&lt;s-i&lt;w]</span>
+
+    <span class="n">freq_bands</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="n">freq_bands</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">zigzag</span><span class="p">(</span><span class="n">gamma_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> 
+
+    <span class="n">lf_gamma5x5</span> <span class="o">=</span> <span class="n">freq_bands</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">((</span><span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">mf_gamma5x5</span> <span class="o">=</span> <span class="n">freq_bands</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">((</span><span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">((</span><span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">hf_gamma5x5</span> <span class="o">=</span> <span class="n">freq_bands</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">mblock</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">geomean_lf_gam</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">lf_gamma5x5</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">geomean_mf_gam</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">mf_gamma5x5</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">geomean_hf_gam</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">hf_gamma5x5</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="n">geo_high_ratio</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">geomean_hf_gam</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="p">(</span><span class="n">geomean_mf_gam</span> <span class="o">+</span> <span class="n">geomean_lf_gam</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">geo_low_ratio</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">geomean_mf_gam</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="n">geomean_lf_gam</span><span class="p">))</span>
+    <span class="n">geo_HL_ratio</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">geomean_hf_gam</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="n">geomean_lf_gam</span><span class="p">))</span>
+    <span class="n">geo_HM_ratio</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="n">geomean_hf_gam</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="n">geomean_mf_gam</span><span class="p">))</span>
+    <span class="n">geo_hh_ratio</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(((</span><span class="n">geomean_hf_gam</span> <span class="o">+</span> <span class="n">geomean_mf_gam</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="n">geomean_lf_gam</span><span class="p">))</span>
+
+    <span class="n">mean_dc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dct_diff5x5</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="n">dt_dc_measure2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mean_dc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">mean_dc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt_dc_measure2</span><span class="p">,</span> <span class="n">geo_HL_ratio</span><span class="p">,</span> <span class="n">geo_HM_ratio</span><span class="p">,</span> <span class="n">geo_hh_ratio</span><span class="p">,</span> <span class="n">geo_high_ratio</span><span class="p">,</span> <span class="n">geo_low_ratio</span><span class="p">])</span>
+
+<div class="viewcode-block" id="videobliinds_features"><a class="viewcode-back" href="../../../modules/generated/skvideo.measure.videobliinds_features.html#skvideo.measure.videobliinds_features">[docs]</a><span class="k">def</span> <span class="nf">videobliinds_features</span><span class="p">(</span><span class="n">videoData</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes Video Bliinds features. [#f1]_</span>
+
+<span class="sd">    Since this is a referenceless quality algorithm, only 1 video is needed. This function</span>
+<span class="sd">    provides the raw features used by the algorithm.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    videoData : ndarray</span>
+<span class="sd">        Reference video, ndarray of dimension (T, M, N, C), (T, M, N), (M, N, C), or (M, N),</span>
+<span class="sd">        where T is the number of frames, M is the height, N is width,</span>
+<span class="sd">        and C is number of channels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    features : ndarray, shape (46,)</span>
+<span class="sd">        |  The individual features of the algorithm. The features are arranged as follows:</span>
+<span class="sd">        |  </span>
+<span class="sd">        |    features[:36] : spatial niqe vector averaged over the video, shape (36,)</span>
+<span class="sd">        |    features[36] : niqe naturalness score, shape (1,)</span>
+<span class="sd">        |    features[37:39] : DC measurements between frames, shape (2,)</span>
+<span class="sd">        |    features[39:44] : Natural Video Statistics, shape (5,)</span>
+<span class="sd">        |    features[44] : Motion coherence, shape (1,)</span>
+<span class="sd">        |    features[45] : Global motion, shape (1,)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [#f1] M. Saad and A.C. Bovik, &quot;Blind prediction of natural video quality&quot; IEEE Transactions on Image Processing, December 2013.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">videoData</span> <span class="o">=</span> <span class="n">vshape</span><span class="p">(</span><span class="n">videoData</span><span class="p">)</span>
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">videoData</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">assert</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;videobliinds called with video having </span><span class="si">%d</span><span class="s2"> channels. Please supply only the luminance channel.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">C</span><span class="p">,)</span>
+
+    <span class="n">dt_dc_measure1</span> <span class="o">=</span> <span class="n">temporal_dc_variation_feature_extraction</span><span class="p">(</span><span class="n">videoData</span><span class="p">)</span>
+    <span class="n">spectral_features</span> <span class="o">=</span> <span class="n">NSS_spectral_ratios_feature_extraction</span><span class="p">(</span><span class="n">videoData</span><span class="p">)</span>
+    <span class="n">temporal_features</span> <span class="o">=</span> <span class="n">motion_feature_extraction</span><span class="p">(</span><span class="n">videoData</span><span class="p">)</span>
+    <span class="n">niqe_features</span> <span class="o">=</span> <span class="n">compute_niqe_features</span><span class="p">(</span><span class="n">videoData</span><span class="p">)</span>
+
+    <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span>
+      <span class="n">niqe_features</span><span class="p">,</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">dt_dc_measure1</span><span class="p">),</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">spectral_features</span><span class="p">),</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">temporal_features</span><span class="p">),</span>
+    <span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">features</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.9.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

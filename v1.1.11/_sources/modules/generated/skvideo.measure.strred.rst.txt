@@ -1,0 +1,12 @@
+:mod:`skvideo.measure`.strred
+==========================================
+
+.. currentmodule:: skvideo.measure
+
+.. autofunction:: strred
+
+.. include:: skvideo.measure.strred.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

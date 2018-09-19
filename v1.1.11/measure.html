@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Measurement Tools &#8212; scikit-video 1.1.11 documentation</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utility Functions" href="utilities.html" />
+    <link rel="prev" title="Motion Estimation Tools" href="motion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="index.html"><img class="navbar-brand-img" src="_static/scikit-video.svg">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.11</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+
+Measurement Tools
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="index.html">Home</a></li></ul><ul class="globaltoc"
+><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="io.html">Reading and Writing Videos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion Estimation Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Measurement Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Test Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarking scikit-video</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">API Reference</a></li>
+</ul>
+</ul>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="measurement-tools">
+<span id="measure"></span><h1>Measurement Tools<a class="headerlink" href="#measurement-tools" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="modules/measure.html#module-skvideo.measure" title="skvideo.measure"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skvideo.measure</span></code></a> provides quality assessment tools, scene detection, and other measurement operations.</p>
+<div class="section" id="reduced-reference-quality-assessment">
+<h2>Reduced-Reference Quality Assessment<a class="headerlink" href="#reduced-reference-quality-assessment" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.strred.html#skvideo.measure.strred" title="skvideo.measure.strred"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.strred</span></code></a> to measure the perceptually quality difference between two videos, providing a slightly reduced reference score along with a critically reduced reference score (1 number comparison between videos).</p>
+</div>
+<div class="section" id="full-reference-quality-assessment">
+<h2>Full-Reference Quality Assessment<a class="headerlink" href="#full-reference-quality-assessment" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.ssim.html#skvideo.measure.ssim" title="skvideo.measure.ssim"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.ssim</span></code></a> to measure the perceptually quality difference between two videos, considering only individual frames.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.msssim.html#skvideo.measure.msssim" title="skvideo.measure.msssim"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.msssim</span></code></a> to measure the perceptually quality difference between two videos, considering only individual frames. Differs from ssim in that this function considers multiple scales.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.mse.html#skvideo.measure.mse" title="skvideo.measure.mse"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.mse</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.mad</span></code>, or <a class="reference internal" href="modules/generated/skvideo.measure.psnr.html#skvideo.measure.psnr" title="skvideo.measure.psnr"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.psnr</span></code></a> to measure simple point-wise similarity between two videos.</p>
+</div>
+<div class="section" id="no-reference-quality-assessment">
+<h2>No-Reference Quality Assessment<a class="headerlink" href="#no-reference-quality-assessment" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.brisque_features.html#skvideo.measure.brisque_features" title="skvideo.measure.brisque_features"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.brisque_features</span></code></a> to extract frame-by-frame features using the BRISQUE image quality algorithm, useful for frame-level quality analysis and training your own frame-based quality-aware model.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.videobliinds_features.html#skvideo.measure.videobliinds_features" title="skvideo.measure.videobliinds_features"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.videobliinds_features</span></code></a> to extract features using the Video Bliinds algorithm, useful for training your own quality-aware model.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.viideo_features.html#skvideo.measure.viideo_features" title="skvideo.measure.viideo_features"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.viideo_features</span></code></a> to extract features using the Viideo Oracle algorithm, useful for training your own quality-aware model.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.viideo_score.html#skvideo.measure.viideo_score" title="skvideo.measure.viideo_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.viideo_score</span></code></a> to return the score of the Viideo Oracle algorithm.</p>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.niqe.html#skvideo.measure.niqe" title="skvideo.measure.niqe"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.niqe</span></code></a> to return per-frame Naturalness Image Quality Evaluator (NIQE) scores.</p>
+</div>
+<div class="section" id="scene-detection">
+<h2>Scene detection<a class="headerlink" href="#scene-detection" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="modules/generated/skvideo.measure.scenedet.html#skvideo.measure.scenedet" title="skvideo.measure.scenedet"><code class="xref py py-func docutils literal notranslate"><span class="pre">skvideo.measure.scenedet</span></code></a> to find frames that start scene boundaries. Check the documentation on selecting the specific detection algorithm.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2017, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.9.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

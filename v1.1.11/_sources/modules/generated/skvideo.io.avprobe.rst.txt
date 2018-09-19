@@ -1,0 +1,12 @@
+:mod:`skvideo.io`.avprobe
+======================================
+
+.. currentmodule:: skvideo.io
+
+.. autofunction:: avprobe
+
+.. include:: skvideo.io.avprobe.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>

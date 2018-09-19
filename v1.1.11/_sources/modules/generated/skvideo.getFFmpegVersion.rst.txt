@@ -1,0 +1,12 @@
+:mod:`skvideo`.getFFmpegVersion
+============================================
+
+.. currentmodule:: skvideo
+
+.. autofunction:: getFFmpegVersion
+
+.. include:: skvideo.getFFmpegVersion.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
