@@ -13,7 +13,6 @@
     <script src="../../../_static/documentation_options.js?v=b63844d9"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../../_static/js/copybutton.js"></script>
     <script src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script src="../../../_static/js/jquery-fix.js"></script>
     <script src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -555,8 +554,8 @@ skvideo.motion.block
                         <span class="n">costs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">_costMAD</span><span class="p">(</span><span class="n">imgP</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">mbSize</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span> <span class="o">+</span> <span class="n">mbSize</span><span class="p">],</span> <span class="n">imgI</span><span class="p">[</span><span class="n">refBlkVerPointD</span><span class="p">:</span><span class="n">refBlkVerPointD</span> <span class="o">+</span> <span class="n">mbSize</span><span class="p">,</span> <span class="n">refBlkHorPointD</span><span class="p">:</span><span class="n">refBlkHorPointD</span> <span class="o">+</span> <span class="n">mbSize</span><span class="p">])</span>
                         <span class="n">computations</span> <span class="o">+=</span> <span class="mi">1</span>
 
-                <span class="n">dxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span>
-                <span class="n">cost</span> <span class="o">=</span> <span class="n">costs</span><span class="p">[</span><span class="n">dxy</span><span class="p">]</span>
+                <span class="n">dxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">cost</span> <span class="o">=</span> <span class="n">costs</span><span class="p">[</span><span class="n">dxy</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 
                 <span class="k">if</span> <span class="n">dxy</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">refBlkHorPointB</span>
