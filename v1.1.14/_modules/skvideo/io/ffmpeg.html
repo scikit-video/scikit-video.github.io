@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skvideo.io.ffmpeg &#8212; scikit-video 1.1.14 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=29da98fa" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script src="../../../_static/documentation_options.js?v=d9c9500d"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../../../_static/js/jquery-fix.js"></script>
+    <script src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="icon" href="../../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../../index.html">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.14</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../index.html'>Module code</a> >>
+
+skvideo.io.ffmpeg
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../../index.html">Home</a></li></ul>
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for skvideo.io.ffmpeg</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Plugin that uses ffmpeg to read and write series of images to</span>
+<span class="sd">a wide range of video formats.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Heavily inspired from Almar Klein&#39;s imageio code</span>
+<span class="c1"># Copyright (c) 2015, imageio contributors</span>
+<span class="c1"># distributed under the terms of the BSD License (included in release).</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.abstract</span><span class="w"> </span><span class="kn">import</span> <span class="n">VideoReaderAbstract</span><span class="p">,</span> <span class="n">VideoWriterAbstract</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ffprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">ffprobe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_FFMPEG_APPLICATION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_FFMPEG_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_FFMPEG_SUPPORTED_DECODERS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_HAS_FFMPEG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="c1"># uses FFmpeg to read the given file with parameters</span>
+<div class="viewcode-block" id="FFmpegReader">
+<a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FFmpegReader</span><span class="p">(</span><span class="n">VideoReaderAbstract</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads frames using FFmpeg</span>
+
+<span class="sd">    Using FFmpeg as a backend, this class</span>
+<span class="sd">    provides sane initializations meant to</span>
+<span class="sd">    handle the default case well.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">INFO_AVERAGE_FRAMERATE</span> <span class="o">=</span> <span class="s2">&quot;@r_frame_rate&quot;</span>
+    <span class="n">INFO_WIDTH</span> <span class="o">=</span> <span class="s2">&quot;@width&quot;</span>
+    <span class="n">INFO_HEIGHT</span> <span class="o">=</span> <span class="s2">&quot;@height&quot;</span>
+    <span class="n">INFO_PIX_FMT</span> <span class="o">=</span> <span class="s2">&quot;@pix_fmt&quot;</span>
+    <span class="n">INFO_DURATION</span> <span class="o">=</span> <span class="s2">&quot;@duration&quot;</span>
+    <span class="n">INFO_NB_FRAMES</span> <span class="o">=</span> <span class="s2">&quot;@nb_frames&quot;</span>
+    <span class="n">OUTPUT_METHOD</span> <span class="o">=</span> <span class="s2">&quot;image2pipe&quot;</span>
+
+<div class="viewcode-block" id="FFmpegReader.__init__">
+<a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegReader.html#skvideo.io.FFmpegReader.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FFmpegReader</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_createProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;-vcodec&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
+            <span class="n">outputdict</span><span class="p">[</span><span class="s1">&#39;-vcodec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rawvideo&quot;</span>
+
+        <span class="n">iargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict2Args</span><span class="p">(</span><span class="n">inputdict</span><span class="p">)</span>
+        <span class="n">oargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict2Args</span><span class="p">(</span><span class="n">outputdict</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span> <span class="o">+</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="n">stderr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">,</span> <span class="s2">&quot;-nostats&quot;</span><span class="p">,</span> <span class="s2">&quot;-loglevel&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span>
+                                                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span> <span class="o">+</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span>
+                      <span class="s1">&#39;-&#39;</span><span class="p">]</span>
+            <span class="n">stderr</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                              <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_probCountFrames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># open process, grabbing number of frames using ffprobe</span>
+        <span class="n">probecmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ffprobe&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;-count_frames&quot;</span><span class="p">,</span> <span class="s2">&quot;-select_streams&quot;</span><span class="p">,</span> <span class="s2">&quot;v:0&quot;</span><span class="p">,</span>
+                                                  <span class="s2">&quot;-show_entries&quot;</span><span class="p">,</span> <span class="s2">&quot;stream=nb_read_frames&quot;</span><span class="p">,</span> <span class="s2">&quot;-of&quot;</span><span class="p">,</span>
+                                                  <span class="s2">&quot;default=nokey=1:noprint_wrappers=1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">check_output</span><span class="p">(</span><span class="n">probecmd</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_probe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ffprobe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getSupportedDecoders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_FFMPEG_SUPPORTED_DECODERS</span></div>
+
+
+<div class="viewcode-block" id="FFmpegWriter">
+<a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FFmpegWriter</span><span class="p">(</span><span class="n">VideoWriterAbstract</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Writes frames using FFmpeg</span>
+
+<span class="sd">    Using FFmpeg as a backend, this class</span>
+<span class="sd">    provides sane initializations for the default case.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : string</span>
+<span class="sd">        Video file path for writing.</span>
+
+<span class="sd">    inputdict : dict</span>
+<span class="sd">        How to interpret the frames piped in from Python.</span>
+
+<span class="sd">    outputdict : dict</span>
+<span class="sd">        How to encode the output file.</span>
+
+<span class="sd">    audiosrc : string, optional</span>
+<span class="sd">        Path to a media file whose audio track should be muxed into the</span>
+<span class="sd">        output. Used to preserve audio across a ``vread`` / ``vwrite``</span>
+<span class="sd">        round-trip (issues #173, #176). By default the output contains</span>
+<span class="sd">        the video from the piped-in frames plus the **first** audio</span>
+<span class="sd">        stream from ``audiosrc`` (equivalent to passing</span>
+<span class="sd">        ``-map 0:v:0 -map 1:a:0`` to ffmpeg).</span>
+
+<span class="sd">        To take full control of stream selection, supply your own</span>
+<span class="sd">        ``-map`` in ``outputdict``. When ``outputdict`` contains a</span>
+<span class="sd">        ``-map`` entry, our default ``-map`` arguments yield entirely;</span>
+<span class="sd">        this is in line with ffmpeg&#39;s additive ``-map`` semantics (a</span>
+<span class="sd">        second ``-map`` adds streams rather than overriding earlier</span>
+<span class="sd">        ones). Examples (note the list form for multiple ``-map``</span>
+<span class="sd">        values):</span>
+
+<span class="sd">          - Copy all audio streams::</span>
+
+<span class="sd">                outputdict={&#39;-map&#39;: [&#39;0:v:0&#39;, &#39;1:a&#39;]}</span>
+
+<span class="sd">          - Pick a specific audio stream::</span>
+
+<span class="sd">                outputdict={&#39;-map&#39;: [&#39;0:v:0&#39;, &#39;1:a:5&#39;]}</span>
+
+<span class="sd">        The audio is stream-copied with ``-c:a copy`` (no re-encoding);</span>
+<span class="sd">        set ``-c:a`` (or ``-codec:a`` / ``-acodec``) in ``outputdict``</span>
+<span class="sd">        to override the codec. The output is also trimmed to the shorter</span>
+<span class="sd">        of video/audio via ``-shortest``, which is the intuitive</span>
+<span class="sd">        behavior when the video is a subset of the original.</span>
+
+<span class="sd">    verbosity : int</span>
+<span class="sd">        0 (default) for quiet, 1 to print the ffmpeg command.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The FFmpeg subprocess is launched lazily on the first ``writeFrame``</span>
+<span class="sd">    call. Constructing a writer and calling ``close()`` without writing any</span>
+<span class="sd">    frames is a no-op and produces no output file — this keeps cleanup in a</span>
+<span class="sd">    ``finally`` (or a construct-only validation) from raising. Use the</span>
+<span class="sd">    high-level ``skvideo.io.vwrite``, which rejects empty (0-frame) input</span>
+<span class="sd">    with ``ValueError``, if you want that guarded.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FFmpegWriter.__init__">
+<a class="viewcode-back" href="../../../modules/generated/skvideo.io.FFmpegWriter.html#skvideo.io.FFmpegWriter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">audiosrc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">_HAS_FFMPEG</span><span class="p">,</span> <span class="s2">&quot;Cannot find installation of real FFmpeg (which comes with ffprobe).&quot;</span>
+        <span class="k">if</span> <span class="n">audiosrc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Fail fast at construction time rather than letting ffmpeg</span>
+            <span class="c1"># produce a silent videoless output that the user discovers</span>
+            <span class="c1"># later. Both the missing-file and no-audio-stream cases would</span>
+            <span class="c1"># otherwise be invisible.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">audiosrc</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="s2">&quot;audiosrc not found: </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">audiosrc</span>
+                <span class="p">)</span>
+            <span class="n">probe</span> <span class="o">=</span> <span class="n">ffprobe</span><span class="p">(</span><span class="n">audiosrc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">probe</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;audio_streams&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;audiosrc </span><span class="si">%r</span><span class="s2"> contains no audio stream; cannot mux audio &quot;</span>
+                    <span class="s2">&quot;from a file without audio. Remove the audiosrc argument &quot;</span>
+                    <span class="s2">&quot;to write a video-only output.&quot;</span> <span class="o">%</span> <span class="n">audiosrc</span>
+                <span class="p">)</span>
+            <span class="c1"># Resolve to an absolute path now. FFmpegWriter&#39;s subprocess is</span>
+            <span class="c1"># launched lazily on the first writeFrame() call; if the user&#39;s</span>
+            <span class="c1"># cwd changes between construction and first write, a relative</span>
+            <span class="c1"># path would silently resolve against the wrong directory.</span>
+            <span class="n">audiosrc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">audiosrc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_audiosrc</span> <span class="o">=</span> <span class="n">audiosrc</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FFmpegWriter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">inputdict</span><span class="o">=</span><span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="o">=</span><span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getSupportedEncoders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_FFMPEG_SUPPORTED_ENCODERS</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_createProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputdict</span><span class="p">,</span> <span class="n">outputdict</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">):</span>
+        <span class="n">iargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict2Args</span><span class="p">(</span><span class="n">inputdict</span><span class="p">)</span>
+        <span class="n">oargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict2Args</span><span class="p">(</span><span class="n">outputdict</span><span class="p">)</span>
+
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">_FFMPEG_PATH</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_FFMPEG_APPLICATION</span><span class="p">,</span> <span class="s2">&quot;-y&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">iargs</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_audiosrc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Mux audio from a separate source. stdin (raw video) is input #0;</span>
+            <span class="c1"># the audio source becomes input #1.</span>
+            <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_audiosrc</span><span class="p">]</span>
+            <span class="c1"># ffmpeg&#39;s -map is ADDITIVE: a second -map adds streams rather than</span>
+            <span class="c1"># overriding earlier ones. So if the user supplies any -map in</span>
+            <span class="c1"># outputdict, our defaults must yield entirely — otherwise the user</span>
+            <span class="c1"># gets unexpected duplicated streams. Default behavior (no user</span>
+            <span class="c1"># -map): copy video from input 0 and the first audio stream from</span>
+            <span class="c1"># input 1; we pick :0 over :a to avoid surprise-multiplexing all</span>
+            <span class="c1"># audio tracks from a multi-language source.</span>
+            <span class="k">if</span> <span class="s2">&quot;-map&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:v:0&quot;</span><span class="p">,</span> <span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;1:a:0&quot;</span><span class="p">]</span>
+            <span class="c1"># Only set the default codec/duration policy if the user hasn&#39;t</span>
+            <span class="c1"># already specified their own audio codec.</span>
+            <span class="n">user_audio_codec_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;-c:a&quot;</span><span class="p">,</span> <span class="s2">&quot;-codec:a&quot;</span><span class="p">,</span> <span class="s2">&quot;-acodec&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">outputdict</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">user_audio_codec_keys</span><span class="p">):</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-c:a&quot;</span><span class="p">,</span> <span class="s2">&quot;copy&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;-shortest&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputdict</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-shortest&quot;</span><span class="p">]</span>
+
+        <span class="n">cmd</span> <span class="o">+=</span> <span class="n">oargs</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+        <span class="c1"># Launch process. stderr=PIPE in non-verbose mode so close() and the</span>
+        <span class="c1"># writeFrame IOError handler can surface FFmpeg&#39;s actual error output</span>
+        <span class="c1"># (issue #111). verbosity&gt;0 leaves stderr unredirected so the user</span>
+        <span class="c1"># sees FFmpeg&#39;s output live and we have no captured stream to read.</span>
+        <span class="c1"># For memory destinations, stdout MUST be a PIPE (regardless of</span>
+        <span class="c1"># verbosity) because ffmpeg writes the encoded bytes there and a</span>
+        <span class="c1"># background thread drains them into the user&#39;s buffer (issue #113</span>
+        <span class="c1"># write-side). Without draining, ffmpeg blocks once stdout&#39;s</span>
+        <span class="c1"># ~64KB pipe buffer fills.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_kind</span> <span class="o">==</span> <span class="s2">&quot;memory&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_stdout_drain_thread</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                  <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2026, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
