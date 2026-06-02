@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>skvideo.motion.blockMotion &#8212; scikit-video 1.1.13 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=29da98fa" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script src="../../_static/documentation_options.js?v=1240c0c0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../../_static/js/jquery-fix.js"></script>
+    <script src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="icon" href="../../_static/scikit-video-favicon.ico"/>
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="skvideo.motion.blockComp" href="skvideo.motion.blockComp.html" />
+    <link rel="prev" title="Motion" href="../motion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default ">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="navbar-brand" href="../../index.html">
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+            
+            
+          </ul>
+
+          
+          
+        </div>
+      <div class="navbar-header2">
+	<div class="navbar-version-div"><span class="navbar-text2"><b>Version 1.1.13</b></span></div>
+      </div>
+    </div>
+  </div>
+
+<div class='container'>
+<a href='../../classes.html'>API Reference</a> >>
+
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">skvideo.motion</span></code>.blockMotion
+
+</div>
+
+<!-- Github "fork me" ribbon -->
+<a href="https://github.com/scikit-video/scikit-video">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../_static/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="globaltoc"><li><a href="../../index.html">Home</a></li></ul>
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <section id="skvideo-motion-blockmotion">
+<h1><a class="reference internal" href="../motion.html#module-skvideo.motion" title="skvideo.motion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skvideo.motion</span></code></a>.blockMotion<a class="headerlink" href="#skvideo-motion-blockmotion" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="skvideo.motion.blockMotion">
+<span class="sig-prename descclassname"><span class="pre">skvideo.motion.</span></span><span class="sig-name descname"><span class="pre">blockMotion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">videodata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mbSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plugin_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skvideo/motion/block.html#blockMotion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skvideo.motion.blockMotion" title="Link to this definition">¶</a></dt>
+<dd><p>Block-based motion estimation</p>
+<p>Given a sequence of frames, this function
+returns motion vectors between frames.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>videodata</strong><span class="classifier">ndarray, shape (numFrames, height, width, channel)</span></dt><dd><p>A sequence of frames</p>
+</dd>
+<dt><strong>method</strong><span class="classifier">string</span></dt><dd><p>“ES” –&gt; exhaustive search</p>
+<p>“3SS” –&gt; 3-step search</p>
+<p>“N3SS” –&gt; “new” 3-step search <a class="footnote-reference brackets" href="#f1" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+<p>“SE3SS” –&gt; Simple and Efficient 3SS <a class="footnote-reference brackets" href="#f2" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
+<p>“4SS” –&gt; 4-step search <a class="footnote-reference brackets" href="#f3" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
+<p>“ARPS” –&gt; Adaptive Rood Pattern search <a class="footnote-reference brackets" href="#f4" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p>
+<p>“DS” –&gt; Diamond search <a class="footnote-reference brackets" href="#f5" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></p>
+</dd>
+<dt><strong>mbSize</strong><span class="classifier">int</span></dt><dd><p>Macroblock size</p>
+</dd>
+<dt><strong>p</strong><span class="classifier">int</span></dt><dd><p>Algorithm search distance parameter</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>motionData</strong><span class="classifier">ndarray, shape (numFrames - 1, height/mbSize, width/mbSize, 2)</span></dt><dd><p>The motion vectors computed from videodata. The first element of the last axis contains the y motion component, and second element contains the x motion component.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Renxiang Li, Bing Zeng, and Ming L. Liou, “A new three-step search algorithm for block motion estimation.” IEEE Transactions on Circuits and Systems for Video Technology, 4 (4) 438-442, Aug 1994</p>
+</aside>
+<aside class="footnote brackets" id="f2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Jianhua Lu and Ming L. Liou, “A simple and efficient search algorithm for block-matching motion estimation.” IEEE Transactions on Circuits and Systems for Video Technology, 7 (2) 429-433, Apr 1997</p>
+</aside>
+<aside class="footnote brackets" id="f3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>Lai-Man Po and Wing-Chung Ma, “A novel four-step search algorithm for fast block motion estimation.” IEEE Transactions on Circuits and Systems for Video Technology, 6 (3) 313-317, Jun 1996</p>
+</aside>
+<aside class="footnote brackets" id="f4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">4</a><span class="fn-bracket">]</span></span>
+<p>Yao Nie and Kai-Kuang Ma, “Adaptive rood pattern search for fast block-matching motion estimation.” IEEE Transactions on Image Processing, 11 (12) 1442-1448, Dec 2002</p>
+</aside>
+<aside class="footnote brackets" id="f5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">5</a><span class="fn-bracket">]</span></span>
+<p>Shan Zhu and Kai-Kuang Ma, “A new diamond search algorithm for fast block-matching motion estimation.” IEEE Transactions on Image Processing, 9 (2) 287-290, Feb 2000</p>
+</aside>
+</aside>
+</dd></dl>
+
+<div class="clearer"></div></section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015-2026, scikit-video developers (BSD License).<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
