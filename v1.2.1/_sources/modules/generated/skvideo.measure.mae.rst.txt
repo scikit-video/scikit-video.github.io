@@ -1,0 +1,12 @@
+﻿:mod:`skvideo.measure`.mae
+=======================================
+
+.. currentmodule:: skvideo.measure
+
+.. autofunction:: mae
+
+.. include:: skvideo.measure.mae.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
