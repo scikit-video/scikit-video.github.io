@@ -1,0 +1,12 @@
+﻿:mod:`skvideo`.getFFmpegPath
+=========================================
+
+.. currentmodule:: skvideo
+
+.. autofunction:: getFFmpegPath
+
+.. include:: skvideo.getFFmpegPath.examples
+
+.. raw:: html
+
+    <div class="clearer"></div>
